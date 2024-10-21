@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  // This is an alias to @tsconfig/node16: https://github.com/tsconfig/bases
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true,
+    "compiler": "typescript",
+    "compilerOptions": {
+      "target": "ESNext"
+    },
+    "include": [
+      "src/**/*.ts",
+      "*.d.ts"
+    ],
+    "exclude": [
+      "node_modules"
+    ],
+    "require": [
+      "tsconfig-paths/register"
+    ]
+  },
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "typeRoots": [
+      "./src/@types",
+      "./node_modules/@types"
+    ],
+    "paths": {
+      "@/modules/*": [
+        "./src/modules/*"
+      ],
+      "@/common/*": [
+        "./src/common/*"
+      ],
+      "@/models/*": [
+        "./src/models/*"
+      ],
+      "@/types/*": [
+        "./src/types/*"
+      ],
+      "@/zod-schema/*": [
+        "./src/zod/*"
+      ],
+      "@/app": [
+        "./src/app"
+      ],
+      "@/common-lib/*": [
+        "./src/lib/*"
+      ]
+    }
+  },
+  "require": [
+    "tsconfig-paths/register"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
