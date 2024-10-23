@@ -16,11 +16,16 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { logout } from '@/store/actions/auth.action';
+import { useAppDispatch } from '@/store/hooks';
 import { useGetUserQuery } from '@/store/services/user.service';
+import { useNavigate } from 'react-router-dom';
 
 export function NavUser() {
+  const navigate = useNavigate();
   const { isMobile } = useSidebar();
   const { data: user } = useGetUserQuery();
+  const dispatch = useAppDispatch();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -92,7 +97,13 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() => {
+                localStorage.removeItem('token');
+                dispatch(logout());
+                return navigate('/login');
+              }}
+            >
               <LogOut />
               Log out
             </DropdownMenuItem>
