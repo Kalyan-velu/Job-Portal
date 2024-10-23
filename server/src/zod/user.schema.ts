@@ -1,4 +1,4 @@
-import z from 'zod';
+import z from 'zod'
 
 export const passwordSchema = z
   .string()
@@ -33,10 +33,8 @@ export const baseUserSchema = z
     phoneNumber: z.string().optional(),
     name: z.string({ message: 'Username is required' }),
     email: z.string().email({ message: 'Invalid email address' }),
-    password: z
-      .string()
-      .min(8, { message: 'Password must be at least 8 characters' }),
-    confirmPassword: z.string().min(8),
+    password: passwordSchema,
+    confirmPassword: passwordSchema,
     role: roleSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
