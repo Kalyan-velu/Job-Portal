@@ -57,27 +57,36 @@ const fetchUserAndRedirect = async (args: LoaderFunctionArgs<any>) => {
     return redirect('/');
   }
 
-  // if (
-  //   url.includes('/app/company/create') &&
-  //   role === 'employer' &&
-  //   data?.companyId
-  // ) {
-  //   return redirect('/app/company');
-  // } else if (
-  //   url.includes('/app/applicant/create-profile') &&
-  //   role === 'applicant' &&
-  //   data?.applicantId
-  // ) {
-  //   return redirect('/app/jobs');
-  // }
-  if (url.includes('/app/jobs') && role === 'employer' && !data?.companyId) {
+  if (
+    url.includes('/app/company/create') &&
+    role === 'employer' &&
+    data?.companyId
+  ) {
+    return redirect('/app/company');
+  } else if (
+    url.includes('/app/applicant/create-profile') &&
+    role === 'applicant' &&
+    data?.applicantId
+  ) {
+    return redirect('/app/jobs');
+  } else if (
+    url.includes('/app/jobs') &&
+    role === 'employer' &&
+    data?.companyId
+  ) {
     return redirect('/app/company');
   } else if (
     url.includes('/app/company') &&
     role === 'applicant' &&
-    !data?.applicantId
+    data?.applicantId
   ) {
     return redirect('/app/jobs');
+  } else if (
+    url.endsWith('/app/company') &&
+    role === 'employer' &&
+    !data?.applicantId
+  ) {
+    return redirect('/app/company/create');
   }
   return null;
 };
