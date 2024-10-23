@@ -1,4 +1,5 @@
 import { ThemeProvider } from '@/components/theme-provider';
+import { AuthProvider } from '@/providers/auth-provider';
 import StoreProvider from '@/store/provider';
 import { memo, type ReactNode } from 'react';
 import { Toaster as SonnarToaster } from 'sonner';
@@ -9,9 +10,7 @@ const AppProviders = memo<{ children: ReactNode }>(({ children }) => {
         defaultTheme='dark'
         storageKey='vite-ui-theme'
       >
-        {/* <AuthProvider> */}
-        {children}
-        {/* </AuthProvider> */}
+        <AuthProvider>{children}</AuthProvider>
         <SonnarToaster />
       </ThemeProvider>
     </StoreProvider>

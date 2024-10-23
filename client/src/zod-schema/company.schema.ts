@@ -22,14 +22,11 @@ export const CompanySchema = z.object({
     .nullable()
     .or(z.literal(''))
     .transform((val) => val ?? ''), // Optional description
-  socialMedia: z
-    .array(
-      z.string().url({ message: 'Each social media link must be a valid URL' })
-    )
-    .optional()
-    .nullable()
-    .default([])
-    .transform((val) => val ?? []), // Optional array for social media links
+  socialMedia: z.array(
+    z.object({
+      url: z.string().url({ message: 'Invalid URL format' }),
+    })
+  ),
   // createdBy: z.string({ message: 'Creator ID is required' }),
   estd: z
     .string({ message: "Establish year can't be empty." })

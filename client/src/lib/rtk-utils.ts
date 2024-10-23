@@ -119,7 +119,24 @@ export const transformErrorResponse = (
     if ('message' in data) {
       return data.message;
     }
-  }
+  } else if ('error' in response && response.error !== null) {
+    if (typeof response.error === 'object') {
+      const data = response.error as Record<string, any>;
 
+      // Handle detailed errors
+      if (Array.isArray(data.error)) {
+        return data.error
+          .map((err: any) => {
+            // Format the error message
+            const field = err.loc ? err.loc[1] : 'Unknown field';
+            const message = err.msg || 'Invalid input';
+            return `${message}`;
+          })
+          .join(', ');
+      }
+    } else {
+      return response.error;
+    }
+  }
   return 'Something went wrong';
 };

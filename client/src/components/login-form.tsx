@@ -8,7 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
@@ -31,20 +37,21 @@ export function LoginForm() {
       .then((r) => {
         if (r.redirectTo && r.message) {
           toast.info(r.message);
-          navigate(r.redirectTo);
+          return navigate(r.redirectTo);
         }
         navigate('/');
       })
       .catch((e) => {
-        toast.error(e.message || 'Login failed');
+        console.debug('ℹ️ ~ file: login-form.tsx:45 ~ onValidSubmit ~ e:', e);
+        toast.error(e || 'Login failed');
       });
   };
   const onInvalidSubmit = (data: FieldErrors<LoginSchemaType>) => {
-    console.debug(
-      'ℹ️ ~ file: login-form.tsx:38 ~ onInvalidSubmit ~ data:',
-      data
-    );
-    toast.error("Couldn't submit form");
+    // console.error(
+    //   'ℹ️ ~ file: login-form.tsx:38 ~ onInvalidSubmit ~ data:',
+    //   data
+    // );
+    // toast.error("Couldn't submit form");
   };
   return (
     <Form {...form}>
@@ -57,7 +64,7 @@ export function LoginForm() {
         </CardHeader>
         <CardContent>
           <form
-            onSubmit={form.handleSubmit(onValidSubmit, (e) => onInvalidSubmit)}
+            onSubmit={form.handleSubmit(onValidSubmit, onInvalidSubmit)}
             className='grid gap-4'
           >
             <div className='grid gap-2'>
@@ -74,7 +81,7 @@ export function LoginForm() {
                         {...field}
                       />
                     </FormControl>
-                    {/* <FormMessage /> */}
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -100,7 +107,7 @@ export function LoginForm() {
                         {...field}
                       />
                     </FormControl>
-                    {/* <FormMessage /> */}
+                    <FormMessage />
                   </FormItem>
                 )}
               />

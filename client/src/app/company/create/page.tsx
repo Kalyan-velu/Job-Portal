@@ -72,7 +72,7 @@ const CreateCompanyProfile = memo(() => {
       .unwrap()
       .then((r) => {
         console.debug('ℹ️ ~ file: page.tsx:72 ~ .then ~ r:', r);
-        navigate('/app/company/dashboard');
+        navigate('/app/company');
         toast.success(r);
       })
       .catch((e) => {

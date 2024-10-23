@@ -1,6 +1,8 @@
 import { AuthRouter } from '@/app/(auth)/auth-router';
 import { AuthLayout } from '@/app/(auth)/layout';
 import { CompanyRoutes } from '@/app/company/company-routes';
+import { CreateCompanyProfile } from '@/app/company/create/page';
+import { CompanyDashboardPage } from '@/app/company/dashboard/layout';
 import { RootLayout } from '@/app/layout';
 import { store } from '@/store';
 import { userApi } from '@/store/services/user.service';
@@ -42,15 +44,39 @@ const handleRedirect = async ({
 };
 
 const fetchUserAndRedirect = async (args: LoaderFunctionArgs<any>) => {
-  const url = args.request.url;
-  console.log(url);
   const { token, role } = getTokenAndRole();
+  const url = args.request.url;
+  if (url.endsWith('app')) {
+    return redirect(role === 'employer' ? '/app/company' : '/app/jobs');
+  }
+  const { data, isError } = await store.dispatch(
+    userApi.endpoints.getUser.initiate(undefined)
+  );
+
   if (!token) {
     return redirect('/');
   }
-  if (url.includes('/app/jobs') && role === 'employer') {
+
+  // if (
+  //   url.includes('/app/company/create') &&
+  //   role === 'employer' &&
+  //   data?.companyId
+  // ) {
+  //   return redirect('/app/company');
+  // } else if (
+  //   url.includes('/app/applicant/create-profile') &&
+  //   role === 'applicant' &&
+  //   data?.applicantId
+  // ) {
+  //   return redirect('/app/jobs');
+  // }
+  if (url.includes('/app/jobs') && role === 'employer' && !data?.companyId) {
     return redirect('/app/company');
-  } else if (url.includes('/app/company') && role === 'applicant') {
+  } else if (
+    url.includes('/app/company') &&
+    role === 'applicant' &&
+    !data?.applicantId
+  ) {
     return redirect('/app/jobs');
   }
   return null;
@@ -78,7 +104,12 @@ export const AppRouter = createBrowserRouter([
         children: [
           {
             path: 'company',
+            element: <CompanyDashboardPage />,
             children: CompanyRoutes,
+          },
+          {
+            path: 'company/create',
+            element: <CreateCompanyProfile />,
           },
           {
             path: 'jobs',
