@@ -1,31 +1,25 @@
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
+  BriefcaseBusiness,
   ChevronsUpDown,
   Command,
-  Frame,
-  GalleryVerticalEnd,
+  FileText,
   LifeBuoy,
-  Map,
-  PieChart,
   Plus,
   Send,
   Settings2,
-  SquareTerminal,
+  UserCircle,
+  Users2,
 } from 'lucide-react';
 import * as React from 'react';
 
+import { NavCompany } from '@/components/nav-company';
 import { NavMain } from '@/components/nav-main';
-import { NavProjects } from '@/components/nav-projects';
 import { NavSecondary } from '@/components/nav-secondary';
 import { NavUser } from '@/components/nav-user';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -37,104 +31,133 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/components/ui/sidebar';
-import { companySelected } from '@/store/features/company.slice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useGetMyCompanyQuery } from '@/store/services/company.service';
+import { memo } from 'react';
+import { Link } from 'react-router-dom';
 
 const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
   navMain: [
     {
-      title: 'Playground',
+      title: 'Jobs',
       url: '#',
-      icon: SquareTerminal,
+      icon: BriefcaseBusiness,
       isActive: true,
       items: [
         {
-          title: 'History',
-          url: '#',
+          title: 'All Jobs',
+          url: '/app/company/jobs', // Replace with actual route
         },
         {
-          title: 'Starred',
-          url: '#',
+          title: 'Posted Jobs',
+          url: '/app/company/jobs/posted', // Route to view posted jobs
         },
         {
-          title: 'Settings',
-          url: '#',
+          title: 'Create Job',
+          url: '/app/company/jobs/create', // Route to create a new job
+        },
+        {
+          title: 'Starred Jobs',
+          url: '/app/company/jobs/starred', // Optionally view starred jobs
         },
       ],
     },
     {
-      title: 'Models',
+      title: 'Candidates',
       url: '#',
-      icon: Bot,
+      icon: Users2,
       items: [
         {
-          title: 'Genesis',
-          url: '#',
+          title: 'All Candidates',
+          url: '/app/company/candidates', // Route to view all candidates
         },
         {
-          title: 'Explorer',
-          url: '#',
+          title: 'Shortlisted',
+          url: '/app/company/candidates/shortlisted', // Route to view shortlisted candidates
         },
         {
-          title: 'Quantum',
-          url: '#',
+          title: 'Interview Scheduled',
+          url: '/app/company/candidates/interviews', // View candidates with scheduled interviews
+        },
+        {
+          title: 'Rejections',
+          url: '/app/company/candidates/rejections', // Track rejected candidates
         },
       ],
     },
     {
-      title: 'Documentation',
+      title: 'Applications',
       url: '#',
-      icon: BookOpen,
+      icon: FileText,
       items: [
         {
-          title: 'Introduction',
-          url: '#',
+          title: 'All Applications',
+          url: '/app/company/applications', // Route to view all applications
         },
         {
-          title: 'Get Started',
-          url: '#',
+          title: 'Under Review',
+          url: '/app/company/applications/review', // Route for applications under review
         },
         {
-          title: 'Tutorials',
-          url: '#',
+          title: 'Hired',
+          url: '/app/company/applications/hired', // Track hired candidates
         },
         {
-          title: 'Changelog',
-          url: '#',
+          title: 'Archived',
+          url: '/app/company/applications/archived', // Optionally view archived applications
         },
       ],
     },
-    {
-      title: 'Settings',
-      url: '#',
-      icon: Settings2,
-      items: [
-        {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
-          url: '#',
-        },
-      ],
-    },
+    // {
+    //   title: 'Reports',
+    //   url: '#',
+    //   icon: BarChart,
+    //   items: [
+    //     {
+    //       title: 'Job Performance',
+    //       url: '/app/company/reports/job-performance', // Route to view job performance reports
+    //     },
+    //     {
+    //       title: 'Candidate Insights',
+    //       url: '/app/company/reports/candidate-insights', // Route to view candidate insights
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: 'Support',
+    //   url: '#',
+    //   icon: HelpCircle,
+    //   items: [
+    //     {
+    //       title: 'FAQ',
+    //       url: '/app/company/support/faq', // Route to FAQs
+    //     },
+    //     {
+    //       title: 'Contact Support',
+    //       url: '/app/company/support/contact', // Route to contact support
+    //     },
+    //   ],
+    // },
   ],
+  createNew: {
+    title: 'Create new',
+    url: '#',
+    icon: Plus,
+    isActive: true,
+    items: [
+      {
+        title: 'Job',
+        url: '#',
+      },
+      {
+        title: 'User',
+        url: '#',
+        disabled: true,
+      },
+    ],
+  },
   navSecondary: [
     {
       title: 'Support',
@@ -147,70 +170,139 @@ const data = {
       icon: Send,
     },
   ],
-  projects: [
+  company: [
     {
-      name: 'Design Engineering',
-      url: '#',
-      icon: Frame,
+      name: 'Company Profile',
+      icon: UserCircle,
+      url: '/app/company/profile', // Route to view company profile
     },
     {
-      name: 'Sales & Marketing',
-      url: '#',
-      icon: PieChart,
-    },
-    {
-      name: 'Travel',
-      url: '#',
-      icon: Map,
+      name: 'Company Settings',
+      icon: Settings2,
+      url: '/app/company/settings', // Route to manage company settings
     },
   ],
 };
-const teams = [
-  {
-    name: 'Acme Inc',
-    logo: GalleryVerticalEnd,
-    plan: 'Enterprise',
-  },
-  {
-    name: 'Acme Corp.',
-    logo: AudioWaveform,
-    plan: 'Startup',
-  },
-  {
-    name: 'Evil Corp.',
-    logo: Command,
-    plan: 'Free',
-  },
-];
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const dispatch = useAppDispatch();
-  const { selectedCompany } = useAppSelector(({ company }) => company);
-  const {
-    data: { companies, activeCompany },
-  } = useGetMyCompanyQuery(undefined, {
-    selectFromResult: ({ data, ...others }) => {
-      const activeCompany = data
-        ? (data?.find((company) => company._id === selectedCompany) ?? data[0])
-        : undefined;
-      return {
-        ...others,
-        data: {
-          companies: data ?? [],
-          activeCompany,
-        },
-      };
-    },
-  });
 
+export const AppSidebar = memo<React.ComponentProps<typeof Sidebar>>(
+  ({ ...props }) => {
+    const dispatch = useAppDispatch();
+    const { selectedCompany } = useAppSelector(({ company }) => company);
+    const {
+      data: { companies, activeCompany },
+    } = useGetMyCompanyQuery(undefined, {
+      selectFromResult: ({ data, ...others }) => {
+        const activeCompany = data
+          ? (data?.find((company) => company._id === selectedCompany) ??
+            data[0])
+          : undefined;
+        return {
+          ...others,
+          data: {
+            companies: data ?? [],
+            activeCompany,
+          },
+        };
+      },
+    });
+
+    return (
+      <Sidebar
+        variant='inset'
+        {...props}
+      >
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarHeader>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      size='lg'
+                      asChild
+                    >
+                      <Link to='#'>
+                        <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
+                          <Command className='size-4' />
+                        </div>
+                        <div className='grid flex-1 text-left text-sm leading-tight'>
+                          <span className='truncate font-semibold'>
+                            {activeCompany?.name}
+                          </span>
+                          <span className='truncate text-xs'>Company</span>
+                        </div>
+                      </Link>
+                    </SidebarMenuButton>
+                    {/* <SidebarMenuButton size='lg'> */}
+                    <CreateDropDown />
+                    {/* </SidebarMenuButton> */}
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarHeader>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={data.navMain} />
+          <NavCompany company={data.company} />
+          <NavSecondary
+            items={data.navSecondary}
+            className='mt-auto'
+          />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser />
+        </SidebarFooter>
+      </Sidebar>
+    );
+  }
+);
+AppSidebar.displayName = 'AppSidebar';
+export const CreateDropDown = memo(() => {
+  const { isMobile } = useSidebar();
   return (
-    <Sidebar
-      variant='inset'
-      {...props}
-    >
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <SidebarMenuButton
+          size='lg'
+          className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+        >
+          <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
+            <Plus className='size-4' />
+          </div>
+          <div className='grid flex-1 text-left text-sm leading-tight'>
+            <span className='truncate font-semibold'>Create new</span>
+          </div>
+          <ChevronsUpDown className='ml-auto' />
+        </SidebarMenuButton>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
+        side={isMobile ? 'bottom' : 'right'}
+        align='start'
+        sideOffset={4}
+      >
+        {data.createNew.items?.map((item, index) => (
+          <DropdownMenuItem
+            key={item.title}
+            className='gap-2 p-2'
+            disabled={item.disabled}
+          >
+            <div className='flex size-6 items-center justify-center rounded-sm border'>
+              <Command className='size-4 shrink-0' />
+            </div>
+            {item.title}
+            <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+});
+CreateDropDown.displayName = 'CreateDropDown';
+export const CompaniesDropDown = () => {
+  return;
+  /* (<DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   size='lg'
@@ -223,9 +315,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <span className='truncate font-semibold'>
                       {activeCompany?.name}
                     </span>
-                    {/* <span className='truncate text-xs'>
+                    <span className='truncate text-xs'>
                       {activeCompany.plan}
-                    </span> */}
+                    </span>
                   </div>
                   <ChevronsUpDown className='ml-auto' />
                 </SidebarMenuButton>
@@ -237,7 +329,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 sideOffset={4}
               >
                 <DropdownMenuLabel className='text-xs text-muted-foreground'>
-                  Teams
+                  {companies?.length > 0 ? 'Companies' : 'Company'}
                 </DropdownMenuLabel>
                 {companies?.map((company, index) => (
                   <DropdownMenuItem
@@ -264,21 +356,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   </div>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary
-          items={data.navSecondary}
-          className='mt-auto'
-        />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
-    </Sidebar>
-  );
-}
+            </DropdownMenu>) */
+};

@@ -2,6 +2,7 @@ export type Role = 'admin' | 'employer' | 'applicant';
 
 export interface User {
   name: string;
+  avatar?: string;
   email: string;
   password: string;
   role: Role;

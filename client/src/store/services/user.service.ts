@@ -11,6 +11,7 @@ export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: baseQuery(undefined),
   tagTypes: ['User'],
+  refetchOnMountOrArgChange: true,
   endpoints: (builder) => ({
     login: builder.mutation<
       {
