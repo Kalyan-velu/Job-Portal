@@ -1,9 +1,11 @@
+import { User as UserModel } from '@/models/user.model';
+import 'dotenv/config';
 import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { sendErrorResponse } from '../common/response';
 import type { User } from '../types';
-
 const jwtSecret = process.env.JWT_SECRET; // Store this securely
+console.debug('ℹ️ ~ file: auth.middleware.ts:7 ~ jwtSecret:', jwtSecret);
 
 export const createSession = (req: Request, res: Response): string => {
   // Define the payload for the token
@@ -11,10 +13,14 @@ export const createSession = (req: Request, res: Response): string => {
 
   // Define your JWT secret and options
   const secret = process.env.JWT_SECRET; // Use environment variables for security
-  const options = { expiresIn: '1h' }; // Token expiration time
+  const options = { expiresIn: '24h' }; // Token expiration time
 
   // Generate the token
-  const token = jwt.sign(payload, secret, options);
+  const token = jwt.sign(
+    { id: req.user._id, role: req.user?.role },
+    secret,
+    options,
+  );
   res.cookie('auth_token', token, {
     httpOnly: true, // Helps mitigate XSS attacks
     secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
@@ -30,20 +36,41 @@ export const createSession = (req: Request, res: Response): string => {
   return token; // Return the token for further use if needed
 };
 
-export const jwtAuth = (req: Request, res: Response, next: NextFunction) => {
+export const jwtAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const token = req.headers['authorization']?.split(' ')[1];
 
   if (!token) {
-    sendErrorResponse(res, 'Access denied. No token provided.', 401);
+    return sendErrorResponse(res, 'Access denied. No token provided.', 401);
   }
 
-  jwt.verify(token, jwtSecret, (err, decoded) => {
-    if (err) {
-      return res.status(401).send('Invalid token.');
+  try {
+    const decoded = jwt.verify(token, jwtSecret) as { id: string }; // Ensure decoded has the `_id` field
+
+    console.debug('ℹ️ ~ file: auth.middleware.ts:53 ~ decoded:', decoded);
+    // Fetch the user using lean() to improve performance
+    const user = await UserModel.findById(decoded.id, '-password').lean();
+    console.debug('ℹ️ ~ file: auth.middleware.ts:51 ~ user:', user);
+
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
     }
-    req.user = decoded; // Attach user information to the request
+    if (user) {
+      user.id = user._id.toString(); // Manually add id if it's not working
+      delete user._id; // Optionally remove _id
+      req.user = user;
+    }
+    // Attach user information to the request
+
+    // Proceed to the next middleware
     next();
-  });
+  } catch (err) {
+    console.debug('ℹ️ ~ jwtAuth Middleware Error:', err);
+    return res.status(401).send('Invalid token.');
+  }
 };
 
 export const sessionAuth = (

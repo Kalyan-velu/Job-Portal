@@ -55,11 +55,14 @@ class MiddlewareConfig {
     return (req: Request, res: Response, next: NextFunction) => {
       switch (config.method) {
         case 'jwt':
-          return jwtAuth(req, res, next);
+          jwtAuth(req, res, next);
+          break;
         case 'session':
-          return sessionAuth(req, res, next);
+          sessionAuth(req, res, next);
+          break;
         case 'oauth':
-          return oauthAuth(req, res, next);
+          oauthAuth(req, res, next);
+          break;
         default:
           sendErrorResponse(res, 'Invalid authentication method', 400);
       }
