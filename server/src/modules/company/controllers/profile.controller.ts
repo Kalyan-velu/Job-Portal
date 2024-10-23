@@ -13,17 +13,31 @@ export const Create = async (req: CompanyCreateRequest, res: Response) => {
   try {
     console.log(req.user.id);
     const details = req.body;
+    // Check if a company with the same name, site URL, or created by the user already exists
     const existingCompany = await Company.findOne({
-      $or: [{ name: details.name }, { siteUrl: details.siteUrl }],
+      $or: [
+        { name: details.name },
+        { siteUrl: details.siteUrl },
+        { createdBy: req.user.id },
+      ],
     });
 
     if (existingCompany) {
-      return sendErrorResponse(
-        res,
-        'Company with this name or site already exists',
-        409,
-      );
+      if (existingCompany.createdBy.toString() === req.user.id) {
+        return sendErrorResponse(
+          res,
+          'You have already created a company. Please update your existing company details if needed.',
+          409,
+        );
+      } else {
+        return sendErrorResponse(
+          res,
+          'A company with this name or site URL already exists.',
+          409,
+        );
+      }
     }
+
     const company = new Company({
       ...details,
       createdBy: req.user?.id,
