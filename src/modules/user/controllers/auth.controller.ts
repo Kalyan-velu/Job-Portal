@@ -40,14 +40,14 @@ export const Login = async (req: LoginRequest, res: Response) => {
       sendSuccessResponse(res, {
         token,
         message: 'Please complete your company profile',
-        redirectTo: '/update-company',
+        redirectTo: '/app/company/create',
       });
       return;
     } else if (user.role === 'applicant' && !user.applicantId) {
       sendSuccessResponse(res, {
         token,
         message: 'Please complete your profile',
-        redirectTo: '/update-applicant',
+        redirectTo: '/app/applicant/update',
       });
       return;
     }
@@ -61,7 +61,7 @@ export const Login = async (req: LoginRequest, res: Response) => {
 };
 export const Register = async (req: RegisterRequest, res: Response) => {
   try {
-    const { role, email, password } = req.body;
+    const { role, email, password, name, phoneNumber } = req.body;
 
     const userExist = await User.findOne({ email });
     if (userExist) {
@@ -69,12 +69,12 @@ export const Register = async (req: RegisterRequest, res: Response) => {
     }
 
     const newUser = new User({
+      name,
+      phoneNumber,
       email,
       password, // Remember to hash the password
       role,
     });
-
-    await newUser.save();
 
     await newUser.save();
 

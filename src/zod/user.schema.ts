@@ -30,6 +30,8 @@ export const roleSchema = z.enum(['company', 'employer', 'applicant'], {
 
 export const baseUserSchema = z
   .object({
+    phoneNumber: z.string().optional(),
+    name: z.string({ message: 'Username is required' }),
     email: z.string().email({ message: 'Invalid email address' }),
     password: z
       .string()
@@ -43,46 +45,3 @@ export const baseUserSchema = z
   });
 
 export type BaseUserRegisterSchemaType = z.infer<typeof baseUserSchema>;
-
-export const companySchema = baseUserSchema.and(
-  z.object({
-    role: z.enum(['company']),
-    companyName: z.string().min(2, { message: 'Company name is too short' }),
-    companyAddress: z.string().optional(),
-    companyWebsite: z
-      .string()
-      .url({ message: 'Invalid website URL' })
-      .optional(),
-  }),
-);
-
-export const employerSchema = baseUserSchema.and(
-  z.object({
-    role: z.enum(['employer']),
-    firstName: z.string().min(1, { message: 'First name is required' }),
-    lastName: z.string().min(1, { message: 'Last name is required' }),
-    jobTitle: z.string().min(1, { message: 'Job title is required' }),
-    companyID: z.string(),
-  }),
-);
-export type EmployerSchema = z.infer<typeof employerSchema>;
-
-export const applicantSchema = baseUserSchema.and(
-  z.object({
-    role: z.enum(['applicant']),
-    firstName: z.string().min(1, { message: 'First name is required' }),
-    lastName: z.string().min(1, { message: 'Last name is required' }),
-    resumeLink: z.string().url({ message: 'Invalid resume URL' }).optional(),
-  }),
-);
-export type ApplicantSchemaType = z.infer<typeof applicantSchema>;
-
-export const registerSchema = baseUserSchema.and(
-  z.union([
-    z.object({ role: z.literal('company') }).and(companySchema),
-    z.object({ role: z.literal('employer') }).and(employerSchema),
-    z.object({ role: z.literal('applicant') }).and(applicantSchema),
-  ]),
-);
-
-export type RegisterSchemaType = z.infer<typeof registerSchema>;

@@ -47,18 +47,20 @@ class RouterConfigure {
    */
   configureRoute(config: RouteConfig) {
     let { prefix, routes, middleware = [], isPublic } = config;
+
     if (!isPublic) {
       console.info('\nApplying authentication middleware to :', prefix);
-      this.app.use(`/${prefix}`, [
-        ...(middleware ?? []),
+      this.app.use(
+        `/api/${prefix}`,
         middlewareConfig.authMiddleware({ method: 'jwt' }),
-      ]);
+        ...(middleware ?? []),
+      );
     } else if (isPublic && middleware.length > 0) {
       console.info('Public :', prefix);
-      this.app.use(`/${prefix}`, middleware);
+      this.app.use(`/api/${prefix}`, middleware);
     }
     routes.forEach((route, index) => {
-      this.app.use(`/${prefix}`, route);
+      this.app.use(`/api/${prefix}`, route);
       console.log(
         `\n${this.totalRoutes + 1}. ${config.prefix?.toUpperCase()} routes :\n`,
       );
@@ -87,7 +89,7 @@ class RouterConfigure {
       console.log(
         `${Object.keys(route.methods)
           .map((method) => method.toUpperCase())
-          .join(', ')}  /${config.prefix}${route.path}`,
+          .join(', ')}  /api/${config.prefix}${route.path}`,
       );
     });
   }

@@ -1,11 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError, ZodSchema } from 'zod';
-import {
-  applicantSchema,
-  companySchema,
-  employerSchema,
-  roleSchema,
-} from '../zod/user.schema';
 
 // Middleware function to validate and update request body using Zod
 export const validateRequestBody = (schema: ZodSchema) => {
@@ -34,45 +28,45 @@ export const validateRequestBody = (schema: ZodSchema) => {
   };
 };
 
-export const validateRegistration = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
-  try {
-    const body = req.body;
-    const role = roleSchema.parse(body.role);
+// export const validateRegistration = (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ): void => {
+//   try {
+//     const body = req.body;
+//     const role = roleSchema.parse(body.role);
 
-    switch (role) {
-      case 'company':
-        req.body = companySchema.parse(body);
-        break;
-      case 'employer':
-        req.body = employerSchema.parse(body);
-        break;
-      case 'applicant':
-        req.body = applicantSchema.parse(body);
-        break;
-      default:
-        break;
-    }
-    if (role === 'company') {
-      req.body = companySchema.parse(req.body);
-    }
-    next(); // If validation passes, proceed to the next middleware or route handler
-  } catch (error) {
-    if (error instanceof ZodError) {
-      res.status(400).json({
-        success: false,
-        message: 'Validation error',
-        errors: error.errors, // Return detailed validation errors from Zod
-      });
-      return;
-    }
-    // Handle other potential errors
-    res.status(500).json({
-      success: false,
-      message: 'An unexpected error occurred',
-    });
-  }
-};
+//     switch (role) {
+//       case 'company':
+//         req.body = companySchema.parse(body);
+//         break;
+//       case 'employer':
+//         req.body = employerSchema.parse(body);
+//         break;
+//       case 'applicant':
+//         req.body = applicantSchema.parse(body);
+//         break;
+//       default:
+//         break;
+//     }
+//     if (role === 'company') {
+//       req.body = companySchema.parse(req.body);
+//     }
+//     next(); // If validation passes, proceed to the next middleware or route handler
+//   } catch (error) {
+//     if (error instanceof ZodError) {
+//       res.status(400).json({
+//         success: false,
+//         message: 'Validation error',
+//         errors: error.errors, // Return detailed validation errors from Zod
+//       });
+//       return;
+//     }
+//     // Handle other potential errors
+//     res.status(500).json({
+//       success: false,
+//       message: 'An unexpected error occurred',
+//     });
+//   }
+// };
