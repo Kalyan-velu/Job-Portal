@@ -14,10 +14,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   } = useGetUserQuery(); // Fetch user data
   const navigate = useNavigate(); // Get the navigate function
 
-  const isAuthenticated = isSuccess && !user; // Check if user is logged in
+  const isAuthenticated = !!user; // Check if user is logged in
 
-  // Optional: Handle loading and error states
-  if (isLoading) return <div>Loading...</div>; // Show loading state
+  // // Optional: Handle loading and error states
+  // if (isLoading) return <div>Loading...</div>; // Show loading state
 
   return (
     <AuthContext.Provider value={{ user, isAuthenticated }}>
