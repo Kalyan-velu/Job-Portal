@@ -100,6 +100,7 @@ export function NavUser() {
             <DropdownMenuItem
               onSelect={() => {
                 localStorage.removeItem('token');
+                localStorage.removeItem('role');
                 dispatch(logout());
                 return navigate('/login');
               }}

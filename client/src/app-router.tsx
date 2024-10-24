@@ -46,48 +46,55 @@ const handleRedirect = async ({
 const fetchUserAndRedirect = async (args: LoaderFunctionArgs<any>) => {
   const { token, role } = getTokenAndRole();
   const url = args.request.url;
-  if (url.endsWith('app')) {
-    return redirect(role === 'employer' ? '/app/company' : '/app/jobs');
-  }
-  const { data, isError } = await store.dispatch(
-    userApi.endpoints.getUser.initiate(undefined)
-  );
 
   if (!token) {
     return redirect('/');
   }
 
-  if (
-    url.includes('/app/company/create') &&
-    role === 'employer' &&
-    data?.companyId
-  ) {
-    return redirect('/app/company');
-  } else if (
-    url.includes('/app/applicant/create-profile') &&
-    role === 'applicant' &&
-    data?.applicantId
-  ) {
-    return redirect('/app/jobs');
-  } else if (
-    url.includes('/app/jobs') &&
-    role === 'employer' &&
-    data?.companyId
-  ) {
-    return redirect('/app/company');
-  } else if (
-    url.includes('/app/company') &&
-    role === 'applicant' &&
-    data?.applicantId
-  ) {
-    return redirect('/app/jobs');
-  } else if (
-    url.endsWith('/app/company') &&
-    role === 'employer' &&
-    !data?.applicantId
-  ) {
-    return redirect('/app/company/create');
+  const { data } = await store.dispatch(
+    userApi.endpoints.getUser.initiate(undefined)
+  );
+
+  const redirectTo = (() => {
+    if (
+      role === 'employer' &&
+      data?.companyId &&
+      url.endsWith('/app/company/create')
+    ) {
+      return '/app/company';
+    }
+    // if (
+    //   role === 'applicant' &&
+    //   data?.applicantId &&
+    //   url.endsWith('/app/applicant/create-profile')
+    // ) {
+    //   return '/app/jobs';
+    // }
+    //   if (role === 'employer' && data?.companyId && url.endsWith('/app/jobs')) {
+    //     return '/app/company';
+    //   }
+    if (
+      role === 'applicant' &&
+      data?.applicantId &&
+      url.includes('/app/company')
+    ) {
+      return '/app/jobs';
+    }
+    if (
+      role === 'employer' &&
+      !data?.companyId &&
+      url.endsWith('/app/company')
+    ) {
+      return '/app/company/create';
+    }
+    return null;
+  })();
+
+  if (redirectTo) {
+    return redirect(redirectTo);
   }
+
+  // If no redirect logic applies, return null to proceed as usual
   return null;
 };
 
