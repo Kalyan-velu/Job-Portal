@@ -4,5 +4,5 @@
     "src/**/*.json"
   ],
   "ext": "ts,json",
-  "exec": "ts-node -P ./tsconfig.json ./src/bin/www.ts"
+  "exec": "ts-node -r tsconfig-paths/register ./src/bin/www.ts"
 }

@@ -1,5 +1,5 @@
-import type { Router } from 'express';
-import type mongoose from 'mongoose';
+import type { Router } from 'express'
+import type mongoose from 'mongoose'
 
 export interface ModuleRouteConfig {
   prefix: string;
@@ -54,3 +54,6 @@ export interface Education {
 }
 
 export type Mongoose = typeof mongoose;
+
+
+

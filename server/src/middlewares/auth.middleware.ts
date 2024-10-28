@@ -1,9 +1,9 @@
-import { User as UserModel } from '@/models/user.model';
-import 'dotenv/config';
-import type { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import { sendErrorResponse } from '../common/response';
-import type { User } from '../types';
+import { User as UserModel } from '@server/models/user.model'
+import 'dotenv/config'
+import type { NextFunction, Request, Response } from 'express'
+import jwt from 'jsonwebtoken'
+import { sendErrorResponse } from '../common/response'
+import type { Role, User } from '../types'
 const jwtSecret = process.env.JWT_SECRET; // Store this securely
 console.debug('ℹ️ ~ file: auth.middleware.ts:7 ~ jwtSecret:', jwtSecret);
 
@@ -107,4 +107,14 @@ const isValidOAuthToken = (token: string) => {
 const getUserFromToken = (token: string) => {
   // Mock user retrieval from token
   return { id: '123', name: 'John Doe' } as User & { id: string };
+};
+
+export const authorizeRole = (role: Role) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (req.user.role !== role) {
+       res.status(403).json({ message: 'Access denied' });
+       return
+    }
+    next();
+  };
 };

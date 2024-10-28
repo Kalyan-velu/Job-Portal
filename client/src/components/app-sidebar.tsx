@@ -9,20 +9,22 @@ import {
   Settings2,
   UserCircle,
   Users2,
-} from 'lucide-react';
-import * as React from 'react';
+} from 'lucide-react'
+import * as React from 'react'
 
-import { NavCompany } from '@/components/nav-company';
-import { NavMain } from '@/components/nav-main';
-import { NavSecondary } from '@/components/nav-secondary';
-import { NavUser } from '@/components/nav-user';
+import { CreateJob } from '@/components/job/create-job'
+import { NavCompany } from '@/components/nav-company'
+import { NavMain } from '@/components/nav-main'
+import { NavSecondary } from '@/components/nav-secondary'
+import { NavUser } from '@/components/nav-user'
+import { DialogTrigger } from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu'
 import {
   Sidebar,
   SidebarContent,
@@ -32,11 +34,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { useGetMyCompanyQuery } from '@/store/services/company.service';
-import { memo } from 'react';
-import { Link } from 'react-router-dom';
+} from '@/components/ui/sidebar'
+import { useAppSelector } from '@/store/hooks'
+import { useGetMyCompanyQuery } from '@/store/services/company.service'
+import { memo } from 'react'
+import { Link } from 'react-router-dom'
 
 const data = {
   navMain: [
@@ -55,13 +57,13 @@ const data = {
           url: '/app/company/jobs/posted', // Route to view posted jobs
         },
         {
-          title: 'Create Job',
-          url: '/app/company/jobs/create', // Route to create a new job
+          title: 'Archived Jobs',
+          url: '/app/company/jobs/archived', // Route to create a new job
         },
-        {
-          title: 'Starred Jobs',
-          url: '/app/company/jobs/starred', // Optionally view starred jobs
-        },
+        // {
+        //   title: 'Starred Jobs',
+        //   url: '/app/company/jobs/starred', // Optionally view starred jobs
+        // },
       ],
     },
     {
@@ -182,54 +184,47 @@ const data = {
       url: '/app/company/settings', // Route to manage company settings
     },
   ],
-};
+}
 
 export const AppSidebar = memo<React.ComponentProps<typeof Sidebar>>(
   ({ ...props }) => {
-    const dispatch = useAppDispatch();
-    const { selectedCompany } = useAppSelector(({ company }) => company);
+    const { selectedCompany } = useAppSelector(({ company }) => company)
     const {
-      data: { companies, activeCompany },
+      data: { activeCompany },
     } = useGetMyCompanyQuery(undefined, {
       selectFromResult: ({ data, ...others }) => {
         const activeCompany = data
           ? (data?.find((company) => company._id === selectedCompany) ??
             data[0])
-          : undefined;
+          : undefined
         return {
           ...others,
           data: {
             companies: data ?? [],
             activeCompany,
           },
-        };
+        }
       },
-    });
+    })
 
     return (
-      <Sidebar
-        variant='inset'
-        {...props}
-      >
+      <Sidebar variant="inset" {...props}>
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarHeader>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton
-                      size='lg'
-                      asChild
-                    >
-                      <Link to='#'>
-                        <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
-                          <Command className='size-4' />
+                    <SidebarMenuButton size="lg" asChild>
+                      <Link to="#">
+                        <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                          <Command className="size-4" />
                         </div>
-                        <div className='grid flex-1 text-left text-sm leading-tight'>
-                          <span className='truncate font-semibold'>
+                        <div className="grid flex-1 text-left text-sm leading-tight">
+                          <span className="truncate font-semibold">
                             {activeCompany?.name}
                           </span>
-                          <span className='truncate text-xs'>Company</span>
+                          <span className="truncate text-xs">Company</span>
                         </div>
                       </Link>
                     </SidebarMenuButton>
@@ -245,63 +240,63 @@ export const AppSidebar = memo<React.ComponentProps<typeof Sidebar>>(
         <SidebarContent>
           <NavMain items={data.navMain} />
           <NavCompany company={data.company} />
-          <NavSecondary
-            items={data.navSecondary}
-            className='mt-auto'
-          />
+          <NavSecondary items={data.navSecondary} className="mt-auto" />
         </SidebarContent>
         <SidebarFooter>
           <NavUser />
         </SidebarFooter>
       </Sidebar>
-    );
-  }
-);
-AppSidebar.displayName = 'AppSidebar';
+    )
+  },
+)
+AppSidebar.displayName = 'AppSidebar'
 export const CreateDropDown = memo(() => {
-  const { isMobile } = useSidebar();
+  const { isMobile } = useSidebar()
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <SidebarMenuButton
-          size='lg'
-          className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
-        >
-          <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
-            <Plus className='size-4' />
-          </div>
-          <div className='grid flex-1 text-left text-sm leading-tight'>
-            <span className='truncate font-semibold'>Create new</span>
-          </div>
-          <ChevronsUpDown className='ml-auto' />
-        </SidebarMenuButton>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
-        side={isMobile ? 'bottom' : 'right'}
-        align='start'
-        sideOffset={4}
-      >
-        {data.createNew.items?.map((item, index) => (
-          <DropdownMenuItem
-            key={item.title}
-            className='gap-2 p-2'
-            disabled={item.disabled}
-          >
-            <div className='flex size-6 items-center justify-center rounded-sm border'>
-              <Command className='size-4 shrink-0' />
+    <CreateJob>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuButton
+            size="lg"
+            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <Plus className="size-4" />
             </div>
-            {item.title}
-            <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-});
-CreateDropDown.displayName = 'CreateDropDown';
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">Create new</span>
+            </div>
+            <ChevronsUpDown className="ml-auto" />
+          </SidebarMenuButton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+          side={isMobile ? 'bottom' : 'right'}
+          align="start"
+          sideOffset={4}>
+          {data.createNew.items?.map((item, index) => (
+            <DialogTrigger asChild>
+              <DropdownMenuItem
+                key={item.title}
+                className="gap-2 p-2"
+                disabled={item.disabled}>
+                <>
+                  <div className="flex size-6 items-center justify-center rounded-sm border">
+                    <Command className="size-4 shrink-0" />
+                  </div>
+                  {item.title}
+                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                </>
+              </DropdownMenuItem>
+            </DialogTrigger>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </CreateJob>
+  )
+})
+CreateDropDown.displayName = 'CreateDropDown'
 export const CompaniesDropDown = () => {
-  return;
+  return
   /* (<DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
@@ -357,4 +352,4 @@ export const CompaniesDropDown = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>) */
-};
+}

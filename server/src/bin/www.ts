@@ -3,15 +3,20 @@
 /**
  * Module dependencies.
  */
+import "dotenv/config"
 
-import http from 'http';
+import http from 'http'
 import { AddressInfo } from 'net'; // For typing the server's address
 import app from '../app'; // Assuming your app is properly exported in TypeScript
+const portNumber=process.env.PORT
+if(!portNumber){
+  throw Error("PORT is missing from environment")
+}
 
 /**
  * Get port from environment and store in Express.
  */
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(portNumber);
 app.set('port', port);
 
 /**
