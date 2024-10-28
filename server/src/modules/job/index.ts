@@ -1,9 +1,14 @@
-import type { RouteConfig } from '../../common/routes.config';
+import { authorizeRole } from '@server/middlewares/auth.middleware'
+import { jobRouter } from '@server/modules/job/routes/job.route'
+import type { RouteConfig } from '../../common/routes.config'
 
-const JobModule: RouteConfig = {
-  prefix: 'job',
-  routes: [],
-  isPublic: true,
+export const PrivateJobModule: RouteConfig = {
+  prefix: 'job/private',
+  routes: [jobRouter],
+  middleware:[authorizeRole('employer')]
 };
-
-export default JobModule;
+export const PublicJobModule: RouteConfig = {
+  prefix: 'job/public',
+  routes: [],
+  isPublic:true
+};

@@ -1,19 +1,19 @@
-import { z } from "zod"
+import { z } from "zod";
 
-export const jobTypeEnum=z.enum(["full-time",
+export const jobTypeEnum = z.enum([
+  "full-time",
   "part-time",
   "contractual",
   "freelance",
   "temporary",
   "internship",
   "apprenticeship",
-  "volunteer"
-])
+  "volunteer",
+]);
 
-export const jobTypeList=jobTypeEnum.options
+export const jobTypeList = jobTypeEnum.options;
 
-export type JobType=typeof jobTypeList
-
+export type JobType = typeof jobTypeList;
 
 export const JobSchema = z.object({
   title: z
@@ -25,17 +25,15 @@ export const JobSchema = z.object({
     .string()
     .min(10, { message: "Description must be at least 10 characters long" })
     .max(1000, { message: "Description cannot exceed 1000 characters" }),
-  
-  type:jobTypeEnum,
+
+  type: jobTypeEnum,
 
   location: z
     .string()
     .min(3, { message: "Location must be at least 3 characters long" })
     .max(100, { message: "Location cannot exceed 100 characters" }),
 
-  salaryRange: z
-    .string()
-    .optional(),
+  salaryRange: z.string().optional(),
 
   requirements: z
     .array(
@@ -43,12 +41,13 @@ export const JobSchema = z.object({
         message: "Each requirement must be at least 2 characters long",
       }),
     )
-    .min(1, { message: "At least one requirement is required" }).optional(),
+    .min(1, { message: "At least one requirement is required" })
+    .optional(),
 
   responsibilites: z
     .array(
       z.string().min(2, {
-        message: "Each responsibility must be at least 2 characters long"
+        message: "Each responsibility must be at least 2 characters long",
       }),
     )
     .min(1, { message: "At least one responsibility is required" })

@@ -1,9 +1,12 @@
 import type { Request, Response } from 'express';
 
-import { sendErrorResponse, sendSuccessResponse } from '@/common/response';
-import { Company } from '@/models/company.model';
-import { User } from '@/models/user.model';
-import type { CompanyType } from '@/zod-schema/company.schema';
+import {
+  sendErrorResponse,
+  sendSuccessResponse,
+} from '@server/common/response';
+import { Company } from '@server/models/company.model';
+import { User } from '@server/models/user.model';
+import type { CompanyType } from '@server/zod-schema/company.schema';
 
 interface CompanyCreateRequest extends Request {
   body: Omit<CompanyType, 'createdBy'>;

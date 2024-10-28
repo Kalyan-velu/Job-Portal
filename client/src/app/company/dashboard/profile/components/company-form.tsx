@@ -1,14 +1,14 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useFieldArray, useForm, type FieldErrors } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useFieldArray, useForm, type FieldErrors } from 'react-hook-form'
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -17,29 +17,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
-import { Textarea } from '@/components/ui/textarea';
-import { CompanySchema, type CompanyType } from '@/zod-schema/company.schema';
-import { Plus, Trash2 } from 'lucide-react';
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { Textarea } from '@/components/ui/textarea'
+import { CompanySchema, type CompanyType } from '@/zod-schema/company.schema'
+import { Plus, Trash2 } from 'lucide-react'
 
-const editableFields: (keyof CompanyType)[] = [
-  'industry',
-  'siteUrl',
-  'companySize',
-  'based',
-  'description',
-  'socialMedia',
-  'phone',
-];
+// const editableFields: (keyof CompanyType)[] = [
+//   'industry',
+//   'siteUrl',
+//   'companySize',
+//   'based',
+//   'description',
+//   'socialMedia',
+//   'phone',
+// ];
 
 export const CompanyProfileForm = ({
   initialData,

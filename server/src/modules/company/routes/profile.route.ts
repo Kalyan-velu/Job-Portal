@@ -1,11 +1,11 @@
-import { validateRequestBody } from '@/common/request';
+import { validateRequestBody } from '@server/common/request';
 import {
   Create,
   GetMyCompanyById,
   GetMyCompanyProfiles,
   Update,
-} from '@/modules/company/controllers/profile.controller';
-import { CompanySchema } from '@/zod-schema/company.schema';
+} from '@server/modules/company/controllers/profile.controller';
+import { CompanySchema } from '@server/zod-schema/company.schema';
 import { Router } from 'express';
 
 const companyProfileRouter = Router();
