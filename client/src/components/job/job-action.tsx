@@ -12,18 +12,19 @@ import { toast } from 'sonner'
 interface JobActionsProps extends HTMLAttributes<HTMLDivElement> {
   id: string
   isArchived: boolean
+  context: 'all' | 'active' | 'archived'
 }
 
 const JobActions = memo(
   forwardRef<HTMLDivElement, JobActionsProps>(
-    ({ className, id, isArchived, ...props }, ref) => {
+    ({ className, id, context, isArchived, ...props }, ref) => {
       const [deleteJob, { isLoading }] = useDeleteJobMutation()
       const [archiveJob, { isLoading: isArchiving }] = useArchiveJobMutation()
       const [unarchiveJob, { isLoading: isUnarchiving }] =
         useUnarchiveJobMutation()
       const handleDelete = useCallback(async () => {
         if (isLoading || !id) return
-        await deleteJob(id)
+        await deleteJob({ id, context })
           .unwrap()
           .then(() => {
             toast.success('Job deleted successfully.')
@@ -31,10 +32,10 @@ const JobActions = memo(
           .catch((e) => {
             toast.error(e)
           })
-      }, [id])
+      }, [id, context])
       const handleArchive = useCallback(async () => {
         if (isArchiving || !id) return
-        await archiveJob(id)
+        await archiveJob({ id, context })
           .unwrap()
           .then(() => {
             toast.success('Job archived.')
@@ -42,10 +43,10 @@ const JobActions = memo(
           .catch((e) => {
             toast.error(e)
           })
-      }, [id])
+      }, [id, context])
       const handleUnArchive = useCallback(async () => {
         if (isUnarchiving || !id) return
-        await unarchiveJob(id)
+        await unarchiveJob({ id, context })
           .unwrap()
           .then(() => {
             toast.success('Job unarchived.')
@@ -53,7 +54,7 @@ const JobActions = memo(
           .catch((e) => {
             toast.error(e)
           })
-      }, [id])
+      }, [id, context])
 
       return (
         <div ref={ref} className={cn('flex gap-2', className)} {...props}>

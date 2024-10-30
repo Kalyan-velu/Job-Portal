@@ -1,0 +1,76 @@
+// Entities
+User {
+  label: "User"
+}
+
+Registration {
+  label: "Register"
+}
+
+Login {
+  label: "Login"
+}
+
+Applicant_Dashboard {
+  label: "Job Search Dashboard"
+}
+
+Job_Search_Features {
+  label: "Job Search Features"
+}
+
+Job_List {
+  label: "Job List"
+}
+
+Job_Details {
+  label: "Job Details"
+}
+
+Application_Process {
+  label: "Application Process"
+}
+
+Duplicate_Application_Check {
+  label: "Duplicate Application Check"
+}
+
+Application_Status {
+  label: "Application Status Tracking"
+}
+
+Previous_Applications {
+  label: "Previous Job Applications"
+}
+
+Applicant_Profile {
+  label: "Complete Applicant Profile"
+}
+
+Completion_Check {
+  label: "Check Profile Completion"
+}
+
+// Flow connections
+User -> Registration: "Fill required details (email, name, password, role)"
+Registration -> Login: "Successful Registration"
+Login -> Applicant_Dashboard: "If role is 'applicant'"
+Login -> Employer_Dashboard: "If role is 'employer'"
+
+Applicant_Dashboard -> Job_Search_Features: "Access features (by company, job title, salary)"
+Applicant_Dashboard -> Previous_Applications: "View Previous Applications and Statuses"
+
+Job_Search_Features -> Job_List: "Display relevant jobs or recent jobs"
+Job_List -> Job_Details: "Select a job"
+Job_Details -> Application_Process: "Click 'Apply'"
+
+Application_Process -> Completion_Check: "Check if applicant profile is complete"
+Completion_Check -> Applicant_Profile: "Redirect to fill profile if incomplete"
+Applicant_Profile -> Completion_Check: "Profile filled"
+Completion_Check -> Duplicate_Application_Check: "Continue with application if profile is complete"
+
+Duplicate_Application_Check -> Application_Process: "If not already applied, proceed with application"
+Duplicate_Application_Check -> Previous_Applications: "If already applied, show 'Update Application' option"
+
+Application_Process -> Application_Status: "Track application status"
+Application_Status -> Previous_Applications: "Statuses like 'In Review', 'Interview Scheduled', 'Offer Extended', 'Rejected'"

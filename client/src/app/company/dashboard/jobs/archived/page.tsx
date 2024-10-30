@@ -4,12 +4,12 @@ import { Badge } from '@/components/ui/badge'
 import { DialogTrigger } from '@/components/ui/dialog'
 import Empty from '@/components/ui/empty'
 import Spinner from '@/components/ui/spinner'
-import { useGetAllArchivedJobQuery } from '@/store/services/company.service'
+import { useGetCompanyJobsQuery } from '@/store/services/company.service'
 import { formatDistanceToNow } from 'date-fns'
 import { MapIcon } from 'lucide-react'
 import { memo } from 'react'
 const ArchivedCompanyJobs = memo(() => {
-  const { data, isFetching, isLoading } = useGetAllArchivedJobQuery(undefined, {
+  const { data, isFetching, isLoading } = useGetCompanyJobsQuery('archived', {
     refetchOnMountOrArgChange: true,
   })
   console.debug('ℹ️ ~ file: page.tsx:6 ~ AllCompanyJobs ~ data:', data)
@@ -99,6 +99,7 @@ const ArchivedCompanyJobs = memo(() => {
                     ))}
                   </div>
                   <JobActions
+                    context="archived"
                     id={job?._id}
                     isArchived={job.isArchived}
                     className={'absolute bottom-2 right-2'}
