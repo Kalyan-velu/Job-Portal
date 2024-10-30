@@ -11,7 +11,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 export const companyApi = createApi({
   reducerPath: 'companyApi',
   baseQuery: baseQuery(undefined),
-  tagTypes: ['Company', 'Job'],
+  tagTypes: ['Company', 'Job', 'Archived-Job'],
   endpoints: (builder) => ({
     createCompanyy: builder.mutation<string, CompanyType>({
       query: (body: CompanyType) => ({
@@ -109,14 +109,77 @@ export const companyApi = createApi({
       transformErrorResponse,
       invalidatesTags: ['Job'],
     }),
+    archiveJob: builder.mutation<void, string>({
+      query: (id) => ({ url: `/job/private/archive/${id}`, method: 'PUT' }),
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          companyApi.util.updateQueryData(
+            'getCompanyJobs',
+            undefined,
+            (draft) => {
+              // Mutate the draft directly to remove the job with the specified id
+              return draft.filter((job) => job._id !== id)
+            },
+          ),
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patch.undo()
+        }
+      },
+    }),
+    unarchiveJob: builder.mutation<void, string>({
+      query: (id) => ({ url: `/job/private/unarchive/${id}`, method: 'PUT' }),
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          companyApi.util.updateQueryData(
+            'getAllArchivedJob',
+            undefined,
+            (draft) => {
+              // Mutate the draft directly to remove the job with the specified id
+              return draft.filter((job) => job._id !== id)
+            },
+          ),
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patch.undo()
+        }
+      },
+    }),
+    getAllArchivedJob: builder.query<JobResponseType[], void>({
+      query: () => ({
+        url: '/job/private/status/archived',
+      }),
+      transformResponse: (res: QueryResponse<JobResponseType[]>) => {
+        return res.data
+      },
+      transformErrorResponse,
+      providesTags: (res, error) =>
+        res
+          ? [
+              { type: 'Archived-Job' as const, id: 'LIST' },
+              ...res.map((j) => ({ type: 'Archived-Job' as const, id: j._id })),
+            ]
+          : [{ type: 'Archived-Job' as const, id: 'LIST' }],
+    }),
   }),
 })
 
 export const {
   useCreateCompanyyMutation,
   useGetMyCompanyQuery,
+
   useGetCompanyByIdQuery,
   useGetCompanyJobsQuery,
+
+  useGetAllArchivedJobQuery,
   useDeleteJobMutation,
   useCreateJobMutation,
+  useArchiveJobMutation,
+  useUnarchiveJobMutation,
 } = companyApi

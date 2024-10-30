@@ -1,36 +1,41 @@
-import { companySlice } from '@/store/features/company.slice';
-import { userSlice } from '@/store/features/user.slice';
-import { companyApi } from '@/store/services/company.service';
-import { userApi } from '@/store/services/user.service';
+import { companySlice } from '@/store/features/company.slice'
+import { userSlice } from '@/store/features/user.slice'
+import { rtkQueryErrorLogger } from '@/store/middleware/rtk.middleware'
+import { companyApi } from '@/store/services/company.service'
+import { userApi } from '@/store/services/user.service'
 import {
   combineReducers,
   configureStore,
   type UnknownAction,
-} from '@reduxjs/toolkit';
-import { setupListeners } from '@reduxjs/toolkit/query';
+} from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/query'
 const rootReducer = combineReducers({
   user: userSlice.reducer,
   company: companySlice.reducer,
   [userApi.reducerPath]: userApi.reducer,
   [companyApi.reducerPath]: companyApi.reducer,
-});
+})
 
 const appReducer = (state: any, action: UnknownAction) => {
   if (action.type === 'auth/logout') {
-    state = undefined;
+    state = undefined
   }
-  return rootReducer(state, action);
-};
+  return rootReducer(state, action)
+}
 
 export const store = configureStore({
   reducer: appReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(userApi.middleware, companyApi.middleware),
-});
+    getDefaultMiddleware().concat(
+      userApi.middleware,
+      companyApi.middleware,
+      rtkQueryErrorLogger,
+    ),
+})
 
-setupListeners(store.dispatch);
+setupListeners(store.dispatch)
 // Infer the type of store
-export type AppStore = typeof store;
+export type AppStore = typeof store
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<AppStore['getState']>;
-export type AppDispatch = AppStore['dispatch'];
+export type RootState = ReturnType<AppStore['getState']>
+export type AppDispatch = AppStore['dispatch']

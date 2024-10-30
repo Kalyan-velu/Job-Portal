@@ -52,10 +52,10 @@ const data = {
           title: 'All Jobs',
           url: '/app/company/jobs', // Replace with actual route
         },
-        {
-          title: 'Posted Jobs',
-          url: '/app/company/jobs/posted', // Route to view posted jobs
-        },
+        // {
+        //   title: 'Posted Jobs',
+        //   url: '/app/company/jobs/posted', // Route to view posted jobs
+        // },
         {
           title: 'Archived Jobs',
           url: '/app/company/jobs/archived', // Route to create a new job

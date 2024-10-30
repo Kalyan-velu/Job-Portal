@@ -4,24 +4,19 @@ import { Badge } from '@/components/ui/badge'
 import { DialogTrigger } from '@/components/ui/dialog'
 import Empty from '@/components/ui/empty'
 import Spinner from '@/components/ui/spinner'
-import { useGetCompanyJobsQuery } from '@/store/services/company.service'
+import { useGetAllArchivedJobQuery } from '@/store/services/company.service'
 import { formatDistanceToNow } from 'date-fns'
-import { tailspin } from 'ldrs'
 import { MapIcon } from 'lucide-react'
 import { memo } from 'react'
-
-tailspin.register()
-
-// Default values shown
-
-const AllCompanyJobs = memo(() => {
-  const { data, isFetching, isLoading } = useGetCompanyJobsQuery(undefined, {
+const ArchivedCompanyJobs = memo(() => {
+  const { data, isFetching, isLoading } = useGetAllArchivedJobQuery(undefined, {
     refetchOnMountOrArgChange: true,
   })
+  console.debug('ℹ️ ~ file: page.tsx:6 ~ AllCompanyJobs ~ data:', data)
   return (
     <div className="flex max-h-full flex-col gap-2 overflow-auto px-4">
       <h1 className={'flex items-center gap-x-2 text-xl font-semibold'}>
-        <span>All Jobs </span>
+        <span>Archived Jobs </span>
         {(isFetching || isLoading) && (
           <Spinner className="mr-2 size-3.5 animate-spin fill-primary text-white" />
         )}
@@ -120,5 +115,5 @@ const AllCompanyJobs = memo(() => {
   )
 })
 
-AllCompanyJobs.displayName = 'AllCompanyJobs'
-export { AllCompanyJobs }
+ArchivedCompanyJobs.displayName = 'ArchivedCompanyJobs'
+export { ArchivedCompanyJobs }
