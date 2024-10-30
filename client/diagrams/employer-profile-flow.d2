@@ -1,0 +1,17 @@
+// Employer Profile Flow
+diagram employerProfileFlow {
+  start -> registerEmployer -> checkCompanyId
+  checkCompanyId: No -> redirectToCreateCompany
+  redirectToCreateCompany -> createCompanyProfile
+  createCompanyProfile -> redirectToDashboard
+
+  redirectToDashboard -> accessDashboard
+  accessDashboard -> jobs
+  accessDashboard -> candidates
+  accessDashboard -> applications
+  accessDashboard -> companyProfile
+  accessDashboard -> companySettings
+
+  companyProfile -> updateProfile
+  updateProfile -> end
+}

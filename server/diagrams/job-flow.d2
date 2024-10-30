@@ -1,0 +1,48 @@
+// Job Management Backend Flow (Including Archived Jobs)
+diagram jobManagementBackendFlow {
+  start -> createJob
+  createJob -> validateJobData
+  validateJobData -> checkEmployerAuthentication
+  checkEmployerAuthentication -> createJobDocument
+  createJobDocument -> respondWithSuccess
+
+  start -> getAllJobs
+  getAllJobs -> retrieveAllJobs
+  retrieveAllJobs -> respondWithJobList
+
+  start -> getActiveJobs
+  getActiveJobs -> retrieveActiveJobs
+  retrieveActiveJobs -> respondWithActiveJobList
+
+  start -> getArchivedJobs
+  getArchivedJobs -> retrieveArchivedJobs
+  retrieveArchivedJobs -> respondWithArchivedJobList
+
+  start -> getJobById
+  getJobById -> findJobById
+  findJobById -> respondWithJobData
+
+  start -> updateJob
+  updateJob -> validateUpdateData
+  validateUpdateData -> checkJobExists
+  checkJobExists -> checkEmployerPermission
+  checkEmployerPermission -> updateJobDocument
+  updateJobDocument -> respondWithSuccess
+
+  start -> archiveJob
+  archiveJob -> checkJobExists
+  checkJobExists -> checkEmployerPermission
+  checkEmployerPermission -> archiveJobDocument
+  archiveJobDocument -> respondWithSuccess
+
+  start -> deleteJob
+  deleteJob -> checkJobExists
+  checkJobExists -> checkEmployerPermission
+  checkEmployerPermission -> deleteJobDocument
+  deleteJobDocument -> respondWithSuccess
+
+  start -> searchJobs
+  searchJobs -> validateSearchParameters
+  validateSearchParameters -> retrieveSearchResults
+  retrieveSearchResults -> respondWithSearchResults
+}

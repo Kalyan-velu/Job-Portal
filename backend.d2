@@ -1,0 +1,60 @@
+// Backend DFD for Job Application System
+
+User_Service {
+  label: "User Service"
+}
+
+Authentication_Service {
+  label: "Authentication & Authorization"
+}
+
+Validation_Service {
+  label: "Data Validation Service"
+}
+
+Application_Service {
+  label: "Job Application Service"
+}
+
+Duplicate_Check {
+  label: "Duplicate Application Check"
+}
+
+Database {
+  label: "Database"
+}
+
+Notification_Service {
+  label: "Notification Service"
+}
+
+Search_Service {
+  label: "Job Search & Filter Service"
+}
+
+Profile_Management {
+  label: "Profile Management"
+}
+
+Status_Update_Service {
+  label: "Application Status Update"
+}
+
+// Flow connections
+User_Service -> Authentication_Service: "User login & token generation"
+Authentication_Service -> Validation_Service: "Validate user session/token"
+Validation_Service -> Profile_Management: "Verify profile completeness"
+Profile_Management -> Application_Service: "Proceed with application"
+
+Application_Service -> Duplicate_Check: "Check if already applied"
+Duplicate_Check -> Application_Service: "If not duplicate, save application"
+Duplicate_Check -> Notification_Service: "If duplicate, send notification"
+
+Application_Service -> Database: "Store job application"
+Application_Service -> Status_Update_Service: "Track application status"
+Status_Update_Service -> Notification_Service: "Send status change notifications"
+
+Search_Service -> Database: "Fetch jobs by search/filter criteria"
+Database -> Search_Service: "Return matching job results"
+
+Notification_Service -> User_Service: "Send notifications (status changes, new jobs)"

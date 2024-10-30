@@ -5,7 +5,7 @@ import type {
   QueryResponse,
 } from '@/types/redux'
 import type { CompanyType } from '@/zod-schema/company.schema'
-import type { JobInterface } from '@/zod-schema/job.schema'
+import type { JobInterface, UpdateJobInterface } from '@/zod-schema/job.schema'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
 export const companyApi = createApi({
@@ -35,7 +35,7 @@ export const companyApi = createApi({
       providesTags: (res, error, id) =>
         res
           ? [
-              { type: 'Company', id: 'LIST' },
+              { type: 'Company' as const, id: 'LIST' },
               ...res.map((c) => ({ type: 'Company' as const, id: c._id })),
             ]
           : [],
@@ -53,15 +53,18 @@ export const companyApi = createApi({
     updateMyCompany: builder.query<CompanyResponseType, CompanyResponseType>({
       query: (body) => ({ url: '/company/my', method: 'PUT', body }),
     }),
-    getCompanyJobs: builder.query<JobResponseType[], void>({
-      query: () => ({
-        url: '/job/private/',
+    getCompanyJobs: builder.query<
+      JobResponseType[],
+      'all' | 'archived' | 'active'
+    >({
+      query: (status) => ({
+        url: `/job/private/status/${status}`,
       }),
       transformResponse: (res: QueryResponse<JobResponseType[]>) => {
         return res.data
       },
       transformErrorResponse,
-      providesTags: (res, error) =>
+      providesTags: (res) =>
         res
           ? [
               { type: 'Job' as const, id: 'LIST' },
@@ -69,17 +72,21 @@ export const companyApi = createApi({
             ]
           : [{ type: 'Job' as const, id: 'LIST' }],
     }),
-    deleteJob: builder.mutation<void, string>({
+
+    deleteJob: builder.mutation<
+      void,
+      { id: string; context: 'all' | 'archived' | 'active' }
+    >({
       query: (id) => ({
         url: `/job/private/${id}`,
         method: 'DELETE',
       }),
       transformErrorResponse,
-      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+      async onQueryStarted({ id, context }, { dispatch, queryFulfilled }) {
         const patch = dispatch(
           companyApi.util.updateQueryData(
             'getCompanyJobs',
-            undefined,
+            context,
             (draft) => {
               // Update the draft directly without reassigning it
               const updated = draft.filter((job) => job._id !== id)
@@ -95,10 +102,19 @@ export const companyApi = createApi({
         }
       },
 
-      invalidatesTags: (_, _e, id) => [
+      invalidatesTags: (_, _e, { id }) => [
         { type: 'Job', id },
         { type: 'Job', id: 'LIST' },
       ],
+    }),
+    updateJob: builder.mutation<void, UpdateJobInterface & { id: string }>({
+      query: ({ id, ...data }) => ({
+        url: `/job/private/${id}`,
+        method: 'PUT',
+        body: data,
+      }),
+      transformErrorResponse,
+      invalidatesTags: ['Job'],
     }),
     createJob: builder.mutation<void, JobInterface>({
       query: (data) => ({
@@ -109,13 +125,16 @@ export const companyApi = createApi({
       transformErrorResponse,
       invalidatesTags: ['Job'],
     }),
-    archiveJob: builder.mutation<void, string>({
-      query: (id) => ({ url: `/job/private/archive/${id}`, method: 'PUT' }),
-      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+    archiveJob: builder.mutation<
+      void,
+      { id: string; context: 'all' | 'archived' | 'active' }
+    >({
+      query: ({ id }) => ({ url: `/job/private/archive/${id}`, method: 'PUT' }),
+      async onQueryStarted({ id, context }, { dispatch, queryFulfilled }) {
         const patch = dispatch(
           companyApi.util.updateQueryData(
             'getCompanyJobs',
-            undefined,
+            context,
             (draft) => {
               // Mutate the draft directly to remove the job with the specified id
               return draft.filter((job) => job._id !== id)
@@ -130,13 +149,19 @@ export const companyApi = createApi({
         }
       },
     }),
-    unarchiveJob: builder.mutation<void, string>({
-      query: (id) => ({ url: `/job/private/unarchive/${id}`, method: 'PUT' }),
-      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+    unarchiveJob: builder.mutation<
+      void,
+      { id: string; context: 'all' | 'archived' | 'active' }
+    >({
+      query: ({ id }) => ({
+        url: `/job/private/unarchive/${id}`,
+        method: 'PUT',
+      }),
+      async onQueryStarted({ id, context }, { dispatch, queryFulfilled }) {
         const patch = dispatch(
           companyApi.util.updateQueryData(
-            'getAllArchivedJob',
-            undefined,
+            'getCompanyJobs',
+            context,
             (draft) => {
               // Mutate the draft directly to remove the job with the specified id
               return draft.filter((job) => job._id !== id)
@@ -150,22 +175,6 @@ export const companyApi = createApi({
           patch.undo()
         }
       },
-    }),
-    getAllArchivedJob: builder.query<JobResponseType[], void>({
-      query: () => ({
-        url: '/job/private/status/archived',
-      }),
-      transformResponse: (res: QueryResponse<JobResponseType[]>) => {
-        return res.data
-      },
-      transformErrorResponse,
-      providesTags: (res, error) =>
-        res
-          ? [
-              { type: 'Archived-Job' as const, id: 'LIST' },
-              ...res.map((j) => ({ type: 'Archived-Job' as const, id: j._id })),
-            ]
-          : [{ type: 'Archived-Job' as const, id: 'LIST' }],
     }),
   }),
 })
@@ -176,8 +185,7 @@ export const {
 
   useGetCompanyByIdQuery,
   useGetCompanyJobsQuery,
-
-  useGetAllArchivedJobQuery,
+  useUpdateJobMutation,
   useDeleteJobMutation,
   useCreateJobMutation,
   useArchiveJobMutation,

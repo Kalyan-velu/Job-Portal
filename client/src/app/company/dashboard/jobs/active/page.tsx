@@ -14,14 +14,14 @@ tailspin.register()
 
 // Default values shown
 
-const AllCompanyJobs = memo(() => {
-  const { data, isFetching, isLoading } = useGetCompanyJobsQuery('all', {
+const AllActiveCompanyJobs = memo(() => {
+  const { data, isFetching, isLoading } = useGetCompanyJobsQuery('active', {
     refetchOnMountOrArgChange: true,
   })
   return (
     <div className="flex max-h-full flex-col gap-2 overflow-auto px-4">
       <h1 className={'flex items-center gap-x-2 text-xl font-semibold'}>
-        <span>All Jobs </span>
+        <span>All Active Jobs </span>
         {(isFetching || isLoading) && (
           <Spinner className="mr-2 size-3.5 animate-spin fill-primary text-white" />
         )}
@@ -104,7 +104,7 @@ const AllCompanyJobs = memo(() => {
                     ))}
                   </div>
                   <JobActions
-                    context="all"
+                    context="active"
                     id={job?._id}
                     isArchived={job.isArchived}
                     className={'absolute bottom-2 right-2'}
@@ -121,5 +121,5 @@ const AllCompanyJobs = memo(() => {
   )
 })
 
-AllCompanyJobs.displayName = 'AllCompanyJobs'
-export { AllCompanyJobs }
+AllActiveCompanyJobs.displayName = 'AllActiveCompanyJobs'
+export { AllActiveCompanyJobs }

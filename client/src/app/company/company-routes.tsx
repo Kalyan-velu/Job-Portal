@@ -1,3 +1,4 @@
+import { AllActiveCompanyJobs } from '@/app/company/dashboard/jobs/active/page'
 import { AllCompanyJobs } from '@/app/company/dashboard/jobs/all/page'
 import { ArchivedCompanyJobs } from '@/app/company/dashboard/jobs/archived/page'
 import { CompanyProfilePage } from '@/app/company/dashboard/profile/page'
@@ -18,8 +19,8 @@ const CompanyRoutes: (IndexRouteObject | RouteObject)[] = [
         element: <AllCompanyJobs />,
       },
       {
-        path: 'posted',
-        element: <>Posted Jobs</>,
+        path: 'active',
+        element: <AllActiveCompanyJobs />,
       },
       {
         path: 'archived',

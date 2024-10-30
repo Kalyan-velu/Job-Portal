@@ -32,7 +32,7 @@ export const createJob = async (req: JobCreateReq, res: Response) => {
   }
 }
 
-export const getJobs = async (req: Request, res: Response) => {
+export const getActiveJobs = async (req: Request, res: Response) => {
   try {
     const jobs = await Job.find({
       company: req.user.companyId,
@@ -77,6 +77,8 @@ export const updateJob = async (req: Request, res: Response) => {
       sendErrorResponse(res, 'Job not found or unauthorized', 404)
       return
     }
+
+    await job.save()
     sendSuccessResponse(res, job.toJSON(), 'Job updated succcessfully')
     return
   } catch (error) {
@@ -163,6 +165,31 @@ export const listArchivedJobs = async (req: Request, res: Response) => {
     const archivedJobs = await Job.find({
       company: req.user.companyId,
       isArchived: true,
+    }).populate('company postedBy', 'name email')
+    console.debug(
+      'ℹ️ ~ file: job.controller.ts:159 ~ listArchivedJobs ~ archivedJobs:',
+      archivedJobs,
+    )
+
+    sendSuccessResponse(res, archivedJobs)
+    return
+  } catch (error) {
+    console.error(
+      'ℹ️ ~ file: job.controller.ts:163 ~ listArchivedJobs ~ error:',
+      error,
+    )
+    res.status(500).json({ message: 'Failed to fetch archived jobs', error })
+    return
+  }
+}
+export const getAllJobs = async (req: Request, res: Response) => {
+  try {
+    console.debug(
+      'ℹ️ ~ file: job.controller.ts:155 ~ listArchivedJobs ~ req:',
+      req.user,
+    )
+    const archivedJobs = await Job.find({
+      company: req.user.companyId,
     }).populate('company postedBy', 'name email')
     console.debug(
       'ℹ️ ~ file: job.controller.ts:159 ~ listArchivedJobs ~ archivedJobs:',
