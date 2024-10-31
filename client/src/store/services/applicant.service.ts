@@ -75,7 +75,10 @@ export const applicantApi = createApi({
         ]
       },
     }),
-    applyJob: builder.mutation<void, { jobId: string; coverLetter?: string }>({
+    applyJob: builder.mutation<
+      void,
+      { companyId: string; jobId: string; coverLetter?: string }
+    >({
       query: (body) => ({ url: '/application/apply', method: 'POST', body }),
       transformErrorResponse,
       async onQueryStarted({ jobId }, { dispatch, queryFulfilled }) {

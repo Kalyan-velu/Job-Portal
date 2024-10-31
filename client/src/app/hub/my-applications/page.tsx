@@ -1,6 +1,7 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -8,6 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -178,7 +187,7 @@ export default function ApplicantApplications() {
                 <TableHead>Company</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Applied Date</TableHead>
-                {/* <TableHead>Actions</TableHead> */}
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -203,18 +212,36 @@ export default function ApplicantApplications() {
                     </Badge>
                   </TableCell>
                   <TableCell>{application.appliedDate}</TableCell>
-                  {/* <TableCell>
-                    <Button variant="outline" size="sm">
-                      View Details
-                    </Button>
-                  </TableCell> */}
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger disabled={!application.note}>
+                        <Button
+                          disabled={!application.note}
+                          variant="outline"
+                          size="sm">
+                          View Note
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md p-6">
+                        <DialogHeader>
+                          <DialogTitle className="text-lg font-semibold">
+                            Employer's Note
+                          </DialogTitle>
+                          <DialogDescription>
+                            {application.note
+                              ? application.note
+                              : 'No notes available for this application.'}
+                          </DialogDescription>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
-
       {filteredApplications?.length === 0 && (
         <p className="mt-8 text-center text-muted-foreground">
           No applications found matching your criteria.

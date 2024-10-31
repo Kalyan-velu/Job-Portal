@@ -6,16 +6,17 @@ import { toast } from 'sonner'
 interface Props {
   jobId: string
   applied?: boolean
+  companyId: string
 }
 
-const ApplyJob = memo<Props>(({ jobId, applied }) => {
+const ApplyJob = memo<Props>(({ jobId, companyId, applied }) => {
   const token = localStorage.getItem('token')
   const [isApplied, setIsApplied] = useState(applied)
   const [apply, { isLoading: applying }] = useApplyJobMutation()
   const handleApply = async () => {
     if (applying) return
     toast.loading('Applying', { id: 'apply' })
-    await apply({ jobId })
+    await apply({ jobId, companyId })
       .unwrap()
       .then(() => {
         toast.success('Application submitted.', { id: 'apply' })

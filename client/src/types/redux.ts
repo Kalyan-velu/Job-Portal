@@ -48,6 +48,7 @@ export interface PublicJobResponse {
   id: string // Unique identifier for the job
   title: string // Job title
   company: string // Company name
+  companyId: string
   location: string // Job location
   type: string // Job type (e.g., Full-time, Part-time, Contract)
   salary: string // Salary range for the position
@@ -67,5 +68,78 @@ export interface ApplicantApplication {
     | 'interview scheduled'
     | 'offer extended'
     | 'rejected' // Application status
+  note?: string
   appliedDate: string // Date when the application was submitted in YYYY-MM-DD format
+}
+
+// Applicant details
+export interface Applicant {
+  _id: string
+  name: string
+  email: string
+}
+
+// Job details
+export interface Job {
+  _id: string
+  title: string
+}
+
+// Main application data
+export interface JobApplicationEmployer {
+  _id: string
+  applicantId: Applicant
+  jobId: Job
+  applicationStatus:
+    | 'submitted'
+    | 'under review'
+    | 'interview scheduled'
+    | 'offer extended'
+    | 'rejected'
+  note?: string
+  appliedAt: string
+}
+
+interface ContactInfo {
+  phone: string | null // Phone can be null if not provided
+  email: string | null // Email can be null if not provided
+}
+
+interface Education {
+  degree: string
+  institution: string
+  startDate: string // ISO date string
+  endDate?: string | null // Optional end date or null
+  description?: string | null // Optional description
+}
+
+interface Skill {
+  name: string
+  description?: string | null // Optional description
+}
+
+interface Experience {
+  title: string
+  company: string
+  location: string
+  startDate: string // ISO date string
+  endDate?: string | null // Optional end date or null
+  description?: string | null // Optional description
+}
+
+interface JobApplication {
+  jobTitle: string
+  applicationStatus: string
+  appliedAt: string // ISO date string
+}
+
+export interface ApplicantDetailsResponse {
+  contactInfo: ContactInfo
+  linkedinProfile: string | null // Optional LinkedIn profile link
+  resumeLink: string | null // Optional resume link
+  coverLetter: string | null // Optional cover letter text
+  education: Education[]
+  skills: Skill[]
+  experiences: Experience[]
+  jobApplication: JobApplication
 }

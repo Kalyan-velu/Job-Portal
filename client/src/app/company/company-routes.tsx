@@ -1,3 +1,4 @@
+import EmployerApplications from '@/app/company/dashboard/applications/all/page'
 import { AllActiveCompanyJobs } from '@/app/company/dashboard/jobs/active/page'
 import { AllCompanyJobs } from '@/app/company/dashboard/jobs/all/page'
 import { ArchivedCompanyJobs } from '@/app/company/dashboard/jobs/archived/page'
@@ -17,6 +18,23 @@ const CompanyRoutes: (IndexRouteObject | RouteObject)[] = [
       {
         index: true,
         element: <AllCompanyJobs />,
+      },
+      {
+        path: 'active',
+        element: <AllActiveCompanyJobs />,
+      },
+      {
+        path: 'archived',
+        element: <ArchivedCompanyJobs />,
+      },
+    ],
+  },
+  {
+    path: 'applications',
+    children: [
+      {
+        index: true,
+        element: <EmployerApplications />,
       },
       {
         path: 'active',

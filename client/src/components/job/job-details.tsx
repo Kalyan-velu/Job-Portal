@@ -80,6 +80,7 @@ export const JobDetailedView = memo<DetailsJobProp>(
                 </div>
               </div>
               <ApplyJob
+                companyId={selectedJob.companyId}
                 jobId={selectedJob.id}
                 applied={appliedJobs?.includes(selectedJob.id)}
               />

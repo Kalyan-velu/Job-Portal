@@ -270,7 +270,11 @@ function JobCard({
                 })}
               </span>
             </div>
-            <ApplyJob applied={applied} jobId={job.id} />
+            <ApplyJob
+              companyId={job.companyId}
+              applied={applied}
+              jobId={job.id}
+            />
           </CardFooter>
         </Card>
       </DialogTrigger>
