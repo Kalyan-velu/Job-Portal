@@ -48,6 +48,7 @@ export const CompanyProfileForm = ({
 }: {
   initialData: CompanyType | undefined
 }) => {
+  console.debug('ℹ️ ~ file: company-form.tsx:51 ~ initialData:', initialData)
   const [update, { isLoading }] = useUpdateMyCompanyMutation()
   const form = useForm<CompanyType>({
     resolver: zodResolver(CompanySchema),
@@ -297,7 +298,7 @@ function SocialMediaLinks({ control, name }: { control: any; name: string }) {
         <FormField
           control={control}
           key={field.id}
-          name={`${name}.${index}.url`}
+          name={`${name}.${index}`}
           render={({ field }) => (
             <FormItem>
               <FormLabel className={index !== 0 ? 'sr-only' : undefined}>
@@ -329,7 +330,7 @@ function SocialMediaLinks({ control, name }: { control: any; name: string }) {
         variant="outline"
         size="sm"
         className="mt-2"
-        onClick={() => append({ url: '' })}>
+        onClick={() => append('')}>
         <Plus className="mr-2 h-4 w-4" />
         Add Link
       </Button>
