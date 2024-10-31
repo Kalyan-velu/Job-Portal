@@ -4,13 +4,31 @@ import type {
   PublicJobResponse,
   QueryResponse,
 } from '@/types/redux'
+import type { Applicant } from '@/zod-schema/applicant.schema'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
 export const applicantApi = createApi({
   reducerPath: 'applicantApi',
   baseQuery: baseQuery(undefined),
-  tagTypes: ['Public-Jobs', 'Applied-JobIds', 'Applications'],
+  tagTypes: ['Public-Jobs', 'Applied-JobIds', 'Applications', 'Applicant'],
   endpoints: (builder) => ({
+    getApplicantProfile: builder.query<Applicant, void>({
+      query: () => '/applicant/',
+      transformResponse: (res: QueryResponse<Applicant>) => {
+        return res.data
+      },
+      transformErrorResponse,
+      providesTags: ['Applicant'],
+    }),
+    updateOrCreateApplicant: builder.mutation<void, Applicant>({
+      query: (body) => ({
+        url: '/applicant/update',
+        method: 'POST',
+        body,
+      }),
+      transformErrorResponse,
+      invalidatesTags: ['Applicant'],
+    }),
     getJobs: builder.query<PublicJobResponse[], void>({
       query: () => '/jobs',
       transformResponse: (res: QueryResponse<PublicJobResponse[]>) => {
@@ -82,6 +100,8 @@ export const applicantApi = createApi({
 
 export const {
   useGetJobsQuery,
+  useGetApplicantProfileQuery,
+  useUpdateOrCreateApplicantMutation,
   useMyApplicationsQuery,
   useAppliedJobIdsQuery,
   useApplyJobMutation,

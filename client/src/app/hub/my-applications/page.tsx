@@ -66,6 +66,13 @@ import React from 'react'
 //     appliedDate: '2023-09-25',
 //   },
 // ]
+const applicationStatus = [
+  'submitted' as const,
+  'under review' as const,
+  'interview scheduled' as const,
+  'offer extended' as const,
+  'rejected' as const,
+]
 
 export default function ApplicantApplications() {
   const { data: applications } = useMyApplicationsQuery()
@@ -100,22 +107,31 @@ export default function ApplicantApplications() {
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold">
-                {applications?.filter((app) => app.status === 'pending').length}
+                {
+                  applications?.filter((app) => app.status === 'submitted')
+                    .length
+                }
               </div>
               <div className="text-sm text-muted-foreground">Pending</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold">
                 {
-                  applications?.filter((app) => app.status === 'interviewed')
-                    .length
+                  applications?.filter(
+                    (app) => app.status === 'interview scheduled',
+                  ).length
                 }
               </div>
-              <div className="text-sm text-muted-foreground">Interviewed</div>
+              <div className="text-sm text-muted-foreground">
+                Interview Scheduled
+              </div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold">
-                {applications?.filter((app) => app.status === 'offered').length}
+                {
+                  applications?.filter((app) => app.status === 'offer extended')
+                    .length
+                }
               </div>
               <div className="text-sm text-muted-foreground">Offers</div>
             </div>
@@ -144,10 +160,11 @@ export default function ApplicantApplications() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="Pending">Pending</SelectItem>
-            <SelectItem value="Interviewed">Interviewed</SelectItem>
-            <SelectItem value="Rejected">Rejected</SelectItem>
-            <SelectItem value="Offered">Offered</SelectItem>
+            {applicationStatus.map((status) => (
+              <SelectItem key={status} className={'capitalize'} value={status}>
+                {status}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -174,9 +191,9 @@ export default function ApplicantApplications() {
                   <TableCell>
                     <Badge
                       variant={
-                        application.status === 'pending'
+                        application.status === 'submitted'
                           ? 'default'
-                          : application.status === 'interviewed'
+                          : application.status === 'interview scheduled'
                             ? 'secondary'
                             : application.status === 'rejected'
                               ? 'destructive'
