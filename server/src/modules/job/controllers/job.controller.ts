@@ -207,3 +207,46 @@ export const getAllJobs = async (req: Request, res: Response) => {
     return
   }
 }
+
+export const getJobsForApplicant = async (req: Request, res: Response) => {
+  try {
+    // Fetch active jobs
+    const jobs = await Job.find({
+      isArchived: false,
+    })
+      .populate('company', 'name siteUrl') // Include company name
+      .populate('postedBy', 'name email')
+      .select(
+        'title location type salaryRange createdAt description requirements responsibilites',
+      ) // Adjust fields based on your Job model
+
+    console.debug(
+      'ℹ️ ~ file: job.controller.ts:217 ~ getJobsForApplicant ~ jobs:',
+      jobs,
+    )
+    // Transform the jobs into the desired format
+    const formattedJobs = jobs.map((job) => ({
+      id: job._id.toString(), // Convert ObjectId to string
+      title: job.title,
+      //@ts-expect-error failed type casting
+      company: job.company.name, // Access the populated company name
+      location: job.location,
+      type: job.type, // Ensure 'type' is included in the Job model
+      salary: job.salaryRange,
+      //@ts-expect-error failed type casting
+      postedDate: job.createdAt, // Format date to 'YYYY-MM-DD'
+      description: job.description,
+      requirements: job.requirements,
+      responsibilities: job.responsibilites,
+    }))
+
+    console.debug(
+      'ℹ️ ~ file: job.controller.ts:41 ~ getJobsForApplicant ~ formattedJobs:',
+      formattedJobs,
+    )
+    sendSuccessResponse(res, formattedJobs)
+  } catch (error) {
+    console.error('Failed to fetch jobs for applicant', error)
+    res.status(500).json({ message: 'Failed to fetch jobs', error })
+  }
+}

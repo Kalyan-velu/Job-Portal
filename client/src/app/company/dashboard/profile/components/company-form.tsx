@@ -28,8 +28,10 @@ import {
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
+import { useUpdateMyCompanyMutation } from '@/store/services/company.service'
 import { CompanySchema, type CompanyType } from '@/zod-schema/company.schema'
 import { Plus, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 // const editableFields: (keyof CompanyType)[] = [
 //   'industry',
@@ -44,8 +46,9 @@ import { Plus, Trash2 } from 'lucide-react'
 export const CompanyProfileForm = ({
   initialData,
 }: {
-  initialData: CompanyType | undefined;
+  initialData: CompanyType | undefined
 }) => {
+  const [update, { isLoading }] = useUpdateMyCompanyMutation()
   const form = useForm<CompanyType>({
     resolver: zodResolver(CompanySchema),
     //@ts-expect-error estd is actually number when got from server
@@ -55,22 +58,34 @@ export const CompanyProfileForm = ({
           estd: initialData?.estd?.toString(),
         }
       : undefined,
-  });
+  })
 
-  function onSubmit(data: CompanyType) {
-    console.log(data);
+  async function onSubmit(data: CompanyType) {
+    try {
+      toast.loading('Updating job details.', { id: 'job' })
+      await update({ ...data })
+        .unwrap()
+        .then(() => {
+          toast.success('Job details updated.', { id: 'job' })
+        })
+        .catch(() => {
+          toast.error("Couldn't update job.", { id: 'job' })
+        })
+    } catch (error) {
+      console.error('Failed to update job:', error)
+    }
     // Here you would typically send the data to your backend
   }
   function onInvalidSubmit(data: FieldErrors<CompanyType>) {
     console.debug(
       'ℹ️ ~ file: company-form.tsx:59 ~ onInvalidSubmit ~ data:',
-      data
-    );
+      data,
+    )
   }
   return (
-    <Card className='w-full mx-auto'>
+    <Card className="mx-auto w-full">
       <CardHeader>
-        <CardTitle className={'text-2xl'}>Company Profile</CardTitle>
+        <CardTitle className={'text-2xl'}>Update Company Profile</CardTitle>
         <CardDescription>
           Update your company's information. Fields marked with an asterisk (*)
           are required. Some fields are not editable and are shown for reference
@@ -81,27 +96,23 @@ export const CompanyProfileForm = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit, onInvalidSubmit)}
-            className='grid grid-cols-2 gap-4'
-          >
-            <div className={'w-full flex flex-col gap-y-2 p-2'}>
+            className="grid grid-cols-2 gap-4">
+            <div className={'flex w-full flex-col gap-y-2 p-2'}>
               <div>
-                <h3 className='text-lg font-medium'>Basic Information</h3>
-                <p className='text-sm text-muted-foreground'>
+                <h3 className="text-lg font-medium">Basic Information</h3>
+                <p className="text-sm text-muted-foreground">
                   This section contains your company's core details.
                 </p>
               </div>
               <Separator />
               <FormField
                 control={form.control}
-                name='name'
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Company Name</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        disabled
-                      />
+                      <Input {...field} disabled />
                     </FormControl>
                     <FormDescription>
                       This field cannot be edited.
@@ -112,7 +123,7 @@ export const CompanyProfileForm = ({
 
               <FormField
                 control={form.control}
-                name='industry'
+                name="industry"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Industry *</FormLabel>
@@ -126,25 +137,22 @@ export const CompanyProfileForm = ({
 
               <FormField
                 control={form.control}
-                name='siteUrl'
+                name="siteUrl"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Website URL *</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type='url'
-                      />
+                      <Input {...field} type="url" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <div className={'w-full flex flex-col gap-y-2 p-2'}>
+            <div className={'flex w-full flex-col gap-y-2 p-2'}>
               <div>
-                <h3 className='text-lg font-medium'>Company Details</h3>
-                <p className='text-sm text-muted-foreground'>
+                <h3 className="text-lg font-medium">Company Details</h3>
+                <p className="text-sm text-muted-foreground">
                   Provide more specific information about your company.
                 </p>
               </div>
@@ -152,24 +160,23 @@ export const CompanyProfileForm = ({
 
               <FormField
                 control={form.control}
-                name='companySize'
+                name="companySize"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Company Size *</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                      defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder='Select company size' />
+                          <SelectValue placeholder="Select company size" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value='1-10'>1-10</SelectItem>
-                        <SelectItem value='1-50'>1-50</SelectItem>
-                        <SelectItem value='1-100'>1-100</SelectItem>
-                        <SelectItem value='1000<'>1000+</SelectItem>
+                        <SelectItem value="1-10">1-10</SelectItem>
+                        <SelectItem value="1-50">1-50</SelectItem>
+                        <SelectItem value="1-100">1-100</SelectItem>
+                        <SelectItem value="1000<">1000+</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -179,7 +186,7 @@ export const CompanyProfileForm = ({
 
               <FormField
                 control={form.control}
-                name='based'
+                name="based"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Based In</FormLabel>
@@ -193,7 +200,7 @@ export const CompanyProfileForm = ({
 
               <FormField
                 control={form.control}
-                name='description'
+                name="description"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Description</FormLabel>
@@ -205,34 +212,27 @@ export const CompanyProfileForm = ({
                 )}
               />
             </div>
-            <div className={'w-full flex flex-col gap-y-2 p-2 col-span-2'}>
+            <div className={'col-span-2 flex w-full flex-col gap-y-2 p-2'}>
               <div>
-                <h3 className='text-lg font-medium'>
+                <h3 className="text-lg font-medium">
                   Social Media and Contact
                 </h3>
-                <p className='text-sm text-muted-foreground'>
+                <p className="text-sm text-muted-foreground">
                   Add your social media links and contact information.
                 </p>
               </div>
               <Separator />
 
-              <SocialMediaLinks
-                control={form.control}
-                name='socialMedia'
-              />
+              <SocialMediaLinks control={form.control} name="socialMedia" />
 
               <FormField
                 control={form.control}
-                name='estd'
+                name="estd"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Established Year</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type='number'
-                        disabled
-                      />
+                      <Input {...field} type="number" disabled />
                     </FormControl>
                     <FormDescription>
                       This field cannot be edited.
@@ -243,16 +243,12 @@ export const CompanyProfileForm = ({
 
               <FormField
                 control={form.control}
-                name='email'
+                name="email"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type='email'
-                        disabled
-                      />
+                      <Input {...field} type="email" disabled />
                     </FormControl>
                     <FormDescription>
                       This field cannot be edited.
@@ -263,15 +259,12 @@ export const CompanyProfileForm = ({
 
               <FormField
                 control={form.control}
-                name='phone'
+                name="phone"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Phone</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type='tel'
-                      />
+                      <Input {...field} type="tel" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -279,9 +272,9 @@ export const CompanyProfileForm = ({
               />
 
               <Button
-                type='submit'
-                className={'mt-4 w-fit self-end'}
-              >
+                disabled={isLoading}
+                type="submit"
+                className={'mt-4 w-fit self-end'}>
                 Update Profile
               </Button>
             </div>
@@ -289,14 +282,14 @@ export const CompanyProfileForm = ({
         </Form>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
 function SocialMediaLinks({ control, name }: { control: any; name: string }) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: name,
-  });
+  })
 
   return (
     <div>
@@ -313,21 +306,17 @@ function SocialMediaLinks({ control, name }: { control: any; name: string }) {
               <FormDescription className={index !== 0 ? 'sr-only' : undefined}>
                 Add your company's social media links
               </FormDescription>
-              <div className='flex items-center gap-2'>
+              <div className="flex items-center gap-2">
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder='https://example.com'
-                  />
+                  <Input {...field} placeholder="https://example.com" />
                 </FormControl>
                 <Button
-                  type='button'
-                  variant='outline'
-                  size='icon'
-                  onClick={() => remove(index)}
-                >
-                  <Trash2 className='h-4 w-4' />
-                  <span className='sr-only'>Remove link</span>
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => remove(index)}>
+                  <Trash2 className="h-4 w-4" />
+                  <span className="sr-only">Remove link</span>
                 </Button>
               </div>
               <FormMessage />
@@ -336,15 +325,14 @@ function SocialMediaLinks({ control, name }: { control: any; name: string }) {
         />
       ))}
       <Button
-        type='button'
-        variant='outline'
-        size='sm'
-        className='mt-2'
-        onClick={() => append({ url: '' })}
-      >
-        <Plus className='mr-2 h-4 w-4' />
+        type="button"
+        variant="outline"
+        size="sm"
+        className="mt-2"
+        onClick={() => append({ url: '' })}>
+        <Plus className="mr-2 h-4 w-4" />
         Add Link
       </Button>
     </div>
-  );
+  )
 }

@@ -1,6 +1,7 @@
 import { companySlice } from '@/store/features/company.slice'
 import { userSlice } from '@/store/features/user.slice'
 import { rtkQueryErrorLogger } from '@/store/middleware/rtk.middleware'
+import { applicantApi } from '@/store/services/applicant.service'
 import { companyApi } from '@/store/services/company.service'
 import { userApi } from '@/store/services/user.service'
 import {
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   company: companySlice.reducer,
   [userApi.reducerPath]: userApi.reducer,
   [companyApi.reducerPath]: companyApi.reducer,
+  [applicantApi.reducerPath]: applicantApi.reducer,
 })
 
 const appReducer = (state: any, action: UnknownAction) => {
@@ -28,6 +30,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       userApi.middleware,
+      applicantApi.middleware,
       companyApi.middleware,
       rtkQueryErrorLogger,
     ),

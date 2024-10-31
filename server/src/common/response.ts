@@ -1,15 +1,15 @@
-import type { Response } from 'express';
+import type { Response } from 'express'
 
 interface SuccessResponse<T> {
-  success: true;
-  data: T;
-  message?: string;
+  success: true
+  data: T
+  message?: string
 }
 
 interface ErrorResponse {
-  success: false;
-  error: string;
-  statusCode: number;
+  success: false
+  error: string
+  statusCode: number
 }
 
 /**
@@ -27,9 +27,9 @@ export const sendSuccessResponse = <T>(
     success: true,
     data,
     message,
-  });
-  return;
-};
+  })
+  return
+}
 
 /**
  * Sends an error response.
@@ -42,11 +42,11 @@ export const sendErrorResponse = (
   error: unknown,
   statusCode: number = 500,
 ): void => {
-  console.debug('ℹ️ ~ file: response.ts:44 ~ error:', error);
+  console.debug('ℹ️ ~ file: response.ts:44 ~ error:', error)
   res.status(statusCode).json({
     success: false,
     error,
     statusCode,
-  });
-  return;
-};
+  })
+  return
+}
