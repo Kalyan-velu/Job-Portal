@@ -3,10 +3,7 @@ import {
   ChevronsUpDown,
   Command,
   FileText,
-  LifeBuoy,
   Plus,
-  Send,
-  Settings2,
   UserCircle,
 } from 'lucide-react'
 import * as React from 'react'
@@ -152,24 +149,24 @@ const data = {
         title: 'Job',
         url: '#',
       },
-      {
-        title: 'User',
-        url: '#',
-        disabled: true,
-      },
+      // {
+      //   title: 'User',
+      //   url: '#',
+      //   disabled: true,
+      // },
     ],
   },
   navSecondary: [
-    {
-      title: 'Support',
-      url: '#',
-      icon: LifeBuoy,
-    },
-    {
-      title: 'Feedback',
-      url: '#',
-      icon: Send,
-    },
+    // {
+    //   title: 'Support',
+    //   url: '#',
+    //   icon: LifeBuoy,
+    // },
+    // {
+    //   title: 'Feedback',
+    //   url: '#',
+    //   icon: Send,
+    // },
   ],
   company: [
     {
@@ -177,11 +174,11 @@ const data = {
       icon: UserCircle,
       url: '/app/company/profile', // Route to view company profile
     },
-    {
-      name: 'Company Settings',
-      icon: Settings2,
-      url: '/app/company/settings', // Route to manage company settings
-    },
+    // {
+    //   name: 'Company Settings',
+    //   icon: Settings2,
+    //   url: '/app/company/settings', // Route to manage company settings
+    // },
   ],
 }
 

@@ -1,4 +1,4 @@
-import z from 'zod';
+import z from 'zod'
 
 export const CompanySchema = z.object({
   name: z.string({ message: 'Company name is required' }).min(5),
@@ -23,11 +23,7 @@ export const CompanySchema = z.object({
     .or(z.literal(''))
     .transform((val) => val ?? ''), // Optional description
   socialMedia: z
-    .array(
-      z.object({
-        url: z.string().url({ message: 'Invalid URL format' }),
-      })
-    )
+    .array(z.string().url({ message: 'Invalid URL format' }))
     .optional(),
   // createdBy: z.string({ message: 'Creator ID is required' }),
   estd: z
@@ -35,10 +31,10 @@ export const CompanySchema = z.object({
     .transform((value) => parseInt(value)),
   email: z.string().email().optional(),
   phone: z.string().optional(),
-});
+})
 
-export const companySchemaFields = CompanySchema.keyof().options;
+export const companySchemaFields = CompanySchema.keyof().options
 
-export type CompanySchemaFieldsType = typeof companySchemaFields;
-export type CompanySchemaFieldType = CompanySchemaFieldsType[number];
-export type CompanyType = z.infer<typeof CompanySchema>;
+export type CompanySchemaFieldsType = typeof companySchemaFields
+export type CompanySchemaFieldType = CompanySchemaFieldsType[number]
+export type CompanyType = z.infer<typeof CompanySchema>
