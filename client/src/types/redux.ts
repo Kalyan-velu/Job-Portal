@@ -61,6 +61,11 @@ export interface ApplicantApplication {
   id: string // ID of the application
   jobTitle: string // Title of the job
   company: { _id: string; name: string } // ID or name of the company
-  status: 'submitted' | 'pending' | 'interviewed' | 'rejected' | 'offered' // Application status
+  status:
+    | 'submitted'
+    | 'under review'
+    | 'interview scheduled'
+    | 'offer extended'
+    | 'rejected' // Application status
   appliedDate: string // Date when the application was submitted in YYYY-MM-DD format
 }

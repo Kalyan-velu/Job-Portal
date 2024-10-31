@@ -19,7 +19,6 @@ import {
   LogOut,
   Menu,
   Search,
-  Settings,
   User,
 } from 'lucide-react'
 import React from 'react'
@@ -93,7 +92,10 @@ export default function ApplicantNavbar() {
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      navigate('/app/hub/profile')
+                    }}>
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
@@ -105,10 +107,10 @@ export default function ApplicantNavbar() {
                     <Heart className="mr-2 h-4 w-4" />
                     <span>Saved Jobs</span>
                   </DropdownMenuItem> */}
-                  <DropdownMenuItem>
+                  {/* <DropdownMenuItem>
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onSelect={() => {
@@ -175,11 +177,11 @@ export default function ApplicantNavbar() {
               </Button> */}
             </div>
             <div className="mt-3 space-y-1 px-2">
-              <a
-                href="/profile"
+              <Link
+                to="/app/hub/profile"
                 className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
                 Profile
-              </a>
+              </Link>
               {/* <a
                 href="/resume"
                 className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
