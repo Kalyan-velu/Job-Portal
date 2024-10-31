@@ -50,7 +50,7 @@ export const companyApi = createApi({
       transformErrorResponse,
       providesTags: (res, error, id) => [{ type: 'Company', id }],
     }),
-    updateMyCompany: builder.query<CompanyResponseType, CompanyResponseType>({
+    updateMyCompany: builder.mutation<CompanyResponseType, CompanyType>({
       query: (body) => ({ url: '/company/my', method: 'PUT', body }),
     }),
     getCompanyJobs: builder.query<
@@ -182,7 +182,7 @@ export const companyApi = createApi({
 export const {
   useCreateCompanyyMutation,
   useGetMyCompanyQuery,
-
+  useUpdateMyCompanyMutation,
   useGetCompanyByIdQuery,
   useGetCompanyJobsQuery,
   useUpdateJobMutation,

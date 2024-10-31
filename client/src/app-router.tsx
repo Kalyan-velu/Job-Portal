@@ -3,6 +3,8 @@ import { AuthLayout } from '@/app/(auth)/layout'
 import { CompanyRoutes } from '@/app/company/company-routes'
 import { CreateCompanyProfile } from '@/app/company/create/page'
 import { CompanyDashboardPage } from '@/app/company/dashboard/layout'
+import { HubRoutes } from '@/app/hub/hub-routes'
+import { JobHubLayout } from '@/app/hub/layout'
 import { RootLayout } from '@/app/layout'
 import { store } from '@/store'
 import { userApi } from '@/store/services/user.service'
@@ -37,7 +39,7 @@ const handleRedirect = async ({
     }
 
     return data?.role === 'applicant'
-      ? redirect('/app/jobs')
+      ? redirect('/app/hub')
       : redirect('/app/company')
   }
   return redirect('/login')
@@ -78,7 +80,7 @@ const fetchUserAndRedirect = async (args: LoaderFunctionArgs<any>) => {
       data?.applicantId &&
       url.includes('/app/company')
     ) {
-      return '/app/jobs'
+      return '/app/hub'
     }
     if (
       role === 'employer' &&
@@ -128,8 +130,9 @@ export const AppRouter = createBrowserRouter([
             element: <CreateCompanyProfile />,
           },
           {
-            path: 'jobs',
-            element: <>Jobs</>,
+            path: 'hub',
+            element: <JobHubLayout />,
+            children: HubRoutes,
           },
         ],
       },
