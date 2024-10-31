@@ -1,6 +1,8 @@
 import { baseQuery, transformErrorResponse } from '@/lib/rtk-utils'
 import type {
+  ApplicantDetailsResponse,
   CompanyResponseType,
+  JobApplicationEmployer,
   JobResponseType,
   QueryResponse,
 } from '@/types/redux'
@@ -11,7 +13,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 export const companyApi = createApi({
   reducerPath: 'companyApi',
   baseQuery: baseQuery(undefined),
-  tagTypes: ['Company', 'Job', 'Archived-Job'],
+  tagTypes: ['Company', 'Job', 'Archived-Job', 'Applications', 'Applicant'],
   endpoints: (builder) => ({
     createCompanyy: builder.mutation<string, CompanyType>({
       query: (body: CompanyType) => ({
@@ -176,6 +178,81 @@ export const companyApi = createApi({
         }
       },
     }),
+    companyApplications: builder.query<JobApplicationEmployer[], void>({
+      query: () => ({
+        url: `/company/applications`,
+      }),
+      transformResponse: (res: QueryResponse<JobApplicationEmployer[]>) => {
+        return res.data
+      },
+      transformErrorResponse,
+      providesTags: (res) =>
+        res
+          ? [
+              { type: 'Applications' as const, id: 'LIST' },
+              ...res.map((j) => ({ type: 'Applications' as const, id: j._id })),
+            ]
+          : [{ type: 'Applications' as const, id: 'LIST' }],
+    }),
+    getApplicantDetails: builder.query<
+      ApplicantDetailsResponse,
+      { applicationId: string }
+    >({
+      query: ({ applicationId }) => ({
+        url: `/company/applications/applicant/${applicationId}`,
+      }),
+      transformResponse: (res: QueryResponse<ApplicantDetailsResponse>) => {
+        return res.data
+      },
+      providesTags: (_, _e, { applicationId }) => [
+        { type: 'Applicant', id: applicationId },
+      ],
+    }),
+    updateApplicationStatus: builder.mutation<
+      void,
+      {
+        newStatus:
+          | 'submitted'
+          | 'under review'
+          | 'interview scheduled'
+          | 'offer extended'
+          | 'rejected'
+        applicationId: string
+        note?:string
+      }
+    >({
+      query: ({ applicationId, ...body }) => ({
+        url: `/company/applications/${applicationId}`,
+        method: 'PUT',
+        body,
+      }),
+      async onQueryStarted(
+        { applicationId, newStatus },
+        { dispatch, queryFulfilled },
+      ) {
+        const patch = dispatch(
+          companyApi.util.updateQueryData(
+            'companyApplications',
+            undefined,
+            (draft) => {
+              // Update the draft directly without reassigning it
+              return draft.map((application) => {
+                if (application._id === applicationId) {
+                  return { ...application, applicationStatus: newStatus }
+                }
+                return application
+              })
+            },
+          ),
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patch.undo()
+        }
+      },
+    }),
   }),
 })
 
@@ -183,11 +260,14 @@ export const {
   useCreateCompanyyMutation,
   useGetMyCompanyQuery,
   useUpdateMyCompanyMutation,
+  useCompanyApplicationsQuery,
   useGetCompanyByIdQuery,
   useGetCompanyJobsQuery,
   useUpdateJobMutation,
   useDeleteJobMutation,
   useCreateJobMutation,
   useArchiveJobMutation,
+  useUpdateApplicationStatusMutation,
+  useGetApplicantDetailsQuery,
   useUnarchiveJobMutation,
 } = companyApi

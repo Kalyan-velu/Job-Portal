@@ -8,7 +8,6 @@ import {
   Send,
   Settings2,
   UserCircle,
-  Users2,
 } from 'lucide-react'
 import * as React from 'react'
 
@@ -66,29 +65,29 @@ const data = {
         // },
       ],
     },
-    {
-      title: 'Candidates',
-      url: '#',
-      icon: Users2,
-      items: [
-        {
-          title: 'All Candidates',
-          url: '/app/company/candidates', // Route to view all candidates
-        },
-        {
-          title: 'Shortlisted',
-          url: '/app/company/candidates/shortlisted', // Route to view shortlisted candidates
-        },
-        {
-          title: 'Interview Scheduled',
-          url: '/app/company/candidates/interviews', // View candidates with scheduled interviews
-        },
-        {
-          title: 'Rejections',
-          url: '/app/company/candidates/rejections', // Track rejected candidates
-        },
-      ],
-    },
+    // {
+    //   title: 'Candidates',
+    //   url: '#',
+    //   icon: Users2,
+    //   items: [
+    //     {
+    //       title: 'All Candidates',
+    //       url: '/app/company/candidates', // Route to view all candidates
+    //     },
+    //     {
+    //       title: 'Shortlisted',
+    //       url: '/app/company/candidates/shortlisted', // Route to view shortlisted candidates
+    //     },
+    //     {
+    //       title: 'Interview Scheduled',
+    //       url: '/app/company/candidates/interviews', // View candidates with scheduled interviews
+    //     },
+    //     {
+    //       title: 'Rejections',
+    //       url: '/app/company/candidates/rejections', // Track rejected candidates
+    //     },
+    //   ],
+    // },
     {
       title: 'Applications',
       url: '#',
@@ -98,18 +97,18 @@ const data = {
           title: 'All Applications',
           url: '/app/company/applications', // Route to view all applications
         },
-        {
-          title: 'Under Review',
-          url: '/app/company/applications/review', // Route for applications under review
-        },
-        {
-          title: 'Hired',
-          url: '/app/company/applications/hired', // Track hired candidates
-        },
-        {
-          title: 'Archived',
-          url: '/app/company/applications/archived', // Optionally view archived applications
-        },
+        // {
+        //   title: 'Under Review',
+        //   url: '/app/company/applications/review', // Route for applications under review
+        // },
+        // {
+        //   title: 'Hired',
+        //   url: '/app/company/applications/hired', // Track hired candidates
+        // },
+        // {
+        //   title: 'Archived',
+        //   url: '/app/company/applications/archived', // Optionally view archived applications
+        // },
       ],
     },
     // {
