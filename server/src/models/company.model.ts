@@ -1,9 +1,9 @@
-import type { CompanyType as CompanyI } from '@server/zod-schema/company.schema'; // Adjust the import according to your project structure
-import { Document, model, Schema } from 'mongoose';
+import type { CompanyType as CompanyI } from '@server/zod-schema/company.schema' // Adjust the import according to your project structure
+import { Document, model, Schema } from 'mongoose'
 
 // Extend CompanyI to include the Mongoose Document
 export interface CompanyDocument extends Omit<CompanyI, 'createdBy'>, Document {
-  createdBy: Schema.Types.ObjectId | string; // Allow both ObjectId and string for compatibility
+  createdBy: Schema.Types.ObjectId | string // Allow both ObjectId and string for compatibility
 }
 
 const companySchema = new Schema<CompanyDocument>(
@@ -29,12 +29,12 @@ const companySchema = new Schema<CompanyDocument>(
     },
     toJSON: {
       transform(doc, ret) {
-        delete ret.__v; // Remove __v field
-        return ret;
+        delete ret.__v // Remove __v field
+        return ret
       },
     },
   },
-);
+)
 
 // Create and export the Company model
-export const Company = model<CompanyDocument>('Company', companySchema);
+export const Company = model<CompanyDocument>('Company', companySchema)

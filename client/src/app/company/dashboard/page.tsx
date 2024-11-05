@@ -16,7 +16,7 @@ const EmployerDashboard: React.FC = () => {
           <h2 className="text-xl font-semibold text-gray-700">Job Postings</h2>
           <p className="text-gray-600">Manage your job listings.</p>
           <Button className="mt-4" variant="default">
-            <Link to={'/company/jobs/active'}>View Job Postings</Link>
+            <Link to={'/app/company/jobs/active'}>View Job Postings</Link>
           </Button>
         </Card>
 

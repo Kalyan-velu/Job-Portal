@@ -2,6 +2,7 @@ import { dateValidator } from '@server/lib/utils'
 import { Document, model, Schema, Types } from 'mongoose'
 
 interface JobApplicationDoc extends Document {
+  companyId: Types.ObjectId
   applicantId: Types.ObjectId
   jobId: Types.ObjectId
   resumeLink: string
@@ -34,10 +35,17 @@ interface JobApplicationDoc extends Document {
     | 'offer extended'
     | 'rejected'
   appliedAt: Date
+  note?: string
 }
 
 // Job Application Schema
 const jobApplicationSchema = new Schema<JobApplicationDoc>({
+  companyId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Company',
+    required: true,
+    index: true,
+  },
   applicantId: {
     type: Schema.Types.ObjectId,
     ref: 'Applicant',
@@ -52,7 +60,7 @@ const jobApplicationSchema = new Schema<JobApplicationDoc>({
   },
   resumeLink: {
     type: String,
-    required: true
+    required: true,
   },
   coverLetter: {
     type: String,
@@ -121,6 +129,9 @@ const jobApplicationSchema = new Schema<JobApplicationDoc>({
   appliedAt: {
     type: Date,
     default: Date.now,
+  },
+  note: {
+    type: String,
   },
 })
 
