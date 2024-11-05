@@ -1,16 +1,20 @@
 import { validateRequestBody } from '@server/common/request'
 import { authorizeRole } from '@server/middlewares/auth.middleware'
-import { CompleteApplicantProfile } from '@server/modules/applicants/controllers/profile.controller'
+import {
+  CompleteApplicantProfile,
+  getApplicantProfile,
+} from '@server/modules/applicants/controllers/profile.controller'
 import { ApplicantSchema } from '@server/zod/applicant.schema'
 import { Router } from 'express'
 
 const applicantRouter = Router()
 
-applicantRouter.post(
-  '/update',
-  authorizeRole('applicant'),
-  validateRequestBody(ApplicantSchema),
-  CompleteApplicantProfile,
-)
-
+applicantRouter
+  .post(
+    '/update',
+    authorizeRole('applicant'),
+    validateRequestBody(ApplicantSchema),
+    CompleteApplicantProfile,
+  )
+  .get('/', getApplicantProfile)
 export default applicantRouter

@@ -105,11 +105,21 @@ const educationSchema = new Schema({
 })
 
 interface ApplicantDoc extends Omit<ApplicantI, 'userId'>, Document {
+  name: string
+  email: string
   userId: Schema.Types.ObjectId | string
 }
 
 // Applicant Schema
 const applicantSchema = new Schema<ApplicantDoc>({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
   userId: {
     type: Types.ObjectId,
     ref: 'User',

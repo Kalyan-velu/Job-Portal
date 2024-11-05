@@ -3,11 +3,11 @@ import { Applicant } from '@server/models/applicant.model'
 import { JobApplication } from '@server/models/application.model'
 import { Request, Response } from 'express'
 interface SubmitReq extends Request {
-  body: { jobId: string; coverLetter?: string }
+  body: { jobId: string; coverLetter?: string; companyId: string }
 }
 export const submitApplication = async (req: SubmitReq, res: Response) => {
   try {
-    const { jobId, coverLetter } = req.body
+    const { jobId, companyId, coverLetter } = req.body
     const applicantId = req.user?.applicantId // Assuming user is authenticated, with applicant ID available
     console.debug(
       'ℹ️ ~ file: job.controller.ts:12 ~ submitApplication ~ applicantId:',
@@ -35,6 +35,7 @@ export const submitApplication = async (req: SubmitReq, res: Response) => {
     const newApplication = new JobApplication({
       applicantId,
       jobId,
+      companyId,
       resumeLink: applicantProfile.resumeLink,
       coverLetter,
       contactDetails: {
@@ -112,7 +113,7 @@ export const listApplicationsForApplicant = async (
           select: 'name', // Assuming the Company model has a 'name' field
         },
       })
-      .select('jobId applicationStatus appliedAt')
+      .select('jobId applicationStatus appliedAt note')
 
     // Map applications to match the required format
     const formattedApplications = applications.map((application) => ({
@@ -122,6 +123,7 @@ export const listApplicationsForApplicant = async (
       //@ts-expect-error no error
       company: application.jobId.company,
       status: application.applicationStatus,
+      note: application.note,
       appliedDate: application.appliedAt.toISOString().split('T')[0], // Format date to 'YYYY-MM-DD'
     }))
 

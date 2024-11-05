@@ -214,7 +214,7 @@ export const getJobsForApplicant = async (req: Request, res: Response) => {
     const jobs = await Job.find({
       isArchived: false,
     })
-      .populate('company', 'name siteUrl') // Include company name
+      .populate('company', 'name _id siteUrl') // Include company name
       .populate('postedBy', 'name email')
       .select(
         'title location type salaryRange createdAt description requirements responsibilites',
@@ -230,6 +230,8 @@ export const getJobsForApplicant = async (req: Request, res: Response) => {
       title: job.title,
       //@ts-expect-error failed type casting
       company: job.company.name, // Access the populated company name
+      //@ts-expect-error failed type casting
+      companyId: job.company._id,
       location: job.location,
       type: job.type, // Ensure 'type' is included in the Job model
       salary: job.salaryRange,

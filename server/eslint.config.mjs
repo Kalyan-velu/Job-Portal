@@ -10,7 +10,7 @@ import prettier from 'eslint-config-prettier'
 
 export default [
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['**/*.ts', '**/*.json'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
