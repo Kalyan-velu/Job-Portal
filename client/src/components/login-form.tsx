@@ -47,6 +47,10 @@ export function LoginForm() {
       })
   }
   const onInvalidSubmit = (data: FieldErrors<LoginSchemaType>) => {
+    console.error(
+      'ℹ️ ~ file: login-form.tsx:50 ~ onInvalidSubmit ~ data:',
+      data,
+    )
     // console.error(
     //   'ℹ️ ~ file: login-form.tsx:38 ~ onInvalidSubmit ~ data:',
     //   data

@@ -11,18 +11,21 @@ const ExperienceSchema = z.object({
   company: z.string().min(2, 'Company name must be at least 2 characters long'),
   location: z.string().min(2, 'Location must be at least 2 characters long'),
   startDate: DateSchema,
-  endDate: z.coerce
-    .date()
+  endDate: z
+    .union([z.coerce.date(), z.null(), z.undefined()])
     .optional()
     .superRefine((endDate, ctx: DateContext) => {
-      // Check if parent exists and has a startDate
       const parent = ctx.parent
-      if (!parent || !parent.startDate) return true // If there's no parent or startDate, skip the check
 
-      if (!endDate) return true // Allow endDate to be empty if that's your intention
+      // If there's no parent or startDate, skip validation
+      if (!parent || !parent.startDate) return true
 
-      const startDate = parent.startDate // Accessing startDate from parent context
-      // Check if endDate is before startDate
+      // If endDate is null/undefined, validation passes
+      if (!endDate) return true
+
+      const startDate = parent.startDate
+
+      // Only validate if both dates exist
       if (endDate < startDate) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -51,17 +54,21 @@ const EducationSchema = z.object({
     .string()
     .min(2, 'Institution name must be at least 2 characters long'),
   startDate: DateSchema,
-  endDate: z.coerce
-    .date()
+  endDate: z
+    .union([z.coerce.date(), z.null(), z.undefined()])
     .optional()
     .superRefine((endDate, ctx: DateContext) => {
-      const parent = ctx.parent // Access parent context
-      if (!parent || !parent.startDate) return true // If there's no parent or startDate, skip the check
+      const parent = ctx.parent
 
-      if (!endDate) return true // Allow endDate to be empty if that's your intention
+      // If there's no parent or startDate, skip validation
+      if (!parent || !parent.startDate) return true
 
-      const startDate = parent.startDate // Accessing startDate from parent context
-      // Check if endDate is before startDate
+      // If endDate is null/undefined, validation passes
+      if (!endDate) return true
+
+      const startDate = parent.startDate
+
+      // Only validate if both dates exist
       if (endDate < startDate) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -69,7 +76,6 @@ const EducationSchema = z.object({
         })
       }
     }),
-
   description: z
     .string()
     .max(500, 'Description must be 500 characters or less')

@@ -27,7 +27,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { useState } from 'react'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useFieldArray, useForm, type FieldErrors } from 'react-hook-form'
 import { toast } from 'sonner'
 
 // ... (Zod schema definitions remain the same as before)
@@ -98,10 +98,19 @@ export default function ApplicantProfileForm({ defaultValues }: Props) {
         })
       })
   }
-
+  const onInvalid = (errors: FieldErrors<Applicant>) => {
+    console.error(
+      'ℹ️ ~ file: applicant.profile.tsx:102 ~ onInvalid ~ errors:',
+      errors,
+    )
+    Object.entries(errors).map(([field, value]) => {
+      toast.error(value.message)
+    })
+    return
+  }
   return (
     <form
-      onSubmit={form.handleSubmit(onSubmit)}
+      onSubmit={form.handleSubmit(onSubmit, onInvalid)}
       className="mx-auto mt-8 max-w-4xl space-y-8">
       <Card className="overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">

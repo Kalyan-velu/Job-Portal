@@ -93,13 +93,18 @@ export const transformErrorResponse = (
   meta: FetchBaseQueryMeta | undefined,
   args: unknown,
 ): string => {
-  console.debug('ℹ️ ~ file: rtk-utils.ts:96 ~ response:', response)
   if (
     'data' in response &&
     typeof response.data === 'object' &&
     response.data !== null
   ) {
-    const data = response.data as Record<string, any>
+    const data = response.data as {
+      statuCode: number
+      error?: string | { message: string } | unknown[]
+      message?: string
+    }
+
+    console.debug('ℹ️ ~ file: rtk-utils.ts:102 ~ data:', data)
 
     // Handle detailed errors
     if (Array.isArray(data.error)) {
@@ -112,15 +117,16 @@ export const transformErrorResponse = (
         })
         .join(', ')
     }
-    if ('error' in data) {
-      if ('message' in data.error) {
+    if ('error' in data && data.error) {
+      if (typeof data.error !== 'string' && 'message' in data.error) {
         return data.error.message
+      } else if (typeof data.error === 'string') {
+        return data.error
       }
-      return data.error
     }
     // Fallback for a single message
     if ('message' in data) {
-      return data.message
+      return data.message ?? 'Something went wrong'
     }
   } else if ('error' in response && response.error !== null) {
     if (
