@@ -170,12 +170,16 @@ export const ApplicantDetailedView = memo<ApplicantDetailedViewProp>(
                     selectedApplicant.experiences.map((exp, index) => (
                       <div
                         key={index}
-                        className="mb-3 rounded-lg border bg-gray-100 p-4">
+                        className="mb-3 flex flex-col gap-2 rounded-lg border bg-gray-100 p-4">
                         <p className="font-semibold">
                           {exp.title} at {exp.company}
                         </p>
                         <p className="text-gray-600">
-                          {exp.startDate} - {exp.endDate ?? 'Present'} |{' '}
+                          {format(new Date(exp.startDate), 'dd/MM/yyyy')} -{' '}
+                          {exp.endDate
+                            ? format(new Date(exp.endDate), 'dd/MM/yyyy')
+                            : 'Present'}
+                          <span className={'mx-2'}>|</span>
                           {exp.location}
                         </p>
                         {exp.description && (

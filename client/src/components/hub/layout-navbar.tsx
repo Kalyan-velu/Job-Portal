@@ -8,19 +8,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
 import { logout } from '@/store/actions/auth.action'
 import { useAppDispatch } from '@/store/hooks'
 import { useGetUserQuery } from '@/store/services/user.service'
-import {
-  Bell,
-  Briefcase,
-  ChevronDown,
-  LogOut,
-  Menu,
-  Search,
-  User,
-} from 'lucide-react'
+import { Briefcase, ChevronDown, LogOut, Menu, User } from 'lucide-react'
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -59,7 +50,7 @@ export default function ApplicantNavbar() {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              <div className="relative">
+              {/* <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <Search className="h-5 w-5 text-gray-400" />
                 </div>
@@ -72,7 +63,7 @@ export default function ApplicantNavbar() {
               <Button variant="ghost" size="icon" className="ml-3">
                 <Bell className="h-5 w-5 text-gray-400" />
                 <span className="sr-only">Notifications</span>
-              </Button>
+              </Button> */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="ml-3 flex items-center">

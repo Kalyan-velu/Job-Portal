@@ -40,7 +40,7 @@ interface CreateJobProps {
 
 export const CreateJob: React.FC<CreateJobProps> = ({ children }) => {
   const [open, setOpen] = useState(false)
-  const [create,{isLoading}]=useCreateJobMutation()
+  const [create, { isLoading }] = useCreateJobMutation()
   const {
     register,
     control,
@@ -73,7 +73,7 @@ export const CreateJob: React.FC<CreateJobProps> = ({ children }) => {
   })
 
   const onSubmit = async (data: JobInterface) => {
-    if(isLoading) return
+    if (isLoading) return
     await create(data)
       .unwrap()
       .then((r) => {
@@ -84,7 +84,6 @@ export const CreateJob: React.FC<CreateJobProps> = ({ children }) => {
       .catch((e) => {
         console.error('ℹ️ ~ file: create-job.tsx:78 ~ awaitcreateJob ~ e:', e)
         return {}
-        toast.error("Couldn't create job. try again.")
       })
     // Handle form submission here
   }

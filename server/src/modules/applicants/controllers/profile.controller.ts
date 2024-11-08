@@ -73,36 +73,39 @@ export const getApplicantProfile = async (req: Request, res: Response) => {
       'phone resumeLink education skills coverLetter linkedin experiences',
     )
 
-    if (!applicant) {
+    if (!applicant && req.user.applicantId) {
       sendErrorResponse(res, 'Applicant profile not found', 404)
       return
     }
 
     // Transform the response to match the default form values for Applicant type
     const formattedData = {
-      phone: applicant.phone || '',
-      resumeLink: applicant.resumeLink || '',
-      education: applicant.education.map((edu) => ({
-        degree: edu.degree || '',
-        institution: edu.institution || '',
-        startDate: edu.startDate.toISOString().split('T')[0],
-        endDate: edu.endDate.toISOString().split('T')[0],
-        description: edu.description || '', // Optional field
-      })),
-      skills: applicant.skills.map((skill) => ({
-        name: skill.name || '',
-        description: skill.description || '',
-      })),
-      coverLetter: applicant.coverLetter || '',
-      linkedin: applicant.linkedin || '',
-      experiences: applicant.experiences?.map((exp) => ({
-        title: exp.title || '',
-        company: exp.company || '',
-        location: exp.location || '',
-        startDate: exp.startDate.toISOString().split('T')[0],
-        endDate: exp.endDate.toISOString().split('T')[0],
-        description: exp.description || '', // Optional field
-      })),
+      phone: applicant?.phone ?? '',
+      resumeLink: applicant?.resumeLink ?? '',
+      education:
+        applicant?.education?.map((edu) => ({
+          degree: edu?.degree ?? '',
+          institution: edu?.institution ?? '',
+          startDate: edu?.startDate?.toISOString().split('T')[0],
+          endDate: edu?.endDate?.toISOString().split('T')[0],
+          description: edu?.description ?? '', // Optional field
+        })) ?? [],
+      skills:
+        applicant?.skills?.map((skill) => ({
+          name: skill?.name ?? '',
+          description: skill?.description ?? '',
+        })) ?? [],
+      coverLetter: applicant?.coverLetter ?? '',
+      linkedin: applicant?.linkedin ?? '',
+      experiences:
+        applicant?.experiences?.map((exp) => ({
+          title: exp?.title ?? '',
+          company: exp?.company ?? '',
+          location: exp?.location ?? '',
+          startDate: exp?.startDate.toISOString().split('T')[0],
+          endDate: exp?.endDate.toISOString().split('T')[0],
+          description: exp?.description ?? '', // Optional field
+        })) ?? [],
     }
 
     sendSuccessResponse(

@@ -47,7 +47,7 @@ export const Login = async (req: LoginRequest, res: Response) => {
       sendSuccessResponse(res, {
         token,
         message: 'Please complete your profile',
-        redirectTo: '/app/applicant/update',
+        redirectTo: '/app/hub/profile',
       })
       return
     }
