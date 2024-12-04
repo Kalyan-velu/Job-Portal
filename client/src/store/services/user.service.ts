@@ -1,11 +1,11 @@
-import { baseQuery, transformErrorResponse } from '@/lib/rtk-utils';
-import type { User } from '@/types';
-import type { QueryResponse } from '@/types/redux';
+import { baseQuery, transformErrorResponse } from '@/lib/rtk-utils'
+import type { User } from '@/types'
+import type { QueryResponse } from '@/types/redux'
 import type {
   LoginSchemaType,
   RegisterSchemaType,
-} from '@/zod-schema/user.schema';
-import { createApi } from '@reduxjs/toolkit/query/react';
+} from '@/zod-schema/user.schema'
+import { createApi } from '@reduxjs/toolkit/query/react'
 
 export const userApi = createApi({
   reducerPath: 'userApi',
@@ -15,10 +15,11 @@ export const userApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<
       {
-        token: string;
-        token_type: string;
-        redirectTo?: string;
-        message?: string;
+        token: string
+        token_type: string
+        redirectTo?: string
+        message?: string
+        isVerified: boolean
       },
       Partial<LoginSchemaType>
     >({
@@ -27,17 +28,18 @@ export const userApi = createApi({
           url: '/auth/login',
           method: 'POST',
           body,
-        };
+        }
       },
       transformResponse: (
         response: QueryResponse<{
-          token: string;
-          token_type: string;
-          redirectTo?: string;
-          message?: string;
-        }>
+          token: string
+          token_type: string
+          redirectTo?: string
+          message?: string
+          isVerified: boolean
+        }>,
       ) => {
-        return response.data;
+        return response.data
       },
       transformErrorResponse,
     }),
@@ -48,20 +50,69 @@ export const userApi = createApi({
         body,
       }),
       transformResponse: (response: QueryResponse<void>) => {
-        return response.data;
+        return response.data
       },
       transformErrorResponse,
     }),
     getUser: builder.query<User | null, void>({
       query: () => '/user/me',
       transformResponse: (response: QueryResponse<User>) => {
-        return response.data;
+        return response.data
       },
       transformErrorResponse,
       providesTags: ['User'],
     }),
+    forgotPassword: builder.mutation<void, { email: string }>({
+      query: (body) => ({
+        url: '/auth/forgot-password',
+        method: 'POST',
+        body,
+      }),
+      transformResponse: (response: QueryResponse<void>) => {
+        return response.data
+      },
+      transformErrorResponse,
+    }),
+    resetPassword: builder.mutation<void, { password: string; token: string }>({
+      query: (body) => ({
+        url: '/auth/reset-password',
+        method: 'POST',
+        body,
+      }),
+      transformResponse: (response: QueryResponse<void>) => {
+        return response.data
+      },
+      transformErrorResponse,
+    }),
+    resendVerificationEmail: builder.mutation<void, void>({
+      query: () => ({
+        url: '/auth/resent-verification-email',
+        method: 'POST',
+      }),
+      transformResponse: (response: QueryResponse<void>) => {
+        return response.data
+      },
+      transformErrorResponse,
+    }),
+    verifyEmail: builder.mutation<{ verified: boolean }, string>({
+      query: (token) => ({
+        url: `/auth/verify-email?token=${token}`,
+        method: 'GET',
+      }),
+      transformResponse: (response: QueryResponse<{ verified: boolean }>) => {
+        return response.data
+      },
+      transformErrorResponse,
+    }),
   }),
-});
+})
 
-export const { useLoginMutation, useRegisterMutation, useGetUserQuery } =
-  userApi;
+export const {
+  useLoginMutation,
+  useForgotPasswordMutation,
+  useRegisterMutation,
+  useVerifyEmailMutation,
+  useResetPasswordMutation,
+  useGetUserQuery,
+  useResendVerificationEmailMutation,
+} = userApi

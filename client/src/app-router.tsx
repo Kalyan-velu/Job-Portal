@@ -6,6 +6,7 @@ import { CompanyDashboardPage } from '@/app/company/dashboard/layout'
 import { HubRoutes } from '@/app/hub/hub-routes'
 import { JobHubLayout } from '@/app/hub/layout'
 import { RootLayout } from '@/app/layout'
+import NotFound from '@/components/not-found'
 import { store } from '@/store'
 import { userApi } from '@/store/services/user.service'
 import type { Role } from '@/types'
@@ -137,5 +138,9 @@ export const AppRouter = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ])

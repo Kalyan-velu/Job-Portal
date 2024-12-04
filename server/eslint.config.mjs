@@ -10,13 +10,14 @@ import prettier from 'eslint-config-prettier'
 
 export default [
   {
-    files: ['**/*.ts', '**/*.json'],
+    files: ['**/*.ts'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
         project: path.join(__dirname, 'tsconfig.json'),
         tsconfigRootDir: __dirname,
         sourceType: 'module',
+        // extraFileExtensions: ['.json'] // Add this line
       },
     },
     plugins: {
@@ -30,6 +31,14 @@ export default [
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
+  // {
+  //   files: ['**/*.json'], // Add this block to handle JSON files
+  //   languageOptions: {
+  //     parserOptions: {
+  //       extraFileExtensions: ['.json']
+  //     }
+  //   }
+  // },
   {
     ...prettier,
   },

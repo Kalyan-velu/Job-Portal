@@ -226,7 +226,7 @@ export const getJobsForApplicant = async (req: Request, res: Response) => {
     )
     // Transform the jobs into the desired format
     const formattedJobs = jobs.map((job) => ({
-      id: job._id.toString(), // Convert ObjectId to string
+      id: (job._id as string).toString(), // Convert ObjectId to string
       title: job.title,
       //@ts-expect-error failed type casting
       company: job.company.name, // Access the populated company name
