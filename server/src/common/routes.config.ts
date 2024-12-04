@@ -1,5 +1,5 @@
-import express, { Express, Router } from 'express';
-import { middleware as middlewareConfig } from './middleware.config';
+import express, { Express, Router } from 'express'
+import { middleware as middlewareConfig } from './middleware.config'
 /**
  * Configuration for a group of routes.
  * @interface RouteConfig
@@ -8,10 +8,10 @@ import { middleware as middlewareConfig } from './middleware.config';
  * @property {Array<express.RequestHandler>}
  */
 export interface RouteConfig {
-  prefix: string;
-  routes: Router[];
-  middleware?: Array<express.RequestHandler>; // Optional middleware
-  isPublic?: boolean;
+  prefix: string
+  routes: Router[]
+  middleware?: Array<express.RequestHandler> // Optional middleware
+  isPublic?: boolean
 }
 
 /**
@@ -21,8 +21,8 @@ export interface RouteConfig {
  * @property {express.Router} route - The Express Router.
  */
 export interface ShowRoutes {
-  prefix: string;
-  route: express.Router;
+  prefix: string
+  route: express.Router
 }
 
 /**
@@ -30,15 +30,15 @@ export interface ShowRoutes {
  * @class RouterConfigure
  */
 class RouterConfigure {
-  private app: Express;
-  private totalRoutes: number = 0;
+  private app: Express
+  private totalRoutes: number = 0
 
   /**
    * Creates an instance of RouterConfigure.
    * @param {Express} app - The Express application instance.
    */
   constructor(app: Express) {
-    this.app = app;
+    this.app = app
   }
 
   /**
@@ -46,27 +46,27 @@ class RouterConfigure {
    * @param {RouteConfig} config - The configuration for the group of routes.
    */
   configureRoute(config: RouteConfig) {
-    let { prefix, routes, middleware = [], isPublic } = config;
+    let { prefix, routes, middleware = [], isPublic } = config
 
     if (!isPublic) {
-      console.info('\nApplying authentication middleware to :', prefix);
+      console.info('\nApplying authentication middleware to :', prefix)
       this.app.use(
         `/api/${prefix}`,
         middlewareConfig.authMiddleware({ method: 'jwt' }),
         ...(middleware ?? []),
-      );
+      )
     } else if (isPublic && middleware.length > 0) {
-      console.info('Public :', prefix);
-      this.app.use(`/api/${prefix}`, middleware);
+      console.info('Public :', prefix)
+      this.app.use(`/api/${prefix}`, middleware)
     }
     routes.forEach((route, index) => {
-      this.app.use(`/api/${prefix}`, route);
+      this.app.use(`/api/${prefix}`, route)
       console.log(
         `\n${this.totalRoutes + 1}. ${config.prefix?.toUpperCase()} routes :\n`,
-      );
-      this.totalRoutes = +1;
-      this.showRoutes({ prefix, route }, index);
-    });
+      )
+      this.totalRoutes = +1
+      this.showRoutes({ prefix, route }, index)
+    })
   }
 
   /**
@@ -79,20 +79,20 @@ class RouterConfigure {
         .filter((layer) => layer.route)
         .map((layer) => {
           return {
-            path: layer.route.path,
-            //@ts-ignore
-            methods: layer.route.methods,
-          };
-        }) ?? [];
+            path: layer.route?.path,
+            //@ts-expect-error - Property is private
+            methods: layer.route?.methods,
+          }
+        }) ?? []
 
     routes?.forEach((route) => {
       console.log(
         `${Object.keys(route.methods)
           .map((method) => method.toUpperCase())
           .join(', ')}  /api/${config.prefix}${route.path}`,
-      );
-    });
+      )
+    })
   }
 }
 
-export default RouterConfigure;
+export default RouterConfigure

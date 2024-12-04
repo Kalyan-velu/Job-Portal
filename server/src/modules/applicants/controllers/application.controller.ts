@@ -5,7 +5,10 @@ import { Request, Response } from 'express'
 interface SubmitReq extends Request {
   body: { jobId: string; coverLetter?: string; companyId: string }
 }
-export const submitApplication = async (req: SubmitReq, res: Response) => {
+export const submitApplication = async (
+  req: SubmitReq,
+  res: Response,
+): Promise<void> => {
   try {
     const { jobId, companyId, coverLetter } = req.body
     const applicantId = req.user?.applicantId // Assuming user is authenticated, with applicant ID available
@@ -64,7 +67,10 @@ export const submitApplication = async (req: SubmitReq, res: Response) => {
   }
 }
 
-export const getApplicationById = async (req: Request, res: Response) => {
+export const getApplicationById = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const { applicationId } = req.params
     const application = await JobApplication.findById(applicationId)
@@ -91,7 +97,7 @@ export const getApplicationById = async (req: Request, res: Response) => {
 export const listApplicationsForApplicant = async (
   req: Request,
   res: Response,
-) => {
+): Promise<void> => {
   try {
     const applicantId = req.user?.applicantId // Assuming the applicant is authenticated
     if (!applicantId) {
@@ -141,7 +147,10 @@ export const listApplicationsForApplicant = async (
 }
 
 // Function to delete an application
-export const deleteApplication = async (req: Request, res: Response) => {
+export const deleteApplication = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const { applicationId } = req.params
     const applicantId = req.user?.applicantId
@@ -170,7 +179,10 @@ export const deleteApplication = async (req: Request, res: Response) => {
 }
 
 // Function to list all job IDs for applications made by a specific applicant
-export const listJobIdsForApplicant = async (req: Request, res: Response) => {
+export const listJobIdsForApplicant = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const applicantId = req.user?.applicantId // Assuming applicant is authenticated
 

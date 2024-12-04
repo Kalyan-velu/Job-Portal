@@ -5,6 +5,8 @@
     "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "paths": {
       "@shared/*": [
         "shared/*"

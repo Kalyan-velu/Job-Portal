@@ -48,7 +48,9 @@ export default function RegisterForm() {
     await register(data)
       .unwrap()
       .then(() => {
-        toast.success('Registration Successful')
+        toast.success('Registration Successful', {
+          description: 'Please check your email to verify your account',
+        })
         form.reset()
       })
       .catch((e) => {

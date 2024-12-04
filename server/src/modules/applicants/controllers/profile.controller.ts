@@ -49,7 +49,7 @@ export const CompleteApplicantProfile = async (
       { new: true },
     )
 
-    await user.save()
+    await user?.save()
     sendSuccessResponse(
       res,
       newApplicant,
@@ -103,7 +103,7 @@ export const getApplicantProfile = async (req: Request, res: Response) => {
           company: exp?.company ?? '',
           location: exp?.location ?? '',
           startDate: exp?.startDate.toISOString().split('T')[0],
-          endDate: exp?.endDate.toISOString().split('T')[0],
+          endDate: exp?.endDate?.toISOString().split('T')[0],
           description: exp?.description ?? '', // Optional field
         })) ?? [],
     }

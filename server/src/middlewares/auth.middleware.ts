@@ -5,20 +5,20 @@ import jwt from 'jsonwebtoken'
 import { sendErrorResponse } from '../common/response'
 import type { Role, User } from '../types'
 const jwtSecret = process.env.JWT_SECRET // Store this securely
+
+if (!jwtSecret) throw new Error('JWT_SECRET is not defined')
 console.debug('ℹ️ ~ file: auth.middleware.ts:7 ~ jwtSecret:', jwtSecret)
 
 export const createSession = (req: Request, res: Response): string => {
   // Define the payload for the token
-  const payload = req.user
+  // const payload = req.user
 
-  // Define your JWT secret and options
-  const secret = process.env.JWT_SECRET // Use environment variables for security
   const options = { expiresIn: '24h' } // Token expiration time
 
   // Generate the token
   const token = jwt.sign(
-    { id: req.user._id, role: req.user?.role },
-    secret,
+    { id: req.user._id, role: req.user.role },
+    jwtSecret,
     options,
   )
   res.cookie('auth_token', token, {
@@ -41,6 +41,10 @@ export const jwtAuth = async (
   res: Response,
   next: NextFunction,
 ) => {
+  console.debug(
+    'ℹ️ ~ file: auth.middleware.ts:44 ~ req:',
+    req.headers['authorization']?.split(' ')[1],
+  )
   const token = req.headers['authorization']?.split(' ')[1]
 
   if (!token) {
@@ -48,20 +52,20 @@ export const jwtAuth = async (
   }
 
   try {
-    const decoded = jwt.verify(token, jwtSecret) as { id: string } // Ensure decoded has the `_id` field
+    const decoded = jwt.verify(token, jwtSecret) // Ensure decoded has the `_id` field
 
     // Fetch the user using lean() to improve performance
+    // @ts-expect-error - We're adding the user to the request object
     const user = await UserModel.findById(decoded.id, '-password').lean()
 
     if (!user) {
       sendErrorResponse(res, 'Invalid Token', 401)
       return
     }
-    if (user) {
-      user.id = user._id.toString() // Manually add id if it's not working
-      delete user._id // Optionally remove _id
-      req.user = user
-    }
+    user.id = user._id.toString() // Manually add id if it's not working
+    delete (user as any)._id // Optionally remove _id
+    req.user = user
+    // }
     // Attach user information to the request
 
     // Proceed to the next middleware
@@ -78,9 +82,9 @@ export const sessionAuth = (
   res: Response,
   next: NextFunction,
 ) => {
-  //@ts-ignore
+  // @ts-expect-error - We're adding the user to the request object
   if (req.session && req.session.user) {
-    //@ts-ignore
+    // @ts-expect-error - We're adding the user to the request object
     req.user = req.session.user // Attach user information to the request
     next()
   }
@@ -99,12 +103,14 @@ export const oauthAuth = (req: Request, res: Response, next: NextFunction) => {
 }
 
 // Mock functions for OAuth validation
-const isValidOAuthToken = (token: string) => {
+const isValidOAuthToken = (token: string | undefined) => {
+  if (!token) return false
   // Implement validation logic
   return true // Replace with actual validation
 }
 
-const getUserFromToken = (token: string) => {
+const getUserFromToken = (token: string | undefined) => {
+  if (!token) return null
   // Mock user retrieval from token
   return { id: '123', name: 'John Doe' } as User & { id: string }
 }

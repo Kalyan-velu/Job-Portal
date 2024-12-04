@@ -35,9 +35,12 @@ export function LoginForm() {
     await login(data)
       .unwrap()
       .then((r) => {
-        if (r.redirectTo && r.message) {
+        if (r.redirectTo && r.message && r.isVerified) {
           toast.info(r.message)
           return navigate(r.redirectTo)
+        } else if (!r.isVerified) {
+          toast.error('Please verify your email first')
+          return navigate('/verify-email')
         }
         navigate('/')
       })
@@ -94,12 +97,11 @@ export function LoginForm() {
                   <FormItem>
                     <div className="flex items-center">
                       <Label htmlFor="password">Password</Label>
-                      {/* <Link
-                        to='#'
-                        className='ml-auto inline-block text-sm underline'
-                      >
+                      <Link
+                        to="/forgot-password"
+                        className="ml-auto inline-block text-sm underline">
                         Forgot your password?
-                      </Link> */}
+                      </Link>
                     </div>
                     <FormControl>
                       <PasswordInput

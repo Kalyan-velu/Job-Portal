@@ -17,6 +17,7 @@ export interface User {
   phoneNumber: string
   applicantId: string
   companyId: string
+  isVerified:boolean
   createdAt: Date
   updatedAt: Date
 }

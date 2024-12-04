@@ -53,8 +53,8 @@ export const Create = async (req: CompanyCreateRequest, res: Response) => {
       { new: true }, // This will return the updated user document
     )
     console.debug('ℹ️ ~ file: profile.controller.ts:41 ~ Create ~ user:', user)
-    await user.save()
-    const updatedUser = user.toJSON()
+    await user?.save()
+    const updatedUser = user?.toJSON()
     sendSuccessResponse(res, { companyData, updatedUser }, 'Success')
     return
   } catch (e) {
@@ -67,7 +67,10 @@ interface CompanyUpdateRequest extends Request {
   body: Omit<CompanyType, 'createdBy'>
 }
 
-export const Update = async (req: CompanyUpdateRequest, res: Response) => {
+export const Update = async (
+  req: CompanyUpdateRequest,
+  res: Response,
+): Promise<void> => {
   try {
     const id = req.user?.companyId
 
