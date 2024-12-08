@@ -5,5 +5,5 @@
     ".env"
   ],
   "ext": "ts,json",
-  "exec": "ts-node -r tsconfig-paths/register ./src/bin/www.ts"
+  "exec": "ts-node  --project  tsconfig.server.json ./src/bin/www.ts -r tsconfig-paths/register dotenv/config dotenv_config_path=.env"
 }

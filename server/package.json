@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc",
+    "build": "tsc --project tsconfig.build.json",
     "start": "node -r tsconfig-paths/register ./dist/bin/www.js"
   },
   "author": "",

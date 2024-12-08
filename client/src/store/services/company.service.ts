@@ -21,7 +21,7 @@ export const companyApi = createApi({
         method: 'POST',
         body,
       }),
-      transformResponse: (response: QueryResponse<void>, meta, arg) => {
+      transformResponse: (response: QueryResponse<void>) => {
         return response.message
       },
       transformErrorResponse,
@@ -34,7 +34,7 @@ export const companyApi = createApi({
         return res.data
       },
       transformErrorResponse,
-      providesTags: (res, error, id) =>
+      providesTags: (res) =>
         res
           ? [
               { type: 'Company' as const, id: 'LIST' },
@@ -79,7 +79,7 @@ export const companyApi = createApi({
       void,
       { id: string; context: 'all' | 'archived' | 'active' }
     >({
-      query: (id) => ({
+      query: ({ id }) => ({
         url: `/job/private/${id}`,
         method: 'DELETE',
       }),

@@ -35,17 +35,17 @@ const AllActiveCompanyJobs = memo(() => {
                   key={job._id}
                   className="relative flex min-h-32 w-full cursor-pointer flex-col gap-y-2 rounded-lg bg-secondary p-3 text-secondary-foreground shadow-lg">
                   <div className="flex items-center gap-2">
-                    <div className="size-12 rounded-lg border border-solid border-gray-300 bg-gray-300" />
+                    <div className="size-12 rounded-lg border border-solid border-gray-400 bg-gray-400" />
                     <div className="flex flex-col justify-start gap-1">
                       <h3 className="text-lg font-semibold hover:cursor-pointer">
                         {job.title}
                       </h3>
                       <div className="flex items-center gap-x-2">
-                        <p className="text-xs font-medium text-gray-300">
+                        <p className="text-xs font-medium text-gray-400">
                           {job.company.name}
                         </p>
                         <div className="size-1 rounded-full bg-gray-500"></div>
-                        <div className="rounded-full text-xs font-medium capitalize text-gray-300">
+                        <div className="rounded-full text-xs font-medium capitalize text-gray-400">
                           {job.type.replace('-', ' ')}
                         </div>
                         <div className="size-1 rounded-full bg-gray-500"></div>
@@ -54,12 +54,12 @@ const AllActiveCompanyJobs = memo(() => {
                     </div>
                     <div className="grow" />
                     <div className="flex items-center gap-x-2">
-                      <p className="flex gap-x-2 text-xs font-medium text-gray-300">
+                      <p className="flex gap-x-2 text-xs font-medium text-gray-400">
                         <MapIcon className={'size-4'} />
                         <span>{job.location}</span>
                       </p>
                       <div className="size-1 rounded-full bg-gray-500"></div>
-                      <p className="text-xs font-medium capitalize text-gray-300">
+                      <p className="text-xs font-medium capitalize text-gray-400">
                         {formatDistanceToNow(new Date(job.updatedAt), {
                           addSuffix: true,
                         })}
