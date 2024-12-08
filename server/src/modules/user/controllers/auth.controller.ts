@@ -98,7 +98,7 @@ export const Register = async (req: RegisterRequest, res: Response) => {
 
     // Return the user without the password
     const user = newUser.toJSON()
-    // @ts-expect-error - We're deleting the password field
+    // @ts-expect-error – We're deleting the password field
     delete user.password
 
     return sendSuccessResponse(

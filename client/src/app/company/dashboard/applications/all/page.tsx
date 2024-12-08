@@ -269,7 +269,7 @@ export default function EmployerApplications() {
                               id="note"
                               value={note}
                               onChange={(e) => setNote(e.target.value)}
-                              className="col-span-3 rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring focus:ring-blue-500"
+                              className="col-span-3 rounded-lg border border-gray-400 p-2 focus:outline-none focus:ring focus:ring-blue-500"
                               placeholder="Type your note here..."
                             />
                           </div>

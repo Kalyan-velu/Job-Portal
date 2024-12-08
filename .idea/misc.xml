@@ -4,5 +4,4 @@
     <option name="show" value="ASK" />
     <option name="description" value="" />
   </component>
-  <component name="KubernetesApiProvider">{}</component>
 </project>
