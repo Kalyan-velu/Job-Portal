@@ -1,8 +1,8 @@
-import { sendErrorResponse, sendSuccessResponse } from '@server/common/response'
-import { Applicant } from '@server/models/applicant.model'
-import { JobApplication } from '@server/models/application.model'
-import { Company } from '@server/models/company.model'
-import { Job } from '@server/models/job.model'
+import { sendErrorResponse, sendSuccessResponse } from '../../../common/response'
+import { Applicant } from '../../../models/applicant.model'
+import { JobApplication } from '../../../models/application.model'
+import { Company } from '../../../models/company.model'
+import { Job } from '../../../models/job.model'
 import type { Request, Response } from 'express'
 import mongoose from 'mongoose'
 

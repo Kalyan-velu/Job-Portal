@@ -1,4 +1,4 @@
-import { dateValidator } from '@server/lib/utils'
+import { dateValidator } from '../lib/utils'
 import { Document, model, Schema, Types } from 'mongoose'
 
 interface JobApplicationDoc extends Document {

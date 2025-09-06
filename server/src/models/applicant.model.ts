@@ -1,4 +1,4 @@
-import type { Applicant as ApplicantI } from '@server/zod/applicant.schema'
+import type { Applicant as ApplicantI } from '../zod/applicant.schema'
 import { Document, model, Schema, Types } from 'mongoose'
 
 // Custom validators

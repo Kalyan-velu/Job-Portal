@@ -1,6 +1,6 @@
-import type { RouteConfig } from '@server/common/routes.config'
-import employerApplication from '@server/modules/company/routes/application.route'
-import companyProfileRouter from '@server/modules/company/routes/profile.route'
+import type { RouteConfig } from '../../common/routes.config'
+import employerApplication from './routes/application.route'
+import companyProfileRouter from './routes/profile.route'
 
 const CompanyModule: RouteConfig = {
   prefix: 'company',

@@ -1,7 +1,7 @@
-import { sendErrorResponse, sendSuccessResponse } from '@server/common/response'
-import { Company } from '@server/models/company.model'
-import { Job } from '@server/models/job.model'
-import type { JobInterface } from '@server/zod/job.schema'
+import { sendErrorResponse, sendSuccessResponse } from '../../../common/response'
+import { Company } from '../../../models/company.model'
+import { Job } from '../../../models/job.model'
+import type { JobInterface } from '../../../zod/job.schema'
 import { Request, Response } from 'express'
 
 interface JobCreateReq extends Request {

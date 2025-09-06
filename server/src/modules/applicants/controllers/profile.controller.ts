@@ -1,7 +1,7 @@
-import { sendErrorResponse, sendSuccessResponse } from '@server/common/response'
-import { Applicant } from '@server/models/applicant.model'
-import { User } from '@server/models/user.model'
-import type { Applicant as ApplicantI } from '@server/zod/applicant.schema'
+import { sendErrorResponse, sendSuccessResponse } from '../../../common/response'
+import { Applicant } from '../../../models/applicant.model'
+import { User } from '../../../models/user.model'
+import type { Applicant as ApplicantI } from '../../../zod/applicant.schema'
 import { Request, Response } from 'express'
 
 interface ApplicantUpdateReq extends Request {

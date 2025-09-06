@@ -1,7 +1,9 @@
-import { sendErrorResponse, sendSuccessResponse } from '@server/common/response'
-import { Applicant } from '@server/models/applicant.model'
-import { JobApplication } from '@server/models/application.model'
+
+import { Applicant } from '../../../models/applicant.model'
 import { Request, Response } from 'express'
+import { JobApplication } from '../../../models/application.model';
+import { sendErrorResponse, sendSuccessResponse } from '../../../common/response'
+
 interface SubmitReq extends Request {
   body: { jobId: string; coverLetter?: string; companyId: string }
 }

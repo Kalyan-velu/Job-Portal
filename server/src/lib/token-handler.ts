@@ -1,6 +1,7 @@
-import { sendResetPasswordEmail } from '@server/lib/mailer/nodemailer'
-import { User } from '@server/models/user.model'
+
 import crypto from 'crypto'
+import { User } from '../models/user.model'
+import { sendResetPasswordEmail } from './mailer/nodemailer'
 
 export const sendReset = async (email: string) => {
   const user = await User.findOne({ email })

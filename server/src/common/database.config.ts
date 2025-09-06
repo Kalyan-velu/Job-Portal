@@ -16,8 +16,8 @@ const dbConfig: {
 class Database {
   public mongooseInstance: typeof mongoose | null;
   private modelDir: string;
-  private maxRetries: number;
-  private retryDelay: number;
+  private  maxRetries: number;
+  private  retryDelay: number;
 
   constructor(modelsDir: string, maxRetries = 5, retryDelay = 5000) {
     // maxRetries: number of retries, retryDelay: in ms

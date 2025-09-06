@@ -9,8 +9,9 @@ import type {
   BaseUserRegisterSchemaType,
   LoginType,
 } from '../../../zod/user.schema'
-import { sendVerificationEmail } from '@server/lib/mailer/nodemailer.ts'
-import { sendReset } from '@server/lib/token-handler'
+import { sendVerificationEmail } from '../../../lib/mailer/nodemailer'
+import { sendReset } from '../../../lib/token-handler'
+
 interface LoginRequest extends Request {
   body: LoginType
 }
