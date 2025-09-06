@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import { Document, model, Schema } from 'mongoose'
+import { CallbackError, Document, model, Schema } from 'mongoose'
 import type { User as UserI } from '../types' // Adjust the import according to your project structure
 import crypto from 'crypto'
 // Extend UserI to include the comparePassword method
@@ -39,9 +39,9 @@ const userSchema = new Schema<UserDocument>(
       updatedAt: true,
     },
     toJSON: {
-      transform(doc, ret) {
-        delete ret.__v // Remove __v field
-        delete ret.password // Do not expose the password field
+      transform(doc, rec) {
+
+        const {password:_p,__v:_v,...ret}=rec
         return ret
       },
     },
@@ -49,8 +49,7 @@ const userSchema = new Schema<UserDocument>(
 )
 
 userSchema.virtual('id').get(function () {
-  // @ts-expect-error -  We're not checking for null or undefined here
-  return this._id.toString()
+  return (this._id as string|undefined)?.toString()
 })
 
 // Ensure `toJSON` and `toObject` include virtuals
@@ -76,8 +75,7 @@ userSchema.pre<UserDocument>('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt) // Hash the password
     next() // Proceed to save the user
   } catch (error) {
-    // @ts-expect-error - We're not handling the error here
-    return next(error) // Pass any errors to the next middleware
+    return next(error as CallbackError) // Pass any errors to the next middleware
   }
 })
 

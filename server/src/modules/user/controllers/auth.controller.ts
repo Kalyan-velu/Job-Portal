@@ -98,9 +98,8 @@ export const Register = async (req: RegisterRequest, res: Response) => {
     // if email verification failed, delete the user and send error response
 
     // Return the user without the password
-    const user = newUser.toJSON()
-    // @ts-expect-error – We're deleting the password field
-    delete user.password
+    const { password:_p,...user } = newUser.toJSON()
+
 
     return sendSuccessResponse(
       res,

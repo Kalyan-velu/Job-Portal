@@ -28,8 +28,8 @@ const companySchema = new Schema<CompanyDocument>(
       updatedAt: true,
     },
     toJSON: {
-      transform(doc, ret) {
-        delete ret.__v // Remove __v field
+      transform(doc, rec) {
+        const {__v,...ret}=rec// Remove __v field
         return ret
       },
     },

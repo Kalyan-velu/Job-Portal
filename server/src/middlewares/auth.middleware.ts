@@ -13,12 +13,12 @@ export const createSession = (req: Request, res: Response): string => {
   // Define the payload for the token
   // const payload = req.user
 
-  const options = { expiresIn: '24h' } // Token expiration time
+  const options:jwt.SignOptions = { expiresIn: '24h' } // Token expiration time
 
   // Generate the token
   const token = jwt.sign(
     { id: req.user._id, role: req.user.role },
-    jwtSecret,
+    jwtSecret as jwt.Secret,
     options,
   )
   res.cookie('auth_token', token, {

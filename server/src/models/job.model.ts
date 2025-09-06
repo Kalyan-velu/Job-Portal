@@ -25,8 +25,7 @@ const jobSchema = new Schema<JobDocument>(
   {
     timestamps: true,
     toJSON: {
-      transform(doc, ret) {
-        delete ret.__v // Remove __v field
+      transform(doc, {__v,...ret}) {
         return ret
       },
     },
