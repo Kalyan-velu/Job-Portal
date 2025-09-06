@@ -16,7 +16,7 @@ COPY . .
 
 # Build client
 WORKDIR /workspace/client
-RUN pnpm install --frozen-lockfile || pnpm install
+RUN pnpm install
 RUN pnpm run build
 
 # Build server (TypeScript -> dist)
@@ -40,7 +40,7 @@ WORKDIR /app
 COPY --from=builder /workspace/server/package.json ./package.json
 # Copy lockfile if present (the wildcard won't fail if it doesn't exist)
 COPY --from=builder /workspace/server/pnpm-lock.yaml* ./
-RUN pnpm install --prod --frozen-lockfile || pnpm install --prod
+RUN pnpm install --prod
 
 # Copy compiled server and static client build
 COPY --from=builder /workspace/server/dist ./dist
