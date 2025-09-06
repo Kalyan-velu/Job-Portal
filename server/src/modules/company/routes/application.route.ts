@@ -1,9 +1,9 @@
-import { authorizeRole } from '@server/middlewares/auth.middleware'
+import { authorizeRole } from '../../../middlewares/auth.middleware'
 import {
   GetAllApplications,
   getApplicantDetailsByApplication,
   updateApplicationStatus,
-} from '@server/modules/company/controllers/application.controller'
+} from '../controllers/application.controller'
 import { Router } from 'express'
 
 const employerApplication = Router()

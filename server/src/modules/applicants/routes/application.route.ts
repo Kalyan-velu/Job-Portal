@@ -4,7 +4,7 @@ import {
   listApplicationsForApplicant,
   listJobIdsForApplicant,
   submitApplication,
-} from '@server/modules/applicants/controllers/application.controller'
+} from '../controllers/application.controller'
 import { Router } from 'express'
 
 const applicantionRouter = Router()

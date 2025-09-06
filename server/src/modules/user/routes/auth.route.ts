@@ -9,7 +9,7 @@ import {
   resetPassword,
   verifyEmail,
 } from '../controllers/auth.controller'
-import { jwtAuth } from '@server/middlewares/auth.middleware'
+import { jwtAuth } from '../../../middlewares/auth.middleware'
 
 const userAuthRouter = Router()
 

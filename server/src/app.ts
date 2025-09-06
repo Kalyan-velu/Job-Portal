@@ -1,14 +1,14 @@
 import 'dotenv/config'
 import express from 'express'
 
-import { middleware } from '@server/common/middleware.config'
-import RouterConfigure from '@server/common/routes.config'
-import { Applicant, ApplicantApplication } from '@server/modules/applicants'
-import CompanyModule from '@server/modules/company'
-import userModules from '@server/modules/user'
+import { middleware } from './common/middleware.config'
+import RouterConfigure from './common/routes.config'
+import { Applicant, ApplicantApplication } from './modules/applicants'
+import CompanyModule from './modules/company'
+import userModules from './modules/user'
 
-import database from '@server/common/database.config'
-import { PrivateJobModule, PublicJobModule } from '@server/modules/job'
+import database from './common/database.config'
+import { PrivateJobModule, PublicJobModule } from './modules/job'
 
 const app = express()
 const configApi = new RouterConfigure(app)

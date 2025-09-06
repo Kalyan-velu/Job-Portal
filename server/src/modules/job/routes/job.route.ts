@@ -1,4 +1,4 @@
-import { validateRequestBody } from '@server/common/request'
+import { validateRequestBody } from '../../../common/request'
 import {
   archiveJob,
   createJob,
@@ -9,8 +9,8 @@ import {
   listArchivedJobs,
   unarchiveJob,
   updateJob,
-} from '@server/modules/job/controllers/job.controller'
-import { JobSchema } from '@server/zod/job.schema'
+} from '../controllers/job.controller'
+import { JobSchema } from '../../../zod/job.schema'
 import { Router } from 'express'
 import z from 'zod'
 

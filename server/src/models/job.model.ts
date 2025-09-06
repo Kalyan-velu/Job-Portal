@@ -1,4 +1,4 @@
-import { jobTypeList, type JobInterface } from '@server/zod/job.schema'
+import { jobTypeList, type JobInterface } from '../zod/job.schema'
 import { model, Schema, type Document, type ObjectId } from 'mongoose'
 
 interface JobDocument

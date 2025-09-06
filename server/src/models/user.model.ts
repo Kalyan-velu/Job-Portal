@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs'
 import { Document, model, Schema } from 'mongoose'
 import type { User as UserI } from '../types' // Adjust the import according to your project structure
 import crypto from 'crypto'
-// Extend UserI to include comparePassword method
+// Extend UserI to include the comparePassword method
 export interface UserDocument
   extends Omit<UserI, 'companyId' | 'applicantId' | 'id'>,
     Document {

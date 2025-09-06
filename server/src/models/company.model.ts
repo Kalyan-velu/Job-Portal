@@ -1,4 +1,4 @@
-import type { CompanyType as CompanyI } from '@server/zod-schema/company.schema' // Adjust the import according to your project structure
+import type { CompanyType as CompanyI } from '../zod/company.schema' // Adjust the import according to your project structure
 import { Document, model, Schema } from 'mongoose'
 
 // Extend CompanyI to include the Mongoose Document

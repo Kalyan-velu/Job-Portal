@@ -1,5 +1,5 @@
-import { authorizeRole } from '@server/middlewares/auth.middleware'
-import { applicantionRouter } from '@server/modules/applicants/routes/application.route'
+import { authorizeRole } from '../../middlewares/auth.middleware'
+import { applicantionRouter } from './routes/application.route'
 import type { RouteConfig } from '../../common/routes.config'
 import generalRouter from './routes/applicant.route'
 
