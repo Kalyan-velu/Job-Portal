@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer'
-import { UserDocument } from '@server/models/user.model.ts'
+import { UserDocument } from '../../models/user.model'
+
 
 const email = process.env.EMAIL_USER
 const pass = process.env.EMAIL_PASS

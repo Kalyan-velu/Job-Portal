@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "build": "tsc --project tsconfig.build.json",
-    "start": "node -r tsconfig-paths/register ./dist/bin/www.js"
+    "start": "node ./dist/bin/www.js"
   },
   "author": "",
   "license": "ISC",
