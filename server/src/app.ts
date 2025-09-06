@@ -9,6 +9,7 @@ import userModules from './modules/user'
 
 import database from './common/database.config'
 import { PrivateJobModule, PublicJobModule } from './modules/job'
+import path from 'node:path'
 
 const app = express()
 const configApi = new RouterConfigure(app)
@@ -30,5 +31,18 @@ const modules = [
 for (let module of modules) {
   configApi.configureRoute(module)
 }
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(path.resolve(), '../client/dist')))
+
+  app.get('*', (request, response) => {
+    response.sendFile(path.resolve(path.resolve(), "../client", "dist", "index.html"))
+  })
+} else {
+  app.get("/", (request, response) => {
+    response.json({message: "Server is Up"});
+  });
+}
+
 
 export default app
