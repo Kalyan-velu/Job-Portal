@@ -1,4 +1,4 @@
-'use web'
+'use client'
 
 import { ApplicantDetailedView } from '@/components/application/application-view'
 import { Badge } from '@/components/ui/badge'
