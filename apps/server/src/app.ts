@@ -1,6 +1,5 @@
 import 'dotenv/config'
 import express from 'express'
-
 import { middleware } from './common/middleware.config'
 import RouterConfigure from './common/routes.config'
 import { Applicant, ApplicantApplication } from './modules/applicants'
@@ -33,10 +32,11 @@ for (let module of modules) {
 }
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(path.resolve(), '../web/dist')))
+
+  app.use(express.static(path.join(__dirname, '../../web/dist')))
 
   app.get('*', (request, response) => {
-    response.sendFile(path.resolve(path.resolve(), "../web", "dist", "index.html"))
+    response.sendFile(path.resolve(__dirname, "../../web", "dist", "index.html"))
   })
 } else {
   app.get("/", (request, response) => {
