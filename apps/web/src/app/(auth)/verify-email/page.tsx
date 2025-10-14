@@ -1,4 +1,4 @@
-'use web'
+'use client'
 
 import { useState } from 'react'
 import {

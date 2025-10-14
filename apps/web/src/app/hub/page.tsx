@@ -1,4 +1,4 @@
-'use web'
+'use client'
 
 import { ApplyJob } from '@/components/hub/apply-job-button'
 import { JobDetailedView } from '@/components/job/job-details'
