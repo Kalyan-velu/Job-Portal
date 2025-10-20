@@ -27,7 +27,14 @@
       "cache": false
     },
     "start": {
-
+      "env": ["MONGO_URL","JWT_SECRET","EMAIL_USER","EMAIL_PASS","BASE_URL","NODE_ENV","PORT"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.development.local",
+        ".env.local",
+        ".env.development",
+        ".env"
+      ]
     }
   }
 }
