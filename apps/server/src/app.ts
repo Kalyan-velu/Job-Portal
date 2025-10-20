@@ -31,6 +31,8 @@ for (let module of modules) {
   configApi.configureRoute(module)
 }
 
+console.log("process.env.NODE_ENV: ", process.env.NODE_ENV, "")
+
 if (process.env.NODE_ENV === 'production') {
 
   app.use(express.static(path.join(__dirname, '../../web/dist')))

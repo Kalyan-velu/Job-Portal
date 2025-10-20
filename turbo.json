@@ -1,6 +1,7 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "globalEnv": ["NODE_ENV"],
+  "envMode": "loose",
   "tasks": {
     "build": {
       "env": ["MONGO_URL","JWT_SECRET","EMAIL_USER","EMAIL_PASS","BASE_URL","NODE_ENV","PORT"],
