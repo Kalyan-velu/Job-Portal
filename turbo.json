@@ -1,12 +1,27 @@
 {
   "$schema": "https://turborepo.com/schema.json",
+  "globalEnv": ["NODE_ENV"],
   "tasks": {
     "build": {
       "env": ["MONGO_URL","JWT_SECRET","EMAIL_USER","EMAIL_PASS","BASE_URL","NODE_ENV","PORT"],
       "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.production.local",
+        ".env.local",
+        ".env.production",
+        ".env"
+      ],
       "outputs": ["dist/**"]
     },
     "dev": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.development.local",
+        ".env.local",
+        ".env.development",
+        ".env"
+      ],
       "persistent": true,
       "cache": false
     },
