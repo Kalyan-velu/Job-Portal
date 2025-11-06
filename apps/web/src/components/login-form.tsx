@@ -1,27 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from '@/components/ui/form'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from '@/components/ui/card'
+import { Form, FormControl, FormField, FormItem, FormMessage, } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PasswordInput } from '@/components/ui/password-input'
 import { useLoginMutation } from '@/store/services/user.service'
 import { loginSchema, type LoginSchemaType } from '@/zod-schema/user.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, type FieldErrors } from 'react-hook-form'
+import { type FieldErrors, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 export function LoginForm() {
@@ -37,6 +25,12 @@ export function LoginForm() {
       .then((r) => {
         if (r.redirectTo && r.message && r.isVerified) {
           toast.info(r.message)
+          if(r.redirectTo==='employer'){
+            return navigate('/app/employer')
+          }
+          if(r.redirectTo==='applicant'){
+            return navigate('/app/jobs')
+          }
           return navigate(r.redirectTo)
         } else if (!r.isVerified) {
           toast.error('Please verify your email first')
@@ -49,17 +43,14 @@ export function LoginForm() {
         toast.error(e || 'Login failed')
       })
   }
+
   const onInvalidSubmit = (data: FieldErrors<LoginSchemaType>) => {
     console.error(
       'ℹ️ ~ file: login-form.tsx:50 ~ onInvalidSubmit ~ data:',
       data,
     )
-    // console.error(
-    //   'ℹ️ ~ file: login-form.tsx:38 ~ onInvalidSubmit ~ data:',
-    //   data
-    // );
-    // toast.error("Couldn't submit form");
   }
+
   return (
     <Form {...form}>
       <Card className="mx-auto max-w-sm">

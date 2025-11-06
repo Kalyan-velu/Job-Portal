@@ -1,6 +1,7 @@
-import { AppProviders } from '@/providers';
-import { memo } from 'react';
-import { Outlet } from 'react-router-dom';
+import { AppProviders } from '@/providers'
+import { memo } from 'react'
+import { Outlet } from 'react-router-dom'
+
 const RootLayout = memo(() => {
   return (
     <AppProviders>

@@ -16,7 +16,7 @@ const EmployerDashboard: React.FC = () => {
           <h2 className="text-xl font-semibold text-gray-700">Job Postings</h2>
           <p className="text-gray-600">Manage your job listings.</p>
           <Button className="mt-4" variant="default">
-            <Link to={'/app/company/jobs/active'}>View Job Postings</Link>
+            <Link to={'/app/employer/jobs/active'}>View Job Postings</Link>
           </Button>
         </Card>
 
@@ -25,7 +25,7 @@ const EmployerDashboard: React.FC = () => {
           <h2 className="text-xl font-semibold text-gray-700">Applications</h2>
           <p className="text-gray-600">Review and manage job applications.</p>
           <Button className="mt-4" variant="default">
-            <Link to={'/app/company/applications'}>View Applications</Link>
+            <Link to={'/app/employer/applications'}>View Applications</Link>
           </Button>
         </Card>
 
@@ -36,7 +36,7 @@ const EmployerDashboard: React.FC = () => {
           </h2>
           <p className="text-gray-600">Manage your company details.</p>
           <Button className="mt-4" variant="default">
-            <Link to={'/app/company/profile'}>Edit Profile</Link>
+            <Link to={'/app/employer/profile'}>Edit Profile</Link>
           </Button>
         </Card>
       </div>
