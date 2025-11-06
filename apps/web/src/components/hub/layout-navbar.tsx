@@ -130,16 +130,16 @@ export default function ApplicantNavbar() {
       </div>
 
       {isMenuOpen && (
-        <div className="md:hidden">
+        <div className="md:hidden ">
           <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
             <Link
               to="/app/jobs"
-              className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
+              className="rounded-md px-3 py-2 text-sm font-medium ">
               Find Jobs
             </Link>
             <Link
               to="/app/jobs/my-applications"
-              className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
+              className="rounded-md px-3 py-2 text-sm font-medium ">
               My Applications
             </Link>
           </div>
@@ -155,10 +155,10 @@ export default function ApplicantNavbar() {
                 </Avatar>
               </div>
               <div className="ml-3">
-                <div className="text-base font-medium text-gray-800">
+                <div className="text-base font-medium ">
                   {user?.name}
                 </div>
-                <div className="text-sm font-medium text-gray-500">
+                <div className="text-sm font-medium text-foregroud-muted">
                   {user?.email}
                 </div>
               </div>
@@ -170,7 +170,7 @@ export default function ApplicantNavbar() {
             <div className="mt-3 space-y-1 px-2">
               <Link
                 to="/app/jobs/profile"
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
+                className="block rounded-md px-3 py-2 text-base font-medium ">
                 Profile
               </Link>
               {/* <a
@@ -195,7 +195,7 @@ export default function ApplicantNavbar() {
                   dispatch(logout())
                   return navigate('/login')
                 }}
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
+                className="block rounded-md px-3 py-2 text-base font-medium ">
                 Log out
               </Button>
             </div>
