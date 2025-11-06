@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 const EmployerDashboard: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen  p-6">
       <h1 className="mb-4 text-3xl font-semibold text-gray-800">
         Employer Dashboard
       </h1>

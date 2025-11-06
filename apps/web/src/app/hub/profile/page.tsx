@@ -5,7 +5,7 @@ import { memo } from 'react'
 const ApplicantForm = memo(() => {
   const { data } = useGetApplicantProfileQuery()
   return (
-    <div className="">
+    <div className="px-4">
       {data && (
         <ApplicantProfileForm
           defaultValues={{
