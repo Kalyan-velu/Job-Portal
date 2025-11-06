@@ -39,11 +39,12 @@ export const Login = async (req: LoginRequest, res: Response) => {
 
     const token = createSession(req, res)
 
+    console.log(user)
     if (user.role === 'employer' && !user.companyId) {
       sendSuccessResponse(res, {
         token,
         message: 'Please complete your company profile',
-        redirectTo: '/app/company/create',
+        redirectTo: '/app/employer/create',
         isVerified: user.isVerified,
       })
       return
@@ -51,13 +52,17 @@ export const Login = async (req: LoginRequest, res: Response) => {
       sendSuccessResponse(res, {
         token,
         message: 'Please complete your profile',
-        redirectTo: '/app/hub/profile',
+        redirectTo: '/app/jobs/profile',
         isVerified: user.isVerified,
       })
       return
     }
 
-    sendSuccessResponse(res, { token, type: 'authorization' }, 'Success')
+    sendSuccessResponse(
+      res,
+      { token, type: 'authorization', redirectTo: user.role, isVerified: true },
+      'Success',
+    )
     return
   } catch (e) {
     sendErrorResponse(res, e, 500)
@@ -98,8 +103,7 @@ export const Register = async (req: RegisterRequest, res: Response) => {
     // if email verification failed, delete the user and send error response
 
     // Return the user without the password
-    const { password:_p,...user } = newUser.toJSON()
-
+    const { password: _p, ...user } = newUser.toJSON()
 
     return sendSuccessResponse(
       res,

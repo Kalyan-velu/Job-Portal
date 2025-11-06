@@ -1,33 +1,15 @@
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { useCreateCompanyyMutation } from "@/store/services/company.service";
-import {
-  CompanySchema,
-  type CompanySchemaFieldType,
-  type CompanyType,
-} from "@/zod-schema/company.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { memo, useState } from "react";
-import { useForm, type FieldErrors } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { useCreateCompanyyMutation } from '@/store/services/company.service'
+import { CompanySchema, type CompanySchemaFieldType, type CompanyType, } from '@/zod-schema/company.schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { memo, useState } from 'react'
+import { type FieldErrors, useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 const steps = [
   { id: "step-1", name: "Basic Info" },
@@ -72,7 +54,7 @@ const CreateCompanyProfile = memo(() => {
       .unwrap()
       .then((r) => {
         console.debug("ℹ️ ~ file: page.tsx:72 ~ .then ~ r:", r);
-        navigate("/app/company");
+        navigate("/app/employer");
         toast.success(r);
       })
       .catch((e) => {

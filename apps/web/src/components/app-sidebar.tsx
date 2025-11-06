@@ -1,12 +1,6 @@
-import {
-  BriefcaseBusiness,
-  ChevronsUpDown,
-  Command,
-  FileText,
-  Plus,
-  UserCircle,
-} from 'lucide-react'
+import { BriefcaseBusiness, ChevronsUpDown, Command, FileText, Plus, UserCircle, } from 'lucide-react'
 import * as React from 'react'
+import { memo } from 'react'
 
 import { CreateJob } from '@/components/job/create-job'
 import { NavCompany } from '@/components/nav-company'
@@ -33,7 +27,6 @@ import {
 } from '@/components/ui/sidebar'
 import { useAppSelector } from '@/store/hooks'
 import { useGetMyCompanyQuery } from '@/store/services/company.service'
-import { memo } from 'react'
 import { Link } from 'react-router-dom'
 
 const data = {
@@ -46,19 +39,19 @@ const data = {
       items: [
         {
           title: 'All Jobs',
-          url: '/app/company/jobs', // Replace with actual route
+          url: '/app/employer/jobs', // Replace with actual route
         },
         {
           title: 'Active Jobs',
-          url: '/app/company/jobs/active', // Route to view posted jobs
+          url: '/app/employer/jobs/active', // Route to view posted jobs
         },
         {
           title: 'Archived Jobs',
-          url: '/app/company/jobs/archived', // Route to create a new job
+          url: '/app/employer/jobs/archived', // Route to create a new job
         },
         // {
         //   title: 'Starred Jobs',
-        //   url: '/app/company/jobs/starred', // Optionally view starred jobs
+        //   url: '/app/employer/jobs/starred', // Optionally view starred jobs
         // },
       ],
     },
@@ -69,19 +62,19 @@ const data = {
     //   items: [
     //     {
     //       title: 'All Candidates',
-    //       url: '/app/company/candidates', // Route to view all candidates
+    //       url: '/app/employer/candidates', // Route to view all candidates
     //     },
     //     {
     //       title: 'Shortlisted',
-    //       url: '/app/company/candidates/shortlisted', // Route to view shortlisted candidates
+    //       url: '/app/employer/candidates/shortlisted', // Route to view shortlisted candidates
     //     },
     //     {
     //       title: 'Interview Scheduled',
-    //       url: '/app/company/candidates/interviews', // View candidates with scheduled interviews
+    //       url: '/app/employer/candidates/interviews', // View candidates with scheduled interviews
     //     },
     //     {
     //       title: 'Rejections',
-    //       url: '/app/company/candidates/rejections', // Track rejected candidates
+    //       url: '/app/employer/candidates/rejections', // Track rejected candidates
     //     },
     //   ],
     // },
@@ -92,19 +85,19 @@ const data = {
       items: [
         {
           title: 'All Applications',
-          url: '/app/company/applications', // Route to view all applications
+          url: '/app/employer/applications', // Route to view all applications
         },
         // {
         //   title: 'Under Review',
-        //   url: '/app/company/applications/review', // Route for applications under review
+        //   url: '/app/employer/applications/review', // Route for applications under review
         // },
         // {
         //   title: 'Hired',
-        //   url: '/app/company/applications/hired', // Track hired candidates
+        //   url: '/app/employer/applications/hired', // Track hired candidates
         // },
         // {
         //   title: 'Archived',
-        //   url: '/app/company/applications/archived', // Optionally view archived applications
+        //   url: '/app/employer/applications/archived', // Optionally view archived applications
         // },
       ],
     },
@@ -115,11 +108,11 @@ const data = {
     //   items: [
     //     {
     //       title: 'Job Performance',
-    //       url: '/app/company/reports/job-performance', // Route to view job performance reports
+    //       url: '/app/employer/reports/job-performance', // Route to view job performance reports
     //     },
     //     {
     //       title: 'Candidate Insights',
-    //       url: '/app/company/reports/candidate-insights', // Route to view candidate insights
+    //       url: '/app/employer/reports/candidate-insights', // Route to view candidate insights
     //     },
     //   ],
     // },
@@ -130,11 +123,11 @@ const data = {
     //   items: [
     //     {
     //       title: 'FAQ',
-    //       url: '/app/company/support/faq', // Route to FAQs
+    //       url: '/app/employer/support/faq', // Route to FAQs
     //     },
     //     {
     //       title: 'Contact Support',
-    //       url: '/app/company/support/contact', // Route to contact support
+    //       url: '/app/employer/support/contact', // Route to contact support
     //     },
     //   ],
     // },
@@ -172,12 +165,12 @@ const data = {
     {
       name: 'Company Profile',
       icon: UserCircle,
-      url: '/app/company/profile', // Route to view company profile
+      url: '/app/employer/profile', // Route to view employer profile
     },
     // {
     //   name: 'Company Settings',
     //   icon: Settings2,
-    //   url: '/app/company/settings', // Route to manage company settings
+    //   url: '/app/employer/settings', // Route to manage employer settings
     // },
   ],
 }

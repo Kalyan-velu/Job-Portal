@@ -10,11 +10,8 @@ import NotFound from '@/components/not-found'
 import { store } from '@/store'
 import { userApi } from '@/store/services/user.service'
 import type { Role } from '@/types'
-import {
-  createBrowserRouter,
-  redirect,
-  type LoaderFunctionArgs,
-} from 'react-router-dom'
+import { createBrowserRouter, type LoaderFunctionArgs, redirect, } from 'react-router-dom'
+import Home from '@/app/page.tsx'
 
 const getTokenAndRole = () => ({
   token: localStorage.getItem('token'),
@@ -36,21 +33,27 @@ const handleRedirect = async ({
 
     if (isError) {
       console.error('Failed to fetch user data')
-      return redirect('/login') // Handle error: redirect to login or error page
+      return redirect('/') // Handle error: redirect to login or error page
     }
 
     return data?.role === 'applicant'
-      ? redirect('/app/hub')
-      : redirect('/app/company')
+      ? redirect('/app/jobs')
+      : redirect('/app/employer')
   }
-  return redirect('/login')
+  return null
 }
 
-const fetchUserAndRedirect = async (args: LoaderFunctionArgs<any>) => {
+const fetchUserAndRedirect = async (args: LoaderFunctionArgs<unknown>) => {
   const { token, role } = getTokenAndRole()
   const url = args.request.url
 
   if (!token) {
+    if(url.endsWith('/app/employer')){
+      return redirect('/login?redirectTo=/app/employer&role=employer')
+    }
+    if(url.endsWith('/app/jobs')){
+      return redirect('/login?redirectTo=/app/jobs&role=applicant')
+    }
     return redirect('/')
   }
 
@@ -59,37 +62,34 @@ const fetchUserAndRedirect = async (args: LoaderFunctionArgs<any>) => {
   )
 
   const redirectTo = (() => {
+    if(role==='applicant' && url.includes('/app/employer')){
+      return '/app/employer'
+    }
+    if(role==='employer' && url.includes('/app/jobs')){
+      return '/app/employer'
+    }
     if (
       role === 'employer' &&
       data?.companyId &&
-      url.endsWith('/app/company/create')
+      url.endsWith('/app/employer/create')
     ) {
-      return '/app/company'
+      return '/app/employer'
     }
-    // if (
-    //   role === 'applicant' &&
-    //   data?.applicantId &&
-    //   url.endsWith('/app/applicant/create-profile')
-    // ) {
-    //   return '/app/jobs';
-    // }
-    //   if (role === 'employer' && data?.companyId && url.endsWith('/app/jobs')) {
-    //     return '/app/company';
-    //   }
     if (
       role === 'applicant' &&
       data?.applicantId &&
-      url.includes('/app/company')
+      url.includes('/app/employer')
     ) {
-      return '/app/hub'
+      return '/app/jobs'
     }
     if (
       role === 'employer' &&
       !data?.companyId &&
-      url.endsWith('/app/company')
+      url.endsWith('/app/employer')
     ) {
-      return '/app/company/create'
+      return '/app/employer/create'
     }
+
     return null
   })()
 
@@ -108,6 +108,7 @@ export const AppRouter = createBrowserRouter([
     children: [
       {
         index: true,
+        element:<Home/>,
         loader: async () => {
           const { token, role } = getTokenAndRole()
           return await handleRedirect({ token, role })
@@ -122,16 +123,16 @@ export const AppRouter = createBrowserRouter([
         loader: fetchUserAndRedirect,
         children: [
           {
-            path: 'company',
+            path: 'employer',
             element: <CompanyDashboardPage />,
             children: CompanyRoutes,
           },
           {
-            path: 'company/create',
+            path: 'employer/create',
             element: <CreateCompanyProfile />,
           },
           {
-            path: 'hub',
+            path: 'jobs',
             element: <JobHubLayout />,
             children: HubRoutes,
           },
