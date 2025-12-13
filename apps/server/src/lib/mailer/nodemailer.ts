@@ -3,6 +3,8 @@ import { UserDocument } from '../../models/user.model'
 
 const email = process.env.EMAIL_USER
 const pass = process.env.EMAIL_PASS
+const host = process.env.SMTP_HOST || 'smtp.gmail.com'
+const port = parseInt(process.env.SMTP_PORT || '465')
 
 if (!email || !pass) {
   throw Error(
@@ -11,9 +13,9 @@ if (!email || !pass) {
 }
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
+  host,
+  port,
+  secure: port === 465, // true for 465, false for other ports
   auth: {
     user: email,
     pass,
