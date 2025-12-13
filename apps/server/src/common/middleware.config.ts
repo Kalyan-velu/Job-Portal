@@ -17,10 +17,11 @@ class MiddlewareConfig {
   private app: Express
   configureMiddleware(app: Express) {
     this.app = app
-    console.debug('ℹ️ ~ Configuring middleware...')
     this.app.use(cors())
     this.app.use(cookieParser())
-    this.app.use(morgan('combined'))
+    this.app.use(
+      morgan(':method :url :status :res[content-length] - :response-time ms'),
+    )
     this.app.use(express.json())
 
     this.app.use(compression())
@@ -71,10 +72,6 @@ class MiddlewareConfig {
       req[name] = property // Attach the property to the request object
       next() // Call the next middleware in the stack
     })
-  }
-
-  log() {
-    console.log('s')
   }
 }
 

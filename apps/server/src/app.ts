@@ -31,20 +31,18 @@ for (let module of modules) {
   configApi.configureRoute(module)
 }
 
-console.log("process.env.NODE_ENV: ", process.env.NODE_ENV, "")
-
 if (process.env.NODE_ENV === 'production') {
-
   app.use(express.static(path.join(__dirname, '../../web/dist')))
 
   app.get('*', (request, response) => {
-    response.sendFile(path.resolve(__dirname, "../../web", "dist", "index.html"))
+    response.sendFile(
+      path.resolve(__dirname, '../../web', 'dist', 'index.html'),
+    )
   })
 } else {
-  app.get("/", (request, response) => {
-    response.json({message: "Server is Up"});
-  });
+  app.get('/', (request, response) => {
+    response.json({ message: 'Server is Up' })
+  })
 }
-
 
 export default app
