@@ -208,7 +208,17 @@ export const forgotPassword = async (req: Request, res: Response) => {
       sendErrorResponse(res, 'Email is required', 400)
       return
     }
-    await sendReset(email)
+    try {
+      await sendReset(email)
+    } catch (e) {
+      console.error('Could not send mail', e)
+      sendErrorResponse(
+        res,
+        e instanceof Error ? e.message : 'Internal server error',
+        500,
+      )
+      return
+    }
     sendSuccessResponse(res, 'Reset password email sent successfully')
     return
   } catch (e) {
