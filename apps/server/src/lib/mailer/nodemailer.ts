@@ -1,7 +1,6 @@
 import nodemailer from 'nodemailer'
 import { UserDocument } from '../../models/user.model'
 
-
 const email = process.env.EMAIL_USER
 const pass = process.env.EMAIL_PASS
 
@@ -13,8 +12,8 @@ if (!email || !pass) {
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, //true for 465 port, false for other ports
+  port: 465,
+  secure: true,
   auth: {
     user: email,
     pass,
@@ -30,7 +29,7 @@ export const sendVerificationEmail = async (user: UserDocument) => {
     text: `Please verify your email by clicking the following link: ${verificationUrl}`,
   }
 
-  await transporter.sendMail(mailOptions)
+  return transporter.sendMail(mailOptions)
 }
 
 export const sendResetPasswordEmail = async (email: string, token: string) => {
@@ -42,5 +41,5 @@ export const sendResetPasswordEmail = async (email: string, token: string) => {
     text: `Click here to reset your password: ${resetUrl}`,
   }
 
-  await transporter.sendMail(mailOptions)
+  return transporter.sendMail(mailOptions)
 }
