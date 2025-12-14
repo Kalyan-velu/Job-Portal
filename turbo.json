@@ -10,7 +10,11 @@
         "EMAIL_PASS",
         "BASE_URL",
         "NODE_ENV",
-        "PORT"
+        "PORT",
+        "EMAIL_CLIENT_ID",
+        "EMAIL_CLIENT_SECRET",
+        "EMAIL_REFRESH_TOKEN",
+        "EMAIL_ACCESS_TOKEN"
       ],
       "dependsOn": ["^build"],
       "inputs": [
@@ -42,7 +46,11 @@
         "EMAIL_PASS",
         "BASE_URL",
         "NODE_ENV",
-        "PORT"
+        "PORT",
+        "EMAIL_CLIENT_ID",
+        "EMAIL_CLIENT_SECRET",
+        "EMAIL_REFRESH_TOKEN",
+        "EMAIL_ACCESS_TOKEN"
       ],
       "inputs": [
         "$TURBO_DEFAULT$",

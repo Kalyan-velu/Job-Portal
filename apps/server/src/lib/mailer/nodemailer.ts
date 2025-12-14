@@ -1,31 +1,33 @@
 import nodemailer from 'nodemailer'
 import { UserDocument } from '../../models/user.model'
 
-const email = process.env.EMAIL_USER
-const pass = process.env.EMAIL_PASS
-const host = process.env.SMTP_HOST || 'smtp.gmail.com'
-const port = parseInt(process.env.SMTP_PORT || '465')
-
-if (!email || !pass) {
-  throw Error(
-    'Email and password not provided, Please add EMAIL_USER and EMAIL_PASS to .env file.\n if you are using a Gmail account, EMAIL_USER should be your Gmail address and EMAIL_PASS should be the app-specific password generated for your Gmail account.',
+const sender = process.env.EMAIL_USER
+const clientId = process.env.EMAIL_CLIENT_ID
+const clientSecret = process.env.EMAIL_CLIENT_SECRET
+const refreshToken = process.env.EMAIL_REFRESH_TOKEN
+const accessToken = process.env.EMAIL_ACCESS_TOKEN
+if (!sender || !clientId || !clientSecret || !refreshToken || !accessToken) {
+  throw new Error(
+    'Missing EMAIL_USER, EMAIL_CLIENT_ID, EMAIL_CLIENT_SECRET, or EMAIL_REFRESH_TOKEN for Gmail OAuth2.',
   )
 }
 
 const transporter = nodemailer.createTransport({
-  host,
-  port,
-  secure: port === 465, // true for 465, false for other ports
+  service: 'gmail',
   auth: {
-    user: email,
-    pass,
+    type: 'OAuth2',
+    user: sender,
+    clientId,
+    clientSecret,
+    refreshToken,
+    accessToken,
   },
 })
 
 export const sendVerificationEmail = async (user: UserDocument) => {
   const verificationUrl = `${process.env.BASE_URL}/email-verification/${user.verificationToken}`
   const mailOptions = {
-    from: email,
+    from: sender,
     to: user.email,
     subject: 'Email Verification',
     text: `Please verify your email by clicking the following link: ${verificationUrl}`,
@@ -37,7 +39,7 @@ export const sendVerificationEmail = async (user: UserDocument) => {
 export const sendResetPasswordEmail = async (email: string, token: string) => {
   const resetUrl = `${process.env.BASE_URL}/reset-password/${token}`
   const mailOptions = {
-    from: email,
+    from: sender,
     to: email,
     subject: 'Password Reset',
     text: `Click here to reset your password: ${resetUrl}`,
