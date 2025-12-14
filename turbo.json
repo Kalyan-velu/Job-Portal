@@ -6,15 +6,11 @@
       "env": [
         "MONGO_URL",
         "JWT_SECRET",
-        "EMAIL_USER",
-        "EMAIL_PASS",
+        "RESEND_API_KEY",
+        "RESEND_FROM",
         "BASE_URL",
         "NODE_ENV",
-        "PORT",
-        "EMAIL_CLIENT_ID",
-        "EMAIL_CLIENT_SECRET",
-        "EMAIL_REFRESH_TOKEN",
-        "EMAIL_ACCESS_TOKEN"
+        "PORT"
       ],
       "dependsOn": ["^build"],
       "inputs": [
@@ -42,15 +38,11 @@
       "env": [
         "MONGO_URL",
         "JWT_SECRET",
-        "EMAIL_USER",
-        "EMAIL_PASS",
+        "RESEND_API_KEY",
+        "RESEND_FROM",
         "BASE_URL",
         "NODE_ENV",
-        "PORT",
-        "EMAIL_CLIENT_ID",
-        "EMAIL_CLIENT_SECRET",
-        "EMAIL_REFRESH_TOKEN",
-        "EMAIL_ACCESS_TOKEN"
+        "PORT"
       ],
       "inputs": [
         "$TURBO_DEFAULT$",
