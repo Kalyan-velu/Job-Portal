@@ -3,12 +3,14 @@ import { ZodError, ZodSchema } from 'zod'
 
 // Middleware function to validate and update request body using Zod
 export const validateRequestBody = (schema: ZodSchema) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     console.debug('ℹ️ ~ file: request.ts:7 ~ return ~ req:', req.body)
     try {
-      const parsedBody = schema.parse(req.body) // Validate the request body against the Zod schema
-
-      req.body = parsedBody // Reassign the parsed body back to req.body
+      req.body = await schema.parseAsync(req.body) // Reassign the parsed body back to req.body
       next() // Proceed to the next middleware or route handler
     } catch (error) {
       console.debug('ℹ️ ~ file: request.ts:16 ~ return ~ error:', error)

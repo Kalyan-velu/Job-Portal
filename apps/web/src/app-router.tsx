@@ -29,10 +29,8 @@ const handleRedirect = async ({
     const { data, isError } = await store.dispatch(
       userApi.endpoints.getUser.initiate(undefined),
     )
-    console.debug('ℹ️ ~ file: app-router.tsx:26 ~ data:', data)
 
     if (isError) {
-      console.error('Failed to fetch user data')
       return redirect('/') // Handle error: redirect to login or error page
     }
 

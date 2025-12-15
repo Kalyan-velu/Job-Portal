@@ -49,11 +49,9 @@ const CreateCompanyProfile = memo(() => {
     setCurrentStep((step) => Math.max(step - 1, 0));
   };
   const onSubmit = async (data: CompanyType) => {
-    console.log(data);
     await createCompany(data)
       .unwrap()
       .then((r) => {
-        console.debug("ℹ️ ~ file: page.tsx:72 ~ .then ~ r:", r);
         navigate("/app/employer");
         toast.success(r);
       })
@@ -62,10 +60,7 @@ const CreateCompanyProfile = memo(() => {
       });
   };
   const onInvalidSubmit = async (data: FieldErrors<CompanyType>) => {
-    return console.error(
-      "ℹ️ ~ file: page.tsx:69 ~ onInvalidSubmit ~ data:",
-      data,
-    );
+    return
   };
 
   return (

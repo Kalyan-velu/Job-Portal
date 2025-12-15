@@ -1,33 +1,17 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useUpdateOrCreateApplicantMutation } from '@/store/services/applicant.service'
-import { ApplicantSchema, type Applicant } from '@/zod-schema/applicant.schema'
+import { type Applicant, ApplicantSchema } from '@/zod-schema/applicant.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
-import {
-  Award,
-  Briefcase,
-  FileText,
-  GraduationCap,
-  Link,
-  Linkedin,
-  Phone,
-  PlusCircle,
-  Trash2,
-} from 'lucide-react'
+import { Award, Briefcase, FileText, GraduationCap, Link, Linkedin, Phone, PlusCircle, Trash2, } from 'lucide-react'
 import { useState } from 'react'
-import { useFieldArray, useForm, type FieldErrors } from 'react-hook-form'
+import { type FieldErrors, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 // ... (Zod schema definitions remain the same as before)
@@ -77,8 +61,6 @@ export default function ApplicantProfileForm({ defaultValues }: Props) {
     toast.loading('Updating profile', {
       id: 'applicant',
     })
-    // Here you would typically send the data to your backend
-    console.log(data)
     await update(data)
       .unwrap()
       .then(() => {
@@ -99,10 +81,6 @@ export default function ApplicantProfileForm({ defaultValues }: Props) {
       })
   }
   const onInvalid = (errors: FieldErrors<Applicant>) => {
-    console.error(
-      'ℹ️ ~ file: applicant.profile.tsx:102 ~ onInvalid ~ errors:',
-      errors,
-    )
     Object.entries(errors).map(([field, value]) => {
       toast.error(value.message)
     })

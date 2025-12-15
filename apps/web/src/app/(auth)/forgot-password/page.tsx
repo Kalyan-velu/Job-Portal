@@ -2,26 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from '@/components/ui/card'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { useForgotPasswordMutation } from '@/store/services/user.service'
 import { Link } from 'react-router-dom'
+
 const formSchema = z.object({
   email: z.string().email({
     message: 'Please enter a valid email address.',
@@ -49,7 +36,6 @@ export function ForgotPassword() {
         form.reset()
       })
       .catch((e) => {
-        console.debug('ℹ️ ~ file: page.tsx:52 ~ onSubmit ~ e:', e)
         toast.error('An error occurred', {
           description: e ?? 'Please try again later.',
         })

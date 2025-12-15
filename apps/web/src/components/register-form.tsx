@@ -1,34 +1,18 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from '@/components/ui/card'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useRegisterMutation } from '@/store/services/user.service'
-import {
-  RegisterSchema,
-  type RegisterSchemaType,
-} from '@/zod-schema/user.schema'
+import { RegisterSchema, type RegisterSchemaType, } from '@/zod-schema/user.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
+
 export default function RegisterForm() {
   const [register, { isLoading }] = useRegisterMutation()
 
@@ -56,7 +40,6 @@ export default function RegisterForm() {
       .catch((e) => {
         toast.error(e)
       })
-    console.log(data)
   }
 
   return (

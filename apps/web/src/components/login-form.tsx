@@ -39,16 +39,12 @@ export function LoginForm() {
         navigate('/')
       })
       .catch((e) => {
-        console.debug('ℹ️ ~ file: login-form.tsx:45 ~ onValidSubmit ~ e:', e)
         toast.error(e || 'Login failed')
       })
   }
 
   const onInvalidSubmit = (data: FieldErrors<LoginSchemaType>) => {
-    console.error(
-      'ℹ️ ~ file: login-form.tsx:50 ~ onInvalidSubmit ~ data:',
-      data,
-    )
+  return
   }
 
   return (

@@ -9,29 +9,14 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useCreateJobMutation } from '@/store/services/company.service'
-import {
-  JobSchema,
-  jobTypeEnum,
-  type JobInterface,
-} from '@/zod-schema/job.schema'
+import { type JobInterface, JobSchema, jobTypeEnum, } from '@/zod-schema/job.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
-import {
-  Controller,
-  useFieldArray,
-  useForm,
-  type FieldErrors,
-} from 'react-hook-form'
+import React, { type ReactNode, useState } from 'react'
+import { Controller, type FieldErrors, useFieldArray, useForm, } from 'react-hook-form'
 import { toast } from 'sonner'
 
 interface CreateJobProps {
@@ -76,22 +61,16 @@ export const CreateJob: React.FC<CreateJobProps> = ({ children }) => {
     if (isLoading) return
     await create(data)
       .unwrap()
-      .then((r) => {
-        console.debug('ℹ️ ~ file: create-job.tsx:77 ~ .then ~ r:', r)
+      .then(() => {
         toast.success('Job created successfully.')
         setOpen(false)
       })
       .catch((e) => {
-        console.error('ℹ️ ~ file: create-job.tsx:78 ~ awaitcreateJob ~ e:', e)
-        return {}
+        return toast.error(e instanceof Error?e.message:e instanceof String?e:JSON.stringify(e))
       })
-    // Handle form submission here
   }
   const onInvalidSubmit = async (data: FieldErrors<JobInterface>) => {
-    console.debug(
-      'ℹ️ ~ file: create-job.tsx:74 ~ onInvalidSubmit ~ data:',
-      data,
-    )
+
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -1,31 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useFieldArray, useForm, type FieldErrors } from 'react-hook-form'
+import { type FieldErrors, useFieldArray, useForm } from 'react-hook-form'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from '@/components/ui/card'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { useUpdateMyCompanyMutation } from '@/store/services/company.service'
@@ -48,7 +28,6 @@ export const CompanyProfileForm = ({
 }: {
   initialData: CompanyType | undefined
 }) => {
-  console.debug('ℹ️ ~ file: company-form.tsx:51 ~ initialData:', initialData)
   const [update, { isLoading }] = useUpdateMyCompanyMutation()
   const form = useForm<CompanyType>({
     resolver: zodResolver(CompanySchema),
@@ -62,7 +41,6 @@ export const CompanyProfileForm = ({
   })
 
   async function onSubmit(data: CompanyType) {
-    try {
       toast.loading('Updating job details.', { id: 'job' })
       await update({ ...data })
         .unwrap()
@@ -72,16 +50,9 @@ export const CompanyProfileForm = ({
         .catch(() => {
           toast.error("Couldn't update job.", { id: 'job' })
         })
-    } catch (error) {
-      console.error('Failed to update job:', error)
-    }
-    // Here you would typically send the data to your backend
   }
   function onInvalidSubmit(data: FieldErrors<CompanyType>) {
-    console.debug(
-      'ℹ️ ~ file: company-form.tsx:59 ~ onInvalidSubmit ~ data:',
-      data,
-    )
+    return
   }
   return (
     <Card className="mx-auto w-full">

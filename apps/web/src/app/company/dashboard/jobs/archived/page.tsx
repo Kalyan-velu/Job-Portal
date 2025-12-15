@@ -8,11 +8,11 @@ import { useGetCompanyJobsQuery } from '@/store/services/company.service'
 import { formatDistanceToNow } from 'date-fns'
 import { MapIcon } from 'lucide-react'
 import { memo } from 'react'
+
 const ArchivedCompanyJobs = memo(() => {
   const { data, isFetching, isLoading } = useGetCompanyJobsQuery('archived', {
     refetchOnMountOrArgChange: true,
   })
-  console.debug('ℹ️ ~ file: page.tsx:6 ~ AllCompanyJobs ~ data:', data)
   return (
     <div className="flex max-h-full flex-col gap-2 overflow-auto px-4">
       <h1 className={'flex items-center gap-x-2 text-xl font-semibold'}>

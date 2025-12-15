@@ -1,6 +1,6 @@
-import { userApi } from '@/store/services/user.service';
-import type { UserInitialState } from '@/types/redux';
-import { createSlice } from '@reduxjs/toolkit';
+import { userApi } from '@/store/services/user.service'
+import type { UserInitialState } from '@/types/redux'
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState: UserInitialState = {
   user: null,
@@ -18,7 +18,6 @@ const userSlice = createSlice({
     build.addMatcher(
       userApi.endpoints.login.matchFulfilled,
       (state, { payload }) => {
-        console.debug('ℹ️ ~ file: user.slice.ts:21 ~ payload:', payload);
         state.token = payload.token;
         localStorage.setItem('token', payload.token);
       }

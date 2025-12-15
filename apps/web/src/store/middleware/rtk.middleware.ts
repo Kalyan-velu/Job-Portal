@@ -1,6 +1,5 @@
-import { isRejectedWithValue } from '@reduxjs/toolkit/react'
-
 import type { Middleware, MiddlewareAPI } from '@reduxjs/toolkit/react'
+import { isRejectedWithValue } from '@reduxjs/toolkit/react'
 import { toast } from 'sonner'
 
 /**
@@ -11,12 +10,10 @@ export const rtkQueryErrorLogger: Middleware =
     if (!action) return
     // RTK Query uses `createAsyncThunk` from redux-toolkit under the hood, so we're able to utilize these matchers!
     if (isRejectedWithValue(action)) {
-      console.debug('ℹ️ ~ file: rtk.middleware.ts:57 ~ action:', action)
       const errorMessage =
         'data' in action.error
           ? (action.error.data as { message: string }).message
           : action.error.message
-      console.warn('We got a rejected action', { errorMessage, action })
       toast.dismiss()
       if (action.payload && action.payload === 'Invalid Token') {
         localStorage.removeItem('token')

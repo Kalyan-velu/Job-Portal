@@ -1,8 +1,4 @@
-import {
-  fetchBaseQuery,
-  type FetchBaseQueryError,
-  type FetchBaseQueryMeta,
-} from '@reduxjs/toolkit/query'
+import { fetchBaseQuery, type FetchBaseQueryError, type FetchBaseQueryMeta, } from '@reduxjs/toolkit/query'
 
 export const apiUrl = import.meta.env.VITE_API_URL
 
@@ -104,7 +100,6 @@ export const transformErrorResponse = (
       message?: string
     }
 
-    console.debug('ℹ️ ~ file: rtk-utils.ts:102 ~ data:', data)
 
     // Handle detailed errors
     if (Array.isArray(data.error)) {

@@ -3,26 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from '@/components/ui/card'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
-import { useParams, Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useResetPasswordMutation } from '@/store/services/user.service'
 
 const formSchema = z
@@ -61,13 +47,11 @@ export default function ResetPassword() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Here you would typically send a request to your API to handle the password reset
-    console.log(values)
+
     // @ts-expect-error  Property 'data' does not exist on type 'void'.
     await reset({ password: values.password, token })
       .unwrap()
       .then((data) => {
-        console.log(data)
         toast('Password Reset Successful', {
           description: 'Your password has been successfully reset.',
         })

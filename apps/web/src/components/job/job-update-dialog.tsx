@@ -62,7 +62,6 @@ const JobUpdateDialog = memo<JobDialogProps>(({ children, job }) => {
   })
 
   const handleSubmit = async (data: UpdateJobInterface) => {
-    try {
       toast.loading('Updating job details.', { id: 'job' })
       await update({ ...data, id: job._id })
         .unwrap()
@@ -73,9 +72,7 @@ const JobUpdateDialog = memo<JobDialogProps>(({ children, job }) => {
           toast.error("Couldn't update job.", { id: 'job' })
         })
       setOpen(false)
-    } catch (error) {
-      console.error('Failed to update job:', error)
-    }
+
   }
 
   return (
