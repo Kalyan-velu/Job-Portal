@@ -12,11 +12,12 @@ interface AuthConfig {
   method: AuthMethod
 }
 
-class MiddlewareConfig {
-  // @ts-expect-error - Property is private
-  private app: Express
-  configureMiddleware(app: Express) {
-    this.app = app
+class Middleware {
+  constructor(private app: Express) {
+    this.configureMiddleware()
+  }
+
+  configureMiddleware() {
     this.app.use(cors())
     this.app.use(cookieParser())
     this.app.use(
@@ -46,9 +47,9 @@ class MiddlewareConfig {
   /**
    * Middleware to authenticate based on specified method.
    * @param {AuthConfig} config - Configuration for authentication method.
-   * @returns {Function} - Express middleware function.
+   * @returns {VoidFunction} - Express middleware function.
    */
-  authMiddleware = (config: AuthConfig) => {
+  static AuthMiddleware = async (config: AuthConfig) => {
     return (req: Request, res: Response, next: NextFunction) => {
       switch (config.method) {
         case 'jwt':
@@ -65,15 +66,6 @@ class MiddlewareConfig {
       }
     }
   }
-
-  attach({ name, property }: { name: string | 'mongoose'; property: unknown }) {
-    this.app.use((req, res, next) => {
-      // @ts-expect-error - Error handling middleware
-      req[name] = property // Attach the property to the request object
-      next() // Call the next middleware in the stack
-    })
-  }
 }
 
-export const middleware = new MiddlewareConfig()
-export default MiddlewareConfig
+export default Middleware

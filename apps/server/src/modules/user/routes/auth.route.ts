@@ -10,16 +10,18 @@ import {
   verifyEmail,
 } from '../controllers/auth.controller'
 import { jwtAuth } from '../../../middlewares/auth.middleware'
+import { limiter } from '../../../lib/rate-limiter.conf'
 
 const userAuthRouter = Router()
 
-userAuthRouter.post('/login', validateRequestBody(loginSchema), Login)
+userAuthRouter.post('/login', limiter, validateRequestBody(loginSchema), Login)
 userAuthRouter.post('/register', validateRequestBody(baseUserSchema), Register)
-userAuthRouter.get('/verify-email', verifyEmail)
-userAuthRouter.post('/forgot-password', forgotPassword)
-userAuthRouter.post('/reset-password', resetPassword)
+userAuthRouter.get('/verify-email', limiter, verifyEmail)
+userAuthRouter.post('/forgot-password', limiter, forgotPassword)
+userAuthRouter.post('/reset-password', limiter, resetPassword)
 userAuthRouter.post(
   '/resent-verification-email',
+  limiter,
   jwtAuth,
   resendVerificationEmail,
 )

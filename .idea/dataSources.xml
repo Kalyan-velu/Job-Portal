@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="JobPortal@cluster0.xu0rh.mongodb.net" uuid="6a47c6b8-e332-4759-8e07-c468cae5c843">
+    <data-source source="LOCAL" name="@cluster0.qtp2dkc.mongodb.net" uuid="6a47c6b8-e332-4759-8e07-c468cae5c843">
       <driver-ref>mongo.4</driver-ref>
       <synchronize>true</synchronize>
       <configured-by-url>true</configured-by-url>
       <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
-      <jdbc-url>mongodb+srv://sarmahalokbordoloi:alok9191@cluster0.xu0rh.mongodb.net/JobPortal?ssl=true&amp;replicaSet=atlas-v4i7kl-shard-0&amp;authSource=admin&amp;retryWrites=true&amp;w=majority&amp;appName=Cluster0</jdbc-url>
+      <jdbc-url>mongodb+srv://kalyanborah456_db_user:7l7MsFa5BbFRTkp0@cluster0.qtp2dkc.mongodb.net/?retryWrites=true&amp;w=majority&amp;appName=Cluster0</jdbc-url>
       <jdbc-additional-properties>
-        <property name="com.intellij.clouds.kubernetes.db.host.port" />
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
-        <property name="com.intellij.clouds.kubernetes.db.container.port" />
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>

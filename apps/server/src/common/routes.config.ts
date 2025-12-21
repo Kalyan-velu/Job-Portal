@@ -1,5 +1,6 @@
 import express, { Express, Router } from 'express'
-import { middleware as middlewareConfig } from './middleware.config'
+import Middleware from './middleware.conf'
+
 /**
  * Configuration for a group of routes.
  * @interface RouteConfig
@@ -30,43 +31,45 @@ export interface ShowRoutes {
  * @class RouterConfigure
  */
 class RouterConfigure {
-  private app: Express
   private totalRoutes: number = 0
 
   /**
    * Creates an instance of RouterConfigure.
    * @param {Express} app - The Express application instance.
+   * @param {Middleware} middleware - The Middleware instance for handling authentication and other middleware operations.
    */
-  constructor(app: Express) {
-    this.app = app
-  }
+  constructor(
+    private app: Express,
+    private middleware: Middleware,
+  ) {}
 
   /**
    * Configures a group of routes and adds them to the Express application.
-   * @param {RouteConfig} config - The configuration for the group of routes.
+   * @param configs
    */
-  configureRoute(config: RouteConfig) {
-    let { prefix, routes, middleware = [], isPublic } = config
+  async configureRoutes(configs: RouteConfig[]) {
+    for (const config of configs) {
+      let { prefix, routes, middleware = [], isPublic } = config
 
-    if (!isPublic) {
-      console.info('\nApplying authentication middleware to :', prefix)
-      this.app.use(
-        `/api/${prefix}`,
-        middlewareConfig.authMiddleware({ method: 'jwt' }),
-        ...(middleware ?? []),
-      )
-    } else if (isPublic && middleware.length > 0) {
-      console.info('Public :', prefix)
-      this.app.use(`/api/${prefix}`, middleware)
+      if (!isPublic) {
+        const authMiddleware = await Middleware.AuthMiddleware({
+          method: 'jwt',
+        })
+
+        this.app.use(`/api/${prefix}`, authMiddleware, ...(middleware ?? []))
+      } else if (isPublic && middleware.length > 0) {
+        console.info('Public :', prefix)
+        this.app.use(`/api/${prefix}`, middleware)
+      }
+      routes.forEach((route, index) => {
+        this.app.use(`/api/${prefix}`, route)
+        console.log(
+          `\n${this.totalRoutes + 1}. ${config.prefix?.toUpperCase()} routes :\n`,
+        )
+        this.totalRoutes = +1
+        this.showRoutes({ prefix, route }, index)
+      })
     }
-    routes.forEach((route, index) => {
-      this.app.use(`/api/${prefix}`, route)
-      console.log(
-        `\n${this.totalRoutes + 1}. ${config.prefix?.toUpperCase()} routes :\n`,
-      )
-      this.totalRoutes = +1
-      this.showRoutes({ prefix, route }, index)
-    })
   }
 
   /**

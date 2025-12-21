@@ -3,51 +3,48 @@
 /**
  * Module dependencies.
  */
-import "dotenv/config"
+import 'dotenv/config'
 
 import http from 'http'
-import { AddressInfo } from 'net'; // For typing the server's address
-import app from '../app'; // Assuming your app is properly exported in TypeScript
-const portNumber=process.env.PORT
-if(!portNumber){
-  throw Error("PORT is missing from environment")
-}
+import { AddressInfo } from 'net' // For typing the server's address
+import app from '../app' // Assuming your app is properly exported in TypeScript
+const portNumber = process.env.PORT || '8000'
 
 /**
  * Get port from environment and store in Express.
  */
-const port = normalizePort(portNumber);
-app.set('port', port);
+const port = normalizePort(portNumber)
+app.set('port', port)
 
 /**
  * Create HTTP server.
  */
-const server = http.createServer(app);
+const server = http.createServer(app)
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+server.listen(port)
+server.on('error', onError)
+server.on('listening', onListening)
 
 /**
  * Normalize a port into a number, string, or false.
  */
 function normalizePort(val: string): number | string | false {
-  const port = parseInt(val, 10);
+  const port = parseInt(val, 10)
 
   if (isNaN(port)) {
     // named pipe
-    return val;
+    return val
   }
 
   if (port >= 0) {
     // port number
-    return port;
+    return port
   }
 
-  return false;
+  return false
 }
 
 /**
@@ -55,21 +52,21 @@ function normalizePort(val: string): number | string | false {
  */
 function onError(error: NodeJS.ErrnoException): void {
   if (error.syscall !== 'listen') {
-    throw error;
+    throw error
   }
 
-  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
+      console.error(bind + ' requires elevated privileges')
+      process.exit(1)
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
+      console.error(bind + ' is already in use')
+      process.exit(1)
     default:
-      throw error;
+      throw error
   }
 }
 
@@ -77,7 +74,7 @@ function onError(error: NodeJS.ErrnoException): void {
  * Event listener for HTTP server "listening" event.
  */
 function onListening(): void {
-  const addr = server.address() as AddressInfo | string;
-  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  console.debug(`\n\nServer listening at ${bind}\n\n`);
+  const addr = server.address() as AddressInfo | string
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
+  console.debug(`\n\nServer listening at ${bind}\n\n`)
 }

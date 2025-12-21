@@ -39,7 +39,6 @@ export const Login = async (req: LoginRequest, res: Response) => {
 
     const token = createSession(req, res)
 
-    console.log(user)
     if (user.role === 'employer' && !user.companyId) {
       sendSuccessResponse(res, {
         token,
@@ -100,7 +99,6 @@ export const Register = async (req: RegisterRequest, res: Response) => {
       }
       return sendErrorResponse(res, 'Internal server error', 500)
     }
-    // if email verification failed, delete the user and send error response
 
     // Return the user without the password
     const { password: _p, ...user } = newUser.toJSON()

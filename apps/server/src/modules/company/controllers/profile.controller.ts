@@ -1,6 +1,9 @@
 import type { Request, Response } from 'express'
 
-import { sendErrorResponse, sendSuccessResponse } from '../../../common/response'
+import {
+  sendErrorResponse,
+  sendSuccessResponse,
+} from '../../../common/response'
 import { Company } from '../../../models/company.model'
 import { User } from '../../../models/user.model'
 import type { CompanyType } from '../../../zod/company.schema'
@@ -11,9 +14,7 @@ interface CompanyCreateRequest extends Request {
 
 export const Create = async (req: CompanyCreateRequest, res: Response) => {
   try {
-    console.log(req.user.id)
     const details = req.body
-    // Check if a company with the same name, site URL, or created by the user already exists
     const existingCompany = await Company.findOne({
       $or: [
         { name: details.name },
@@ -50,9 +51,8 @@ export const Create = async (req: CompanyCreateRequest, res: Response) => {
       {
         companyId: company._id,
       },
-      { new: true }, // This will return the updated user document
+      { new: true },
     )
-    console.debug('ℹ️ ~ file: profile.controller.ts:41 ~ Create ~ user:', user)
     await user?.save()
     const updatedUser = user?.toJSON()
     sendSuccessResponse(res, { companyData, updatedUser }, 'Success')

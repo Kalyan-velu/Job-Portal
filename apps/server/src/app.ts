@@ -1,35 +1,34 @@
 import 'dotenv/config'
 import express from 'express'
-import { middleware } from './common/middleware.config'
+import Middleware from './common/middleware.conf'
 import RouterConfigure from './common/routes.config'
 import { Applicant, ApplicantApplication } from './modules/applicants'
 import CompanyModule from './modules/company'
 import userModules from './modules/user'
 
-import database from './common/database.config'
+import { Database } from './common/database.config'
 import { PrivateJobModule, PublicJobModule } from './modules/job'
 import path from 'node:path'
 
 const app = express()
-const configApi = new RouterConfigure(app)
 
-const mongoose = database.connectDB()
-middleware.configureMiddleware(app)
-middleware.attach({ name: 'mongoose', property: mongoose })
+const middleware = new Middleware(app)
+const configApi = new RouterConfigure(app, middleware)
+new Database()
 
-const modules = [
-  Applicant,
-  ApplicantApplication,
-  userModules.Auth,
-  userModules.User,
-  PrivateJobModule,
-  PublicJobModule,
-  CompanyModule,
-]
-
-for (let module of modules) {
-  configApi.configureRoute(module)
-}
+configApi
+  .configureRoutes([
+    Applicant,
+    ApplicantApplication,
+    userModules.Auth,
+    userModules.User,
+    PrivateJobModule,
+    PublicJobModule,
+    CompanyModule,
+  ])
+  .then(() => {
+    console.info('All Modules have been implemented.')
+  })
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../../web/dist')))

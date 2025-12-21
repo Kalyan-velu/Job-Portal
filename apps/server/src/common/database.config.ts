@@ -1,83 +1,69 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const uri = process.env.MONGO_URL;
+const uri = process.env.MONGO_URL
 if (!uri) {
-  throw new Error('MONGO_URL is missing from env');
+  throw new Error('MONGO_URL is missing from env')
 }
 
 const dbConfig: {
-  uri: string;
-  options: mongoose.ConnectOptions;
+  uri: string
+  options: mongoose.ConnectOptions
 } = {
   uri,
   options: {},
-};
+}
 
-class Database {
-  public mongooseInstance: typeof mongoose | null;
-  private modelDir: string;
-  private  maxRetries: number;
-  private  retryDelay: number;
+export class Database {
+  public mongooseInstance: typeof mongoose | null = null
 
-  constructor(modelsDir: string, maxRetries = 5, retryDelay = 5000) {
-    // maxRetries: number of retries, retryDelay: in ms
-    this.mongooseInstance = null;
-    this.modelDir = modelsDir;
-    this.maxRetries = maxRetries;
-    this.retryDelay = retryDelay;
+  constructor(
+    private readonly maxRetries = 5,
+    private readonly retryDelay = 5000,
+  ) {
+    if (!this.mongooseInstance) {
+      this.connectDB().then(() => {
+        console.info('Database Connected')
+      })
+    }
   }
 
   private async delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
-  async connectDB(retries = 0): Promise<typeof mongoose | void> {
-    if (this.mongooseInstance) return;
+  private async connectDB(retries = 0): Promise<typeof mongoose | null> {
+    if (this.mongooseInstance) return this.mongooseInstance
 
     try {
       this.mongooseInstance = await mongoose.connect(
         dbConfig.uri,
         dbConfig.options,
-      );
-      console.log('MongoDB connected successfully');
-      // this.loadModels();
-      return this.mongooseInstance;
+      )
+      return this.mongooseInstance
     } catch (error) {
-      console.error(
-        `MongoDB connection error (attempt ${retries + 1}):`,
-        error,
-      );
+      console.error(`MongoDB connection error (attempt ${retries + 1}):`, error)
 
       if (retries < this.maxRetries) {
-        console.log(
+        console.info(
           `Retrying connection in ${this.retryDelay / 1000} seconds...`,
-        );
-        await this.delay(this.retryDelay); // Wait before retrying
-        return this.connectDB(retries + 1); // Retry connection
+        )
+        await this.delay(this.retryDelay) // Wait before retrying
+        return this.connectDB(retries + 1) // Retry connection
       } else {
-        console.error('Max retries reached. Exiting...');
-        process.exit(1); // Exit if maximum retries are reached
+        console.error('Max retries reached. Exiting...')
+        process.exit(1)
       }
     }
   }
 
-  // private async loadModels() {
-  //   const modelsPath = path.join(__dirname, '../models');
-  //   console.log('Looking for models in:', modelsPath);
+  static getInstance(): Database {
+    return new Database()
+  }
 
-  //   try {
-  //     const modelFiles = readdirSync(modelsPath);
-  //     for (const file of modelFiles) {
-  //       if (file.endsWith('.ts')) {
-  //         const model = await import(path.join(modelsPath, file));
-  //         console.log(`Loaded model: ${model.default.modelName}`);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Error loading models:', error);
-  //   }
-  // }
+  async reconnect() {
+    if (this.mongooseInstance) {
+      await this.mongooseInstance.disconnect()
+    }
+    this.connectDB().then(() => console.info('Database Connected.'))
+  }
 }
-
-const db = new Database('../models');
-export default db;
