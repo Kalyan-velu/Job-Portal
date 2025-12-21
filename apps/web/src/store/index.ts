@@ -4,12 +4,9 @@ import { rtkQueryErrorLogger } from '@/store/middleware/rtk.middleware'
 import { applicantApi } from '@/store/services/applicant.service'
 import { companyApi } from '@/store/services/company.service'
 import { userApi } from '@/store/services/user.service'
-import {
-  combineReducers,
-  configureStore,
-  type UnknownAction,
-} from '@reduxjs/toolkit'
+import { combineReducers, configureStore, type UnknownAction, } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
+
 const rootReducer = combineReducers({
   user: userSlice.reducer,
   company: companySlice.reducer,
@@ -18,7 +15,7 @@ const rootReducer = combineReducers({
   [applicantApi.reducerPath]: applicantApi.reducer,
 })
 
-const appReducer = (state: any, action: UnknownAction) => {
+const appReducer = (state: never, action: UnknownAction) => {
   if (action.type === 'auth/logout') {
     state = undefined
   }
