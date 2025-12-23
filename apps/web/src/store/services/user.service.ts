@@ -104,6 +104,16 @@ export const userApi = createApi({
       },
       transformErrorResponse,
     }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST',
+      }),
+      transformResponse: (response: QueryResponse<void>) => {
+        return response.data
+      },
+      transformErrorResponse,
+    }),
   }),
 })
 
@@ -115,4 +125,5 @@ export const {
   useResetPasswordMutation,
   useGetUserQuery,
   useResendVerificationEmailMutation,
+  useLogoutMutation,
 } = userApi

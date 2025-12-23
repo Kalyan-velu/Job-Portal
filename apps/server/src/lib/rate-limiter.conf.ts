@@ -1,8 +1,4 @@
-import {
-  type Options,
-  rateLimit,
-  type RateLimitRequestHandler,
-} from 'express-rate-limit'
+import { type Options, rateLimit } from 'express-rate-limit'
 
 type RateLimiterOptions = Partial<Options>
 
@@ -15,11 +11,9 @@ type RateLimiterOptions = Partial<Options>
  * through the `options` parameter.
  *
  * @param {RateLimiterOptions} [options] - Optional configuration for the rate limiter.
- * @returns {RateLimitRequestHandler} A middleware function to apply the rate limiting.
+ *  A middleware function to apply the rate limiting.
  */
-export const limiter = (
-  options?: RateLimiterOptions,
-): RateLimitRequestHandler =>
+export const limiter = (options?: RateLimiterOptions) =>
   rateLimit({
     windowMs: 15 * 60 * 100,
     limit: 100,

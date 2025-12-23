@@ -6,95 +6,66 @@ import { CompanyDashboardPage } from '@/app/company/dashboard/layout'
 import { HubRoutes } from '@/app/hub/hub-routes'
 import { JobHubLayout } from '@/app/hub/layout'
 import { RootLayout } from '@/app/layout'
+import Home from '@/app/page.tsx'
 import NotFound from '@/components/not-found'
 import { store } from '@/store'
 import { userApi } from '@/store/services/user.service'
-import type { Role } from '@/types'
-import { createBrowserRouter, type LoaderFunctionArgs, redirect, } from 'react-router-dom'
-import Home from '@/app/page.tsx'
-
-const getTokenAndRole = () => ({
-  token: localStorage.getItem('token'),
-  role: localStorage.getItem('role') as Role | null,
-})
-
-const handleRedirect = async ({
-  token
-}: {
-  token: string | null
-  role?: Role | null
-}) => {
-  if (token) {
-    const { data, isError } = await store.dispatch(
-      userApi.endpoints.getUser.initiate(undefined),
-    )
-
-    if (isError) {
-      return redirect('/') // Handle error: redirect to login or error page
-    }
-
-    return data?.role === 'applicant'
-      ? redirect('/app/jobs')
-      : redirect('/app/employer')
-  }
-  return null
-}
+import {
+  createBrowserRouter,
+  type LoaderFunctionArgs,
+  redirect,
+} from 'react-router-dom'
 
 const fetchUserAndRedirect = async (args: LoaderFunctionArgs<unknown>) => {
-  const { token, role } = getTokenAndRole()
-  const url = args.request.url
+  const { request } = args
+  const url = new URL(request.url)
 
-  if (!token) {
-    if(url.endsWith('/app/employer')){
-      return redirect('/login?redirectTo=/app/employer&role=employer')
-    }
-    if(url.endsWith('/app/jobs')){
-      return redirect('/login?redirectTo=/app/jobs&role=applicant')
-    }
-    return redirect('/')
-  }
-
-  const { data } = await store.dispatch(
+  const { data, isError } = await store.dispatch(
     userApi.endpoints.getUser.initiate(undefined),
   )
 
-  const redirectTo = (() => {
-    if(role==='applicant' && url.includes('/app/employer')){
-      return '/app/employer'
-    }
-    if(role==='employer' && url.includes('/app/jobs')){
-      return '/app/employer'
-    }
-    if (
-      role === 'employer' &&
-      data?.companyId &&
-      url.endsWith('/app/employer/create')
-    ) {
-      return '/app/employer'
-    }
-    if (
-      role === 'applicant' &&
-      data?.applicantId &&
-      url.includes('/app/employer')
-    ) {
-      return '/app/jobs'
-    }
-    if (
-      role === 'employer' &&
-      !data?.companyId &&
-      url.endsWith('/app/employer')
-    ) {
-      return '/app/employer/create'
-    }
+  const isAuthRoute =
+    ['/login', '/register', '/forgot-password', '/reset-password'].some(
+      (path) => url.pathname.startsWith(path),
+    ) || url.pathname === '/'
 
+  if (isError || !data) {
+    if (url.pathname.startsWith('/app')) {
+      const params = new URLSearchParams()
+      params.set('redirectTo', url.pathname + url.search)
+      params.set(
+        'role',
+        url.pathname.includes('employer') ? 'employer' : 'applicant',
+      )
+      return redirect(`/login?${params.toString()}`)
+    }
     return null
-  })()
-
-  if (redirectTo) {
-    return redirect(redirectTo)
   }
 
-  // If no redirect logic applies, return null to proceed as usual
+  const role = data.role
+  const dashboard = role === 'employer' ? '/app/employer' : '/app/jobs'
+
+  if (isAuthRoute) {
+    return redirect(dashboard)
+  }
+
+  if (url.pathname.startsWith('/app')) {
+    if (role === 'applicant' && url.pathname.startsWith('/app/employer')) {
+      return redirect('/app/jobs')
+    }
+    if (role === 'employer') {
+      if (url.pathname.startsWith('/app/jobs')) {
+        return redirect('/app/employer')
+      }
+      if (!data.companyId && !url.pathname.startsWith('/app/employer/create')) {
+        return redirect('/app/employer/create')
+      }
+      if (data.companyId && url.pathname.startsWith('/app/employer/create')) {
+        return redirect('/app/employer')
+      }
+    }
+  }
+
   return null
 }
 
@@ -102,14 +73,11 @@ export const AppRouter = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
+    loader: fetchUserAndRedirect,
     children: [
       {
         index: true,
-        element:<Home/>,
-        loader: async () => {
-          const { token, role } = getTokenAndRole()
-          return await handleRedirect({ token, role })
-        },
+        element: <Home />,
       },
       {
         element: <AuthLayout />,

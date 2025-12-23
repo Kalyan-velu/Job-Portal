@@ -19,7 +19,7 @@ const userSlice = createSlice({
       userApi.endpoints.login.matchFulfilled,
       (state, { payload }) => {
         state.token = payload.token;
-        localStorage.setItem('token', payload.token);
+        // localStorage.setItem('token', payload.token);
       }
     );
     build.addMatcher(
@@ -28,7 +28,7 @@ const userSlice = createSlice({
         state.user = payload;
         if (payload?.role) {
           state.role = payload?.role ?? null;
-          localStorage.setItem('role', payload?.role);
+          // localStorage.setItem('role', payload?.role);
         }
       }
     );

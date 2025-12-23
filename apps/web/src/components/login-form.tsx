@@ -35,8 +35,10 @@ export function LoginForm() {
     await login(data)
       .unwrap()
       .then((r) => {
-        if (r.redirectTo && r.message && r.isVerified) {
-          toast.info(r.message)
+        if (r.redirectTo && r.isVerified) {
+          if (r.message) {
+            toast.info(r.message)
+          }
           if (r.redirectTo === 'employer') {
             return navigate('/app/employer')
           }
@@ -55,7 +57,7 @@ export function LoginForm() {
       })
   }
 
-  const onInvalidSubmit = (data: FieldErrors<LoginSchemaType>) => {
+  const onInvalidSubmit = (_data: FieldErrors<LoginSchemaType>) => {
     return
   }
 

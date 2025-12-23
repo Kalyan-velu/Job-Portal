@@ -1,16 +1,17 @@
 import type { Request, Response } from 'express'
+import jwt from 'jsonwebtoken'
 import {
   sendErrorResponse,
   sendSuccessResponse,
 } from '../../../common/response'
+import { sendVerificationEmail } from '../../../lib/mailer/nodemailer'
+import { sendReset } from '../../../lib/token-handler'
 import { createSession } from '../../../middlewares/auth.middleware'
 import { User } from '../../../models/user.model'
 import type {
   BaseUserRegisterSchemaType,
   LoginType,
 } from '../../../zod/user.schema'
-import { sendVerificationEmail } from '../../../lib/mailer/nodemailer'
-import { sendReset } from '../../../lib/token-handler'
 
 interface LoginRequest extends Request {
   body: LoginType
@@ -27,11 +28,10 @@ export const Login = async (req: LoginRequest, res: Response) => {
       sendErrorResponse(res, "User doesn't  exist", 402)
       return
     }
-    // Verify the password (assuming you have a method on your User model)
-    const isPasswordValid = await userDoc.comparePassword(req.body.password) // Assuming you have this method
+    const isPasswordValid = await userDoc.comparePassword(req.body.password)
 
     if (!isPasswordValid) {
-      sendErrorResponse(res, 'Invalid password', 401) // Unauthorized
+      sendErrorResponse(res, 'Invalid password', 401)
       return
     }
     const user = userDoc.toJSON()
@@ -259,6 +259,50 @@ export const resetPassword = async (req: Request, res: Response) => {
       return
     }
     sendErrorResponse(res, 'Internal server error', 500)
+    return
+  }
+}
+
+export const logout = async (req: Request, res: Response) => {
+  res.clearCookie('auth_token')
+  res.clearCookie('role')
+  res.clearCookie('refresh_token')
+  sendSuccessResponse(res, 'Logged out successfully')
+  return
+}
+
+export const refreshToken = async (req: Request, res: Response) => {
+  const refreshToken = req.cookies['refresh_token']
+
+  if (!refreshToken) {
+    sendErrorResponse(res, 'Access Denied. No refresh token provided.', 401)
+    return
+  }
+
+  try {
+    const secret = process.env.REFRESH_TOKEN_SECRET || process.env.JWT_SECRET
+    if (!secret) throw new Error('JWT Secret is undefined')
+
+    const decoded = jwt.verify(refreshToken, secret) as jwt.JwtPayload
+    const user = await User.findById(decoded.id)
+    if (!user) {
+      res.clearCookie('refresh_token')
+      res.clearCookie('auth_token')
+      res.clearCookie('role')
+      sendErrorResponse(res, 'Invalid verification token', 401)
+      return
+    }
+
+    req.user = user
+    const token = createSession(req, res)
+
+    sendSuccessResponse(res, { token }, 'Token refreshed')
+    return
+  } catch (error) {
+    res.clearCookie('refresh_token')
+    res.clearCookie('auth_token')
+    res.clearCookie('role')
+    sendErrorResponse(res, 'Invalid refresh token.', 400)
     return
   }
 }

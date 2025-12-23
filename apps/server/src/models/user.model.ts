@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
 import { CallbackError, Document, model, Schema } from 'mongoose'
 import type { User as UserI } from '../types' // Adjust the import according to your project structure
-import crypto from 'crypto'
 // Extend UserI to include the comparePassword method
 export interface UserDocument
   extends Omit<UserI, 'companyId' | 'applicantId' | 'id'>,
@@ -40,8 +40,7 @@ const userSchema = new Schema<UserDocument>(
     },
     toJSON: {
       transform(doc, rec) {
-
-        const {password:_p,__v:_v,...ret}=rec
+        const { password: _p, __v: _v, ...ret } = rec
         return ret
       },
     },
@@ -49,7 +48,7 @@ const userSchema = new Schema<UserDocument>(
 )
 
 userSchema.virtual('id').get(function () {
-  return (this._id as string|undefined)?.toString()
+  return (this._id as string | undefined)?.toString()
 })
 
 // Ensure `toJSON` and `toObject` include virtuals

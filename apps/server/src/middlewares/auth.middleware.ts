@@ -1,39 +1,55 @@
-import { User as UserModel } from '../models/user.model'
 import 'dotenv/config'
 import type { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { sendErrorResponse } from '../common/response'
+import { User as UserModel } from '../models/user.model'
 import type { Role, User } from '../types'
-const jwtSecret = process.env.JWT_SECRET // Store this securely
+const jwtSecret = process.env.JWT_SECRET
 
 if (!jwtSecret) throw new Error('JWT_SECRET is not defined')
-console.debug('ℹ️ ~ file: auth.middleware.ts:7 ~ jwtSecret:', jwtSecret)
 
 export const createSession = (req: Request, res: Response): string => {
-  // Define the payload for the token
-  // const payload = req.user
-
-  const options:jwt.SignOptions = { expiresIn: '24h' } // Token expiration time
-
-  // Generate the token
+  const options: jwt.SignOptions = { expiresIn: '15m' }
   const token = jwt.sign(
     { id: req.user._id, role: req.user.role },
     jwtSecret as jwt.Secret,
     options,
   )
   res.cookie('auth_token', token, {
-    httpOnly: true, // Helps mitigate XSS attacks
-    secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
-    maxAge: 3600000, // 1 hour in milliseconds
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 15 * 60 * 1000,
   })
 
-  // Set the token in the response header (optional)
-  res.setHeader('Authorization', `Bearer ${token}`)
+  res.cookie('role', req.user.role, {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    sameSite: 'lax',
+  })
+  generateRefreshToken(req, res)
+  return token
+}
 
-  // Optionally, store the session in your database here
-  // e.g., sessionStore.createSession(user.id, token);
+export const generateRefreshToken = (req: Request, res: Response) => {
+  const secret = process.env.REFRESH_TOKEN_SECRET || jwtSecret
+  if (!secret)
+    throw new Error('REFRESH_TOKEN_SECRET or JWT_SECRET is not defined')
 
-  return token // Return the token for further use if needed
+  const options: jwt.SignOptions = { expiresIn: '7d' }
+  const token = jwt.sign(
+    { id: req.user._id, role: req.user.role },
+    secret as jwt.Secret,
+    options,
+  )
+  res.cookie('refresh_token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  })
+  return token
 }
 
 export const jwtAuth = async (
@@ -41,37 +57,28 @@ export const jwtAuth = async (
   res: Response,
   next: NextFunction,
 ) => {
-  console.debug(
-    'ℹ️ ~ file: auth.middleware.ts:44 ~ req:',
-    req.headers['authorization']?.split(' ')[1],
-  )
-  const token = req.headers['authorization']?.split(' ')[1]
+  const token = req.cookies['auth_token']
 
   if (!token) {
     return sendErrorResponse(res, 'Access denied. No token provided.', 401)
   }
 
   try {
-    const decoded = jwt.verify(token, jwtSecret) // Ensure decoded has the `_id` field
+    const decoded = jwt.verify(token, jwtSecret)
 
     // Fetch the user using lean() to improve performance
     // @ts-expect-error - We're adding the user to the request object
-    const user = await UserModel.findById(decoded.id, '-password').lean()
+    const user = await UserModel.findById(decoded.id, '-password -__v').lean()
 
     if (!user) {
       sendErrorResponse(res, 'Invalid Token', 401)
       return
     }
-    user.id = user._id.toString() // Manually add id if it's not working
-    delete (user as any)._id // Optionally remove _id
+    user.id = user._id.toString()
+    delete (user as any)._id
     req.user = user
-    // }
-    // Attach user information to the request
-
-    // Proceed to the next middleware
     next()
   } catch (err) {
-    console.error('ℹ️ ~ jwtAuth Middleware Error:', err)
     sendErrorResponse(res, 'Invalid Token', 401)
     return
   }

@@ -18,7 +18,23 @@ class Middleware {
   }
 
   configureMiddleware() {
-    this.app.use(cors())
+    const production = process.env.NODE_ENV === 'production'
+    this.app.use(
+      cors({
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        origin: production
+          ? [
+              'https://job-portal-production-8920.up.railway.app',
+              'https://jobs.kalyanjyotiborah.pro',
+            ]
+          : [
+              'http://localhost:3000',
+              'https://job-portal-production-8920.up.railway.app',
+              'https://jobs.kalyanjyotiborah.pro',
+            ],
+      }),
+    )
     this.app.use(cookieParser())
     this.app.use(
       morgan(':method :url :status :res[content-length] - :response-time ms'),
@@ -39,7 +55,9 @@ class Middleware {
     this.app.use(
       (err: Error, req: Request, res: Response, next: NextFunction) => {
         console.error(err.stack)
-        return res.status(500).send({ error: 'Something broke!' })
+        return res
+          .status(500)
+          .json({ status: false, error: 'Something broke!' })
       },
     )
   }
@@ -49,7 +67,7 @@ class Middleware {
    * @param {AuthConfig} config - Configuration for authentication method.
    * @returns {VoidFunction} - Express middleware function.
    */
-  static AuthMiddleware = async (config: AuthConfig) => {
+  static AuthMiddleware = (config: AuthConfig) => {
     return (req: Request, res: Response, next: NextFunction) => {
       switch (config.method) {
         case 'jwt':

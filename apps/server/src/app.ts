@@ -6,9 +6,9 @@ import { Applicant, ApplicantApplication } from './modules/applicants'
 import CompanyModule from './modules/company'
 import userModules from './modules/user'
 
+import path from 'node:path'
 import { Database } from './common/database.config'
 import { PrivateJobModule, PublicJobModule } from './modules/job'
-import path from 'node:path'
 
 const app = express()
 
@@ -33,7 +33,8 @@ configApi
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../../web/dist')))
 
-  app.get('*', (request, response) => {
+  // serve index.html for all routes except api
+  app.get(/^(?!\/api)/, (request, response) => {
     response.sendFile(
       path.resolve(__dirname, '../../web', 'dist', 'index.html'),
     )

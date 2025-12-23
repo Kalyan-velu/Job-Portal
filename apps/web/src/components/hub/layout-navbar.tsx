@@ -10,7 +10,10 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { logout } from '@/store/actions/auth.action'
 import { useAppDispatch } from '@/store/hooks'
-import { useGetUserQuery } from '@/store/services/user.service'
+import {
+  useGetUserQuery,
+  useLogoutMutation,
+} from '@/store/services/user.service'
 import { Briefcase, ChevronDown, LogOut, Menu, User } from 'lucide-react'
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -20,6 +23,17 @@ export default function ApplicantNavbar() {
   const dispatch = useAppDispatch()
   const { data: user } = useGetUserQuery()
   const navigate = useNavigate()
+  const [logoutMutation, { isLoading: isLoggingOut }] = useLogoutMutation()
+  const handleLogout = async () => {
+    if (isLoggingOut) return
+    await logoutMutation()
+      .unwrap()
+      .then(() => {
+        navigate('/login')
+        dispatch(logout())
+      })
+  }
+
   return (
     <nav className="sticky top-0 z-30  shadow-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -40,30 +54,11 @@ export default function ApplicantNavbar() {
                   className="rounded-md px-3 py-2 text-sm font-medium ">
                   My Applications
                 </Link>
-                {/* <a
-                  href="/saved-jobs"
-                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
-                  Saved Jobs
-                </a> */}
               </div>
             </div>
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              {/* <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Search className="h-5 w-5 text-gray-400" />
-                </div>
-                <Input
-                  type="text"
-                  placeholder="Search jobs"
-                  className="block w-full rounded-md border border-gray-400 bg-white py-2 pl-10 pr-3 leading-5 placeholder-gray-500 focus:border-blue-500 focus:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                />
-              </div>
-              <Button variant="ghost" size="icon" className="ml-3">
-                <Bell className="h-5 w-5 text-gray-400" />
-                <span className="sr-only">Notifications</span>
-              </Button> */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="ml-3 flex items-center">
@@ -90,28 +85,10 @@ export default function ApplicantNavbar() {
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  {/* <DropdownMenuItem>
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span>My Resume</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Heart className="mr-2 h-4 w-4" />
-                    <span>Saved Jobs</span>
-                  </DropdownMenuItem> */}
-                  {/* <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </DropdownMenuItem> */}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onSelect={() => {
-                      localStorage.removeItem('token')
-                      localStorage.removeItem('role')
-                      dispatch(logout())
-                      return navigate('/login')
-                    }}>
+                  <DropdownMenuItem onSelect={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
+                    <span> {isLoggingOut ? 'Logging out...' : 'Log out'}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -155,9 +132,7 @@ export default function ApplicantNavbar() {
                 </Avatar>
               </div>
               <div className="ml-3">
-                <div className="text-base font-medium ">
-                  {user?.name}
-                </div>
+                <div className="text-base font-medium ">{user?.name}</div>
                 <div className="text-sm font-medium text-foregroud-muted">
                   {user?.email}
                 </div>
@@ -173,30 +148,11 @@ export default function ApplicantNavbar() {
                 className="block rounded-md px-3 py-2 text-base font-medium ">
                 Profile
               </Link>
-              {/* <a
-                href="/resume"
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
-                My Resume
-              </a>
-              <a
-                href="/saved-jobs"
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
-                Saved Jobs
-              </a>
-              <a
-                href="/settings"
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
-                Settings
-              </a> */}
               <Button
-                onClick={() => {
-                  localStorage.removeItem('token')
-                  localStorage.removeItem('role')
-                  dispatch(logout())
-                  return navigate('/login')
-                }}
+                onClick={handleLogout}
+                disabled={isLoggingOut}
                 className="block rounded-md px-3 py-2 text-base font-medium ">
-                Log out
+                {isLoggingOut ? 'Logging out...' : 'Log out'}
               </Button>
             </div>
           </div>

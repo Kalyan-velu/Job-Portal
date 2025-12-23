@@ -6,6 +6,8 @@ import { baseUserSchema, loginSchema } from '../../../zod/user.schema'
 import {
   forgotPassword,
   Login,
+  logout,
+  refreshToken,
   Register,
   resendVerificationEmail,
   resetPassword,
@@ -30,4 +32,6 @@ userAuthRouter.post(
   jwtAuth,
   resendVerificationEmail,
 )
+userAuthRouter.post('/refresh', limiter(), refreshToken)
+userAuthRouter.post('/logout', jwtAuth, logout)
 export default userAuthRouter

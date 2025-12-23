@@ -1,23 +1,63 @@
-import { fetchBaseQuery, type FetchBaseQueryError, type FetchBaseQueryMeta, } from '@reduxjs/toolkit/query'
+import {
+  BaseQueryFn,
+  FetchArgs,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+} from '@reduxjs/toolkit/query'
+import { Mutex } from 'async-mutex'
 
-export const apiUrl = import.meta.env.VITE_API_URL
+const mutex = new Mutex()
 
-if (!apiUrl&&import.meta.env.DEV) {
+export const apiUrl = import.meta.env.VITE_API_URL ?? '/api'
+
+if (!apiUrl && import.meta.env.DEV) {
   throw Error('Please add an api url (VITE_API_URL) in .env ')
 }
 
-export const baseQuery = (baseUrl?: string) =>
-  fetchBaseQuery({
+export const baseQuery = (
+  baseUrl?: string,
+): BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> => {
+  const baseQueryInstance = fetchBaseQuery({
     baseUrl: baseUrl ?? apiUrl,
-    prepareHeaders: async (headers, { getState }) => {
-      const sessionToken = sessionStorage.getItem('token')
-      const localToken = localStorage.getItem('token')
-      if (localToken || sessionToken) {
-        headers.set('Authorization', `Bearer ${sessionToken ?? localToken}`)
-      }
-      return headers
-    },
   })
+
+  return async (args, api, extraOptions) => {
+    // wait until the mutex is available without locking it
+    await mutex.waitForUnlock()
+
+    let result = await baseQueryInstance(args, api, extraOptions)
+
+    if (result.error && result.error.status === 401) {
+      if (!mutex.isLocked()) {
+        const release = await mutex.acquire()
+
+        try {
+          const refreshResult = await baseQueryInstance(
+            { url: '/auth/refresh', method: 'POST' },
+            api,
+            extraOptions,
+          )
+
+          if (refreshResult.data) {
+            // Retry the initial query
+            result = await baseQueryInstance(args, api, extraOptions)
+          } else {
+            // Refresh failed - logout
+            window.location.href = '/login'
+          }
+        } finally {
+          release()
+        }
+      } else {
+        // wait until the mutex is available without locking it
+        await mutex.waitForUnlock()
+        result = await baseQueryInstance(args, api, extraOptions)
+      }
+    }
+
+    return result
+  }
+}
 
 /**
  * Converts a JSON object to FormData.
@@ -86,8 +126,6 @@ export function queryFunction(data: Record<string, unknown | undefined>) {
 
 export const transformErrorResponse = (
   response: FetchBaseQueryError,
-  meta: FetchBaseQueryMeta | undefined,
-  args: unknown,
 ): string => {
   if (
     'data' in response &&
@@ -100,14 +138,11 @@ export const transformErrorResponse = (
       message?: string
     }
 
-
     // Handle detailed errors
     if (Array.isArray(data.error)) {
       return data.error
-        .map((err: any) => {
-          // Format the error message
-          const field = err.loc ? err.loc[1] : 'Unknown field'
-          const message = err.msg || 'Invalid input'
+        .map((err) => {
+          const message = (err as { msg: string }).msg || 'Invalid input'
           return `${message}`
         })
         .join(', ')
@@ -129,18 +164,17 @@ export const transformErrorResponse = (
       typeof response.error === 'object' &&
       'message' in response.error
     ) {
+      //@ts-expect-error - Fix this
       return response.error.message
     }
     if (typeof response.error === 'object') {
-      const data = response.error as Record<string, any>
+      const data = response.error as Record<string, unknown>
 
       // Handle detailed errors
       if (Array.isArray(data.error)) {
         return data.error
-          .map((err: any) => {
-            // Format the error message
-            const field = err.loc ? err.loc[1] : 'Unknown field'
-            const message = err.msg || 'Invalid input'
+          .map((err) => {
+            const message = (err as { msg: string }).msg || 'Invalid input'
             return `${message}`
           })
           .join(', ')
