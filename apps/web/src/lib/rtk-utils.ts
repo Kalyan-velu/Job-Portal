@@ -42,8 +42,11 @@ export const baseQuery = (
             // Retry the initial query
             result = await baseQueryInstance(args, api, extraOptions)
           } else {
-            // Refresh failed - logout
-            window.location.href = '/login'
+            // Refresh failed - logout only if we are in a protected route
+            const path = window.location.pathname
+            if (path.startsWith('/app')) {
+              window.location.href = '/login'
+            }
           }
         } finally {
           release()

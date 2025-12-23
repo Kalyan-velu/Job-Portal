@@ -20,14 +20,14 @@ const fetchUserAndRedirect = async (args: LoaderFunctionArgs<unknown>) => {
   const { request } = args
   const url = new URL(request.url)
 
-  const { data, isError } = await store.dispatch(
-    userApi.endpoints.getUser.initiate(undefined),
-  )
-
   const isAuthRoute =
     ['/login', '/register', '/forgot-password', '/reset-password'].some(
       (path) => url.pathname.startsWith(path),
     ) || url.pathname === '/'
+
+  const { data, isError } = await store.dispatch(
+    userApi.endpoints.getUser.initiate(undefined),
+  )
 
   if (isError || !data) {
     if (url.pathname.startsWith('/app')) {
