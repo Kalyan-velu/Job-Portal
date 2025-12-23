@@ -25,20 +25,11 @@ import { Link, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import * as z from 'zod'
 
+import { passwordSchema } from '@/zod-schema/user.schema'
+
 const formSchema = z
   .object({
-    password: z
-      .string()
-      .min(8, {
-        message: 'Password must be at least 8 characters long.',
-      })
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        {
-          message:
-            'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
-        },
-      ),
+    password: passwordSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {

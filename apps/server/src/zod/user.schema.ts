@@ -13,20 +13,21 @@ export const passwordSchema = z
     message: 'Password must contain at least one numeric digit.',
   })
   .regex(/[^A-Za-z0-9]/, {
-    message: 'Password must contain at least one special character.',
+    message:
+      'Password must contain at least one special character (e.g., !@#$%^&*).',
   })
-  .regex(/^\S*$/, { message: 'Password must not contain spaces.' });
+  .regex(/^\S*$/, { message: 'Password must not contain spaces.' })
 
 export const loginSchema = z.object({
   email: z.string(),
   password: passwordSchema,
-});
+})
 
-export type LoginType = z.infer<typeof loginSchema>;
+export type LoginType = z.infer<typeof loginSchema>
 
 export const roleSchema = z.enum(['company', 'employer', 'applicant'], {
   message: 'Role is needed',
-});
+})
 
 export const baseUserSchema = z
   .object({
@@ -40,6 +41,6 @@ export const baseUserSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
-  });
+  })
 
-export type BaseUserRegisterSchemaType = z.infer<typeof baseUserSchema>;
+export type BaseUserRegisterSchemaType = z.infer<typeof baseUserSchema>
