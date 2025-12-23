@@ -19,11 +19,10 @@ const getTokenAndRole = () => ({
 })
 
 const handleRedirect = async ({
-  token,
-  role,
+  token
 }: {
   token: string | null
-  role: Role | null
+  role?: Role | null
 }) => {
   if (token) {
     const { data, isError } = await store.dispatch(

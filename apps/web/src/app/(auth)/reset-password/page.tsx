@@ -1,15 +1,29 @@
-import { useState } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from '@/components/ui/card'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { toast } from 'sonner'
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
-import { Link, useParams } from 'react-router-dom'
 import { useResetPasswordMutation } from '@/store/services/user.service'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { Link, useParams } from 'react-router-dom'
+import { toast } from 'sonner'
+import * as z from 'zod'
 
 const formSchema = z
   .object({
@@ -47,7 +61,6 @@ export default function ResetPassword() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
     // @ts-expect-error  Property 'data' does not exist on type 'void'.
     await reset({ password: values.password, token })
       .unwrap()
@@ -65,8 +78,9 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="flex h-screen w-full items-center justify-center px-4">
-      <Card className="w-[350px]">
+    <div className="flex w-full items-center justify-center px-4">
+      <Card className="w-[350px] bg-white/50 dark:bg-black/40 backdrop-blur-md border-black/5 dark:border-white/10 shadow-2xl relative overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
         <CardHeader>
           <CardTitle>Reset Password</CardTitle>
           <CardDescription>Enter your new password below.</CardDescription>
@@ -85,6 +99,7 @@ export default function ResetPassword() {
                         <Input
                           type={showPassword ? 'text' : 'password'}
                           placeholder="Enter your new password"
+                          className="bg-background/50 border-white/10 focus:border-primary/50 transition-colors"
                           {...field}
                         />
                         <Button
@@ -116,6 +131,7 @@ export default function ResetPassword() {
                         <Input
                           type={showConfirmPassword ? 'text' : 'password'}
                           placeholder="Confirm your new password"
+                          className="bg-background/50 border-white/10 focus:border-primary/50 transition-colors"
                           {...field}
                         />
                         <Button
@@ -138,7 +154,10 @@ export default function ResetPassword() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 transition-all duration-300 shadow-lg shadow-primary/25"
+                disabled={isLoading}>
                 {isLoading ? 'Resetting...' : 'Reset Password'}
               </Button>
             </form>

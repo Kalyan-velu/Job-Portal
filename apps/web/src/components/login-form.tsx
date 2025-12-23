@@ -1,8 +1,20 @@
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from '@/components/ui/card'
-import { Form, FormControl, FormField, FormItem, FormMessage, } from '@/components/ui/form'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PasswordInput } from '@/components/ui/password-input'
@@ -25,10 +37,10 @@ export function LoginForm() {
       .then((r) => {
         if (r.redirectTo && r.message && r.isVerified) {
           toast.info(r.message)
-          if(r.redirectTo==='employer'){
+          if (r.redirectTo === 'employer') {
             return navigate('/app/employer')
           }
-          if(r.redirectTo==='applicant'){
+          if (r.redirectTo === 'applicant') {
             return navigate('/app/jobs')
           }
           return navigate(r.redirectTo)
@@ -44,16 +56,19 @@ export function LoginForm() {
   }
 
   const onInvalidSubmit = (data: FieldErrors<LoginSchemaType>) => {
-  return
+    return
   }
 
   return (
     <Form {...form}>
-      <Card className="mx-auto max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
+      <Card className="mx-auto max-w-md bg-white/50 dark:bg-black/40 backdrop-blur-md border-black/5 dark:border-white/10 shadow-2xl relative overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        <CardHeader className="space-y-1 flex flex-col items-center">
+          <CardTitle className="text-2xl font-bold tracking-tight">
+            Welcome back
+          </CardTitle>
+          <CardDescription className="text-center">
+            Enter your credentials to access your account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -79,7 +94,7 @@ export function LoginForm() {
             <div className="grid gap-2">
               <FormField
                 control={form.control}
-                name="password" // This should be 'password' instead of 'email'
+                name="password"
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center">
@@ -93,6 +108,7 @@ export function LoginForm() {
                     <FormControl>
                       <PasswordInput
                         placeholder={'Enter your password'}
+                        className="bg-background/50 border-white/10 focus:border-primary/50 transition-colors"
                         {...field}
                       />
                     </FormControl>
@@ -103,9 +119,8 @@ export function LoginForm() {
             </div>
             <Button
               type="submit"
-              className="w-full"
-              disabled={isLoading} // Optionally disable while loading
-            >
+              className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 transition-all duration-300 shadow-lg shadow-primary/25"
+              disabled={isLoading}>
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
