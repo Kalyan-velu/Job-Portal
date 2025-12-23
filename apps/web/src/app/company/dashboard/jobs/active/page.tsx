@@ -1,14 +1,22 @@
+import {
+  JobCard,
+  JobCardBadge,
+  JobCardContent,
+  JobCardFooter,
+  JobCardHeader,
+  JobCardMeta,
+  JobCardTitle,
+} from '@/components/job-card'
+import { JobDetailsSheet } from '@/components/job-details-sheet'
 import { JobActions } from '@/components/job/job-action'
-import { JobUpdateDialog } from '@/components/job/job-update-dialog'
-import { Badge } from '@/components/ui/badge'
-import { DialogTrigger } from '@/components/ui/dialog'
 import Empty from '@/components/ui/empty'
 import Spinner from '@/components/ui/spinner'
 import { useGetCompanyJobsQuery } from '@/store/services/company.service'
+import { JobResponseType } from '@/types/redux'
 import { formatDistanceToNow } from 'date-fns'
 import { tailspin } from 'ldrs'
 import { MapIcon } from 'lucide-react'
-import { memo } from 'react'
+import { memo, useState } from 'react'
 
 tailspin.register()
 
@@ -18,6 +26,9 @@ const AllActiveCompanyJobs = memo(() => {
   const { data, isFetching, isLoading } = useGetCompanyJobsQuery('active', {
     refetchOnMountOrArgChange: true,
   })
+  const [selectedJob, setSelectedJob] = useState<JobResponseType | null>(null)
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+
   return (
     <div className="flex max-h-full flex-col gap-2 overflow-auto px-4">
       <h1 className={'flex items-center gap-x-2 text-xl font-semibold'}>
@@ -29,94 +40,78 @@ const AllActiveCompanyJobs = memo(() => {
       <div className="flex flex-col gap-2">
         {data && data?.length > 0 ? (
           data?.map((job) => (
-            <JobUpdateDialog job={job}>
-              <DialogTrigger asChild>
-                <div
-                  key={job._id}
-                  className="relative flex min-h-32 w-full cursor-pointer flex-col gap-y-2 rounded-lg bg-secondary p-3 text-secondary-foreground shadow-lg">
-                  <div className="flex items-center gap-2">
-                    <div className="size-12 rounded-lg border border-solid border-gray-400 bg-gray-400" />
-                    <div className="flex flex-col justify-start gap-1">
-                      <h3 className="text-lg font-semibold hover:cursor-pointer">
-                        {job.title}
-                      </h3>
-                      <div className="flex items-center gap-x-2">
-                        <p className="text-xs font-medium text-gray-400">
-                          {job.company.name}
-                        </p>
-                        <div className="size-1 rounded-full bg-gray-500"></div>
-                        <div className="rounded-full text-xs font-medium capitalize text-gray-400">
-                          {job.type.replace('-', ' ')}
-                        </div>
-                        <div className="size-1 rounded-full bg-gray-500"></div>
-                        <p className="text-xs font-medium">{job.salaryRange}</p>
-                      </div>
-                    </div>
-                    <div className="grow" />
-                    <div className="flex items-center gap-x-2">
-                      <p className="flex gap-x-2 text-xs font-medium text-gray-400">
-                        <MapIcon className={'size-4'} />
-                        <span>{job.location}</span>
-                      </p>
-                      <div className="size-1 rounded-full bg-gray-500"></div>
-                      <p className="text-xs font-medium capitalize text-gray-400">
-                        {formatDistanceToNow(new Date(job.updatedAt), {
-                          addSuffix: true,
-                        })}
-                      </p>
-                    </div>
+            <div key={job._id}>
+              <JobCard
+                onClick={() => {
+                  setSelectedJob(job)
+                  setIsSheetOpen(true)
+                }}>
+                <JobCardHeader>
+                  <div className="size-12 rounded-lg border bg-secondary flex items-center justify-center">
+                    {/* Placeholder logo if no image */}
+                    <span className="text-xl font-bold text-muted-foreground">
+                      {job.company.name?.charAt(0) || 'C'}
+                    </span>
                   </div>
-                  <p className="text-sm text-gray-400">{job.description}</p>
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation()
-                    }}
-                    data-hidden={
-                      !(job.responsibilites && job.responsibilites?.length > 0)
-                    }
-                    className="flex flex-col gap-2 data-[hidden=true]:hidden">
-                    <p className="text-md font-semibold">Responsibilities</p>
-                    <ul
-                      onClick={(e) => {
-                        e.stopPropagation()
-                      }}
-                      role="list">
-                      {job.responsibilites?.map((responsibility) => (
-                        <li
-                          className={'flex items-center gap-x-1 pl-2 text-sm'}
-                          key={responsibility}>
-                          {responsibility}
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="flex flex-col">
+                    <JobCardTitle>{job.title}</JobCardTitle>
+                    <JobCardMeta className="mt-1">
+                      <span>{job.company.name}</span>
+                      <div className="h-1 w-1 rounded-full bg-muted-foreground/50" />
+                      <span className="capitalize">{job.type}</span>
+                      <div className="h-1 w-1 rounded-full bg-muted-foreground/50" />
+                      <span>{job.salaryRange}</span>
+                    </JobCardMeta>
                   </div>
-                  <div className="mt-2 flex flex-wrap items-center gap-x-2">
-                    {/* <p className="text-md font-semibold">Requirements : </p> */}
-                    {job.requirements?.map((r) => (
-                      <Badge
-                        onClick={(e) => {
-                          e.stopPropagation()
-                        }}
-                        key={r}
-                        className={'rounded-full text-xs'}>
-                        {r}
-                      </Badge>
+                  <div className="ml-auto flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">
+                      {formatDistanceToNow(new Date(job.updatedAt), {
+                        addSuffix: true,
+                      })}
+                    </span>
+                  </div>
+                </JobCardHeader>
+
+                <JobCardContent>
+                  <p className="line-clamp-2">{job.description}</p>
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {job.requirements?.slice(0, 3).map((req, i) => (
+                      <JobCardBadge key={i}>{req}</JobCardBadge>
                     ))}
+                    {(job.requirements?.length || 0) > 3 && (
+                      <JobCardBadge variant="outline">
+                        +{(job.requirements?.length || 0) - 3} more
+                      </JobCardBadge>
+                    )}
+                  </div>
+                </JobCardContent>
+
+                <JobCardFooter>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <MapIcon className="h-4 w-4" />
+                    {job.location}
                   </div>
                   <JobActions
-                    context="active"
-                    id={job?._id}
+                    context={'active'}
+                    id={job._id}
                     isArchived={job.isArchived}
-                    className={'absolute bottom-2 right-2'}
+                    onClick={(e) => e.stopPropagation()}
                   />
-                </div>
-              </DialogTrigger>
-            </JobUpdateDialog>
+                </JobCardFooter>
+              </JobCard>
+            </div>
           ))
         ) : (
           <Empty rootClassName={'justify-self-center mt-8'} />
         )}
       </div>
+
+      <JobDetailsSheet
+        job={selectedJob}
+        open={isSheetOpen}
+        onOpenChange={setIsSheetOpen}
+        mode="view"
+      />
     </div>
   )
 })
